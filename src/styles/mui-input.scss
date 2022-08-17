@@ -1,0 +1,15 @@
+@mixin mui-input() {
+  .MuiInputLabel-root {
+    color: var(--text-color);
+  }
+  .MuiOutlinedInput-root {
+    border-radius: 12px;
+    color: var(--text-color);
+    fieldset {
+      border-color: var(--border-color) !important;
+    }
+  }
+  .version-select {
+    font-size: 12px;
+  }
+}

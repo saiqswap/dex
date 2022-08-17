@@ -1,0 +1,19 @@
+img {
+  display: none;
+}
+img[src] {
+  display: block;
+}
+input {
+  color: var(--text-color) !important;
+}
+a {
+  text-decoration: none;
+}
+
+body {
+  small,
+  span {
+    color: var(--grey-color);
+  }
+}

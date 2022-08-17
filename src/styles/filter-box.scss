@@ -1,0 +1,127 @@
+#filter-box {
+  position: fixed;
+  top: 80px;
+  padding: 60px 0 20px 0;
+  background: rgba($color: #1b1c1d, $alpha: 0.5);
+  width: 300px;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  backdrop-filter: blur(10px);
+  z-index: 102;
+  transition: all 0.3s ease-in-out;
+
+  #outlined-basic {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    display: none;
+  }
+
+  .btn-clear {
+    padding: 5px 0;
+    border: 1px solid #ff6363;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #ff6363;
+    border-radius: 5px;
+  }
+
+  .MuiTextField-root {
+    label.Mui-focused {
+      color: #ff6363;
+    }
+
+    .MuiOutlinedInput-root {
+      border-radius: 5px;
+    }
+
+    input.MuiOutlinedInput-input {
+      padding: 10px;
+      font-size: 12px;
+      transform: translate();
+    }
+  }
+
+  .sort-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+
+    >span {
+      padding-left: 2px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .MuiInput-root {
+      font-size: 0.9rem;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+
+      svg {
+        opacity: 0.6;
+      }
+    }
+
+    .MuiNativeSelect-select {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+      padding: 8px 30px 8px 10px;
+      color: rgba(255, 255, 255, 0.8);
+      min-width: 80px;
+    }
+  }
+
+  .checkbox-title {
+    position: relative;
+    opacity: 0.5;
+    padding-bottom: 0px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .checkbox-items {
+    .MuiFormControlLabel-root {
+      svg {
+        opacity: 0.2;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .MuiFormControlLabel-root .Mui-checked {
+      svg {
+        opacity: 1;
+
+        path {
+          color: #ff6363;
+        }
+      }
+    }
+
+    .checkbox-items__label {
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 30px;
+        border-radius: 10px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+@media screen and(max-width:599px) {
+  #filter-box {
+    top: 60px;
+    z-index: 10000000000 !important;
+
+  }
+}

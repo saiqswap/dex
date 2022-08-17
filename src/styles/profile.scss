@@ -1,0 +1,382 @@
+.profile-page {
+  margin-top: 150px;
+  //tab menu style
+  .menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    li {
+      text-transform: capitalize;
+      clip-path: polygon(
+        25px 0,
+        calc(100% - 5px) 0,
+        100% 10px,
+        calc(100% - 25px) 100%,
+        5px 100%,
+        0 calc(100% - 10px)
+      );
+      min-height: 40px;
+      padding: 0px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: -10px;
+      &:hover,
+      &.active {
+        background: var(--highlight-1);
+      }
+    }
+  }
+  //=======
+  .user-menu {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 50px 0px 0px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .avatar {
+    margin: 0 auto;
+    img {
+      width: 100px !important;
+      height: 100px !important;
+      margin: auto !important;
+    }
+  }
+  .menus {
+    margin: 20px 0px 0px;
+    background: rgba(255, 255, 255, 0.03);
+    li {
+      margin: 0px auto;
+      border: 1px solid rgba(255, 255, 255, 0);
+      &.active {
+        button {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+    button {
+      width: 100%;
+      border-radius: 0px;
+      min-height: 80px;
+      justify-content: flex-start;
+      color: #fff;
+      padding: 0px 10%;
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  .account-page {
+    .username {
+      color: var(--highlight-1);
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      width: fit-content;
+      border-radius: 5px;
+    }
+    .email {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      width: fit-content;
+      border-radius: 5px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .referral {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      width: fit-content;
+      border-radius: 5px;
+    }
+  }
+  .my-items {
+    .my-item-contents {
+      .nft-card {
+        padding: 10px;
+        height: 100%;
+        border-radius: 5px;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        &.minion {
+          .angel-grade {
+            &.tier_1 {
+              background: url("../../public/images/grade-bg/grade-bg-1-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_2 {
+              background: url("../../public/images/grade-bg/grade-bg-2-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_3 {
+              background: url("../../public/images/grade-bg/grade-bg-3-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_4 {
+              background: url("../../public/images/grade-bg/grade-bg-4-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_5 {
+              background: url("../../public/images/grade-bg/grade-bg-5-1.png")
+                no-repeat 50% 50%;
+            }
+            &::after {
+              clip-path: polygon(
+                0px 30px,
+                100px 30px,
+                110px 0,
+                100% 0,
+                100% calc(100% - 10px),
+                calc(100% - 10px) 100%,
+                10px 100%,
+                0 calc(100% - 10px),
+                0 0
+              );
+            }
+          }
+        }
+        &.skin {
+          .angel-grade {
+            &.tier_1 {
+              background: url("../../public/images/grade-bg/grade-bg-1-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_2 {
+              background: url("../../public/images/grade-bg/grade-bg-2-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_3 {
+              background: url("../../public/images/grade-bg/grade-bg-3-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_4 {
+              background: url("../../public/images/grade-bg/grade-bg-4-1.png")
+                no-repeat 50% 50%;
+            }
+            &.tier_5 {
+              background: url("../../public/images/grade-bg/grade-bg-5-1.png")
+                no-repeat 50% 50%;
+            }
+            &::after {
+              clip-path: polygon(
+                0px 30px,
+                100px 30px,
+                110px 0,
+                100% 0,
+                100% calc(100% - 10px),
+                calc(100% - 10px) 100%,
+                10px 100%,
+                0 calc(100% - 10px),
+                0 0
+              );
+            }
+          }
+        }
+        .blank {
+          position: absolute;
+          background: #000;
+          bottom: 10px;
+          left: 0;
+          height: calc(100% - 80px);
+          width: 100%;
+          z-index: -1;
+        }
+        .nft-status {
+          background: rgba($color: #000, $alpha: 0.5);
+          backdrop-filter: blur(5px);
+          border-top: 2px solid #132e44;
+          border-bottom: 2px solid #132e44;
+          position: absolute;
+          bottom: 20%;
+          left: 0;
+          width: 100%;
+          padding: 5px 0;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .nft-info-top {
+          align-items: center;
+          justify-content: space-between;
+          position: absolute;
+          top: 0px;
+          left: 20px;
+          width: 100%;
+          text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+          .nft-class {
+            margin-top: 10px;
+          }
+          .nft-id {
+            width: fit-content;
+            font-size: 12px;
+            position: absolute;
+            top: -3px;
+            right: 20px !important;
+            padding: 3px 10px 0px 10px;
+            border-radius: 3px;
+            opacity: 0.7;
+          }
+          .nft-lv {
+            margin-top: 10px;
+            font-weight: normal;
+          }
+          span {
+            font-size: 10px;
+            font-weight: 700;
+          }
+          .nft-class {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            img {
+              width: 30px;
+              opacity: 0.6;
+            }
+          }
+        }
+        .nft-character {
+          margin: 30px auto;
+          min-height: 350px;
+          img {
+            width: auto;
+            height: 230px;
+            margin-top: 60px !important;
+            margin: auto;
+          }
+        }
+        .nft-name {
+          font-size: 0.9rem;
+          margin-top: 5px;
+          font-weight: bold;
+          &.tier_1 {
+            color: var(--angel-type-1);
+          }
+          &.tier_2 {
+            color: var(--angel-type-2);
+          }
+          &.tier_3 {
+            color: var(--angel-type-3);
+          }
+          &.tier_4 {
+            color: var(--angel-type-4);
+          }
+          &.tier_5 {
+            color: var(--angel-type-5);
+          }
+        }
+        .nft-info-bottom {
+          position: absolute;
+          margin-top: 20px;
+          text-align: center;
+          bottom: 0px;
+          left: 0px;
+          width: 100%;
+          .nft-game-lv {
+            height: 40px;
+            line-height: 40px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            left: 10px;
+            bottom: 25px;
+            font-weight: bold;
+            opacity: 0.7;
+            &.tier_1{
+              color: var(--angel-type-1);
+            }
+            &.tier_2 {
+              color: var(--angel-type-2);
+            }
+            &.tier_3{
+              color: var(--angel-type-3);
+            }
+            &.tier_4 {
+              color: var(--angel-type-4);
+            }
+            &.tier_5 {
+              color: var(--angel-type-5);
+            }
+          }
+        }
+        .nft-options {
+          position: absolute;
+          bottom: 2px;
+          left: 0;
+          width: 100%;
+          padding: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          button {
+            min-height: 35px !important ;
+            background: rgba(255, 255, 255, 0.07);
+            font-weight: normal;
+            clip-path: polygon(
+              10px 0,
+              calc(100% - 3px) 0,
+              100% 3px,
+              100% calc(100% - 10px),
+              calc(100% - 10px) 100%,
+              3px 100%,
+              0 calc(100% - 3px),
+              0 10px
+            );
+            border-radius: 0;
+            &:hover {
+              background: rgba(255, 255, 255, 0.2);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .my-wallet {
+    .MuiIconButton {
+      &-root {
+        border: none;
+        padding: 3px;
+        background: transparent;
+        &:active {
+          transform: scale(1.2);
+        }
+        .MuiSvgIcon {
+          &-root {
+            font-size: 15px;
+          }
+        }
+        span {
+          background-color: transparent;
+        }
+      }
+    }
+    .wallet-items {
+      height: 100%;
+      box-shadow: 0 0 2px rgba($color: #000, $alpha: 0.1);
+      background: linear-gradient(
+        60deg,
+        var(--bg-color),
+        #d3d2d21e 50%,
+        var(--bg-color)
+      );
+      padding: 10px 20px;
+      border-radius: 10px;
+      img {
+        margin-top: -20px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

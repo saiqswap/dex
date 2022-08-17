@@ -1,0 +1,19 @@
+@mixin mui-drawer() {
+  .MuiDrawer {
+    &-paperAnchorRight {
+      width: 50%;
+      background-color: var(--main-color);
+      border-radius: 0;
+      border: none;
+      color: #fff;
+      .MuiOutlinedInput-root {
+        height: 40px;
+        color: #fff;
+        border-radius: 999px;
+      }
+      .MuiOutlinedInput-notchedOutline {
+        border-color: rgba($color: #ffffff, $alpha: 0.5);
+      }
+    }
+  }
+}

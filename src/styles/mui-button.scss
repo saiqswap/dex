@@ -1,0 +1,48 @@
+@mixin button-items() {
+  .MuiButton {
+    &-root {
+      padding: 6px 16px;
+      border-radius: 100px;
+      color: currentColor;
+      text-transform: unset;
+      min-width: 120px;
+    }
+    &-outlined {
+      border: 1px solid var(--border-color);
+      padding: 5px 15px;
+      color: var(--text-color);
+      border-radius: 50px;
+    }
+    &-textPrimary {
+      color: var(--primary-color);
+    }
+    &-containedPrimary {
+      background-color: var(--primary-color);
+      color: var(--white-text);
+      * {
+        color: var(--white-text);
+      }
+    }
+    &-colorInherit {
+      background-color: var(--main-color);
+      &:hover {
+        background-color: var(--main-color);
+        opacity: 0.9;
+      }
+    }
+    &-containerInfo {
+      background-color: var(--bg-color);
+      &:hover {
+        background-color: var(--bg-color);
+        opacity: 0.9;
+      }
+    }
+  }
+  .MuiIconButton {
+    &-root {
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      background-color: var(--main-color);
+    }
+  }
+}

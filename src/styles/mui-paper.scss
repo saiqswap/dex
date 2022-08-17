@@ -1,0 +1,38 @@
+@mixin mui-paper() {
+  .MuiPaper {
+    &-elevation8 {
+      background: var(--main-color);
+      min-width: 20%;
+      border-radius: 20px;
+      z-index: 999;
+      .MuiList-root {
+        #more_later {
+          display: none;
+        }
+        .MuiListItem-root {
+          border-radius: 5px;
+        }
+        .MuiButtonBase-root {
+          &:hover {
+            background: rgba(255, 255, 255, 0.05);
+          }
+        }
+      }
+    }
+    &-root {
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      background-color: var(--bg-color);
+      &.MuiPopover-paper {
+        border-radius: 8px;
+        option {
+          padding: 8px 16px;
+          cursor: pointer;
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+      }
+    }
+  }
+}

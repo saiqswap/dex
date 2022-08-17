@@ -1,0 +1,23 @@
+@mixin mui-styles() {
+  .MuiCircularProgress-circle {
+    color: var(--text-color);
+  }
+  .MuiPaginationItem {
+    &-root {
+      color: var(--text-color);
+      &.Mui-selected {
+        background-color: var(--pagination-selected-bg-color);
+      }
+    }
+  }
+  .MuiChip {
+    &-label {
+      color: currentColor;
+    }
+  }
+  .MuiDivider {
+    &-root {
+      border-color: var(--border-color);
+    }
+  }
+}

@@ -1,0 +1,26 @@
+@mixin mui-tab() {
+  .MuiTabs {
+    &-root {
+      min-height: unset;
+    }
+    &-indicator {
+      display: none;
+    }
+  }
+  .MuiTab {
+    &-root {
+      color: var(--text-color);
+      padding: 6px 16px;
+      border: 1px solid var(--border-color);
+      min-height: unset;
+      border-radius: 28px;
+      margin-right: 16px;
+      text-transform: unset;
+      &.Mui-selected {
+        background-color: rgba(43, 123, 243, 0.3);
+        color: var(--primary-color);
+        border-color: rgba(43, 123, 243, 0.3);
+      }
+    }
+  }
+}

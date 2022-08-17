@@ -1,0 +1,27 @@
+#homepage {
+  margin-top: 60px;
+  .card-border {
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    height: 350px;
+    img {
+      object-fit: cover;
+    }
+  }
+  .card-link {
+    box-shadow: 0 0 2px rgba($color: #fff, $alpha: 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 20px rgba($color: #000, $alpha: 1);
+    }
+  }
+  .card-small {
+    height: 250px;
+  }
+}
+.banner {
+  height: 100% !important;
+}

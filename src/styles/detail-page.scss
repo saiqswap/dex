@@ -1,0 +1,52 @@
+.detail-page {
+  margin-bottom: 16px;
+  img {
+    width: 100%;
+    height: 100%;
+    max-height: 800px;
+    border-radius: 20px;
+    object-fit: cover;
+    display: block;
+    margin: auto;
+  }
+  .custom-button-group {
+    display: flex;
+  }
+  .side-menu {
+    overflow: hidden !important;
+    .btn-more {
+      svg {
+        font-size: 14px;
+      }
+    }
+    .btn-disabled {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px 0;
+      width: 100%;
+      border-radius: 999px;
+    }
+  }
+  .video-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+  }
+  .history {
+    .title {
+      padding: 5px 15px;
+      width: 100px;
+      background: var(--main-color);
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .MuiTableCell-root {
+      border-bottom: 1px solid var(--border-color) !important;
+    }
+  }
+  @media screen and (min-width: 1460px) and (max-width: 1600px) {
+    .custom-button-group {
+      margin-top: 40px !important;
+    }
+  }
+}
