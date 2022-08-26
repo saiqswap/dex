@@ -220,7 +220,7 @@ const MyWallet = () => {
         aria-describedby="modal-modal-description"
         className="custom-modal-vk claim-confirm"
       >
-        {confirmClaim && (
+        {confirmClaim ? (
           <div className="listing-popup">
             <Typography variant="h6" className="custom-font">
               {library.CLAIM} {confirmClaim.key} {library.CONFIRMATION}
@@ -298,6 +298,8 @@ const MyWallet = () => {
               </Grid>
             </Grid>
           </div>
+        ) : (
+          <div />
         )}
       </Modal>
     </div>

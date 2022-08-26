@@ -106,7 +106,7 @@ const History = () => {
           timeout: 500,
         }}
       >
-        {detail && (
+        {detail ? (
           <Box className="ri-detail-popup">
             <Grid container>
               <Grid item xs={3}>
@@ -178,6 +178,8 @@ const History = () => {
               </Grid>
             </Grid>
           </Box>
+        ) : (
+          <div />
         )}
       </Modal>
     </Container>

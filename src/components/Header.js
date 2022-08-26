@@ -45,6 +45,7 @@ function Header() {
   const { library } = setting;
   const [showSignPopup, setShowSignPopup] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (information) {
@@ -75,9 +76,13 @@ function Header() {
                 if (Number(prefix.networkVersion) !== domain.chainId) {
                   setShowModalConfirm(true);
                 }
+              } else {
+                setLoading(false);
               }
             });
           });
+        } else {
+          setLoading(false);
         }
       }
     }
@@ -190,7 +195,7 @@ function Header() {
               justifyContent="center"
             >
               {information && <LoggedComponent information={information} />}
-              {!information && (
+              {!information && !loading && (
                 <Button
                   className="custom-btn custom-font"
                   sx={{
