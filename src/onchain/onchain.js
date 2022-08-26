@@ -1,7 +1,6 @@
 import { constants, ethers } from "ethers";
 import { toast } from "react-toastify";
 import { ADDRESS_0 } from "../settings/constants";
-import { UPDATE_WALLET_NAME } from "../store/constants/index.js";
 
 //mainnet
 import { EXCHANGE_ABI } from "./mainnet-abi";
@@ -19,46 +18,48 @@ export let prefix = null;
 export let provider = null;
 export let signer = null;
 
-export const _connectToMetamaskWallet = async (
-  walletName,
-  _updateAddress,
-  dispatch
-) => {
-  localStorage.setItem("wallet", walletName);
-  dispatch({
-    type: UPDATE_WALLET_NAME,
-    payload: walletName,
-  });
+export const _setProvider = async (walletName, _callback) => {
   if (walletName === "bitkeep") {
     prefix = window.bitkeep.ethereum;
   } else {
     prefix = window.ethereum;
   }
-  if (typeof prefix !== "undefined") {
-    try {
-      provider = new ethers.providers.Web3Provider(prefix, "any");
-      // if (prefix && Number(prefix) !== 97 && provider) {
-      //   _changeChain();
-      // }
-      signer = provider.getSigner();
-      await provider.send("eth_requestAccounts", []);
-      const address = await signer.getAddress();
-      _updateAddress(address);
-      // Listen metamask change account
-      prefix.on("accountsChanged", () => {
-        _updateAddress(null);
-      });
-    } catch (error) {
-      console.error(error);
+  provider = new ethers.providers.Web3Provider(prefix, "any");
+  signer = provider.getSigner();
+  _callback();
+};
+
+export const _checkOldWalletAddress = async (walletAddress = "", _callback) => {
+  try {
+    const address = await signer.getAddress();
+    if (address === walletAddress) {
+      _callback(true);
+    } else {
+      _callback(false);
     }
-  } else {
-    toast.error("Please install wallet");
+  } catch (error) {
+    _callback(false);
   }
+};
+
+export const _connectToMetamaskWallet = (walletName, _updateAddress) => {
+  _setProvider(walletName, async () => {
+    if (prefix) {
+      try {
+        await provider.send("eth_requestAccounts", []);
+        const address = await signer.getAddress();
+        _updateAddress(address, walletName);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      toast.error("Please install wallet");
+    }
+  });
 };
 
 //change network when wrong BSC chain
 export const _changeChain = async () => {
-  console.log(prefix);
   await prefix.request({
     method: "wallet_addEthereumChain",
     params: [config.CHAIN_INFO],
@@ -111,8 +112,6 @@ export const checkBeforeBuy = async (
       );
 
       var approveSuccess = await getReceipt(tx.hash);
-
-      console.log(approveSuccess);
 
       if (!approveSuccess) {
         _handleErrorCallback();

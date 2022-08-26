@@ -95,7 +95,7 @@ const NewBoxMintingForm = ({ onClose, data, template }) => {
   const [amount, setAmount] = useState("");
   const { setting, user } = useSelector((state) => state);
   const { library, config } = setting;
-  const { walletAddress } = user;
+  const { walletAddress, information } = user;
 
   useEffect(() => {
     if (data) {
@@ -123,74 +123,78 @@ const NewBoxMintingForm = ({ onClose, data, template }) => {
   };
 
   const _handleSubmit = () => {
-    if (amount) {
-      const amountNumber = parseFloat(amount);
-      if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
-        toast.error(
-          `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
-        );
-      } else {
-        const product = data;
-        const purchaseToken = config.contracts.find(
-          (e) => e.contractAddress === product.paymentContract
-        );
-        setLoading(true);
-        const total = product.unitPrice * parseFloat(amount);
-        const boxScPrice = parseUnits(
-          formatPrice(total, 4),
-          purchaseToken.decimals
-        );
+    if (information) {
+      if (amount) {
+        const amountNumber = parseFloat(amount);
+        if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
+          toast.error(
+            `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
+          );
+        } else {
+          const product = data;
+          const purchaseToken = config.contracts.find(
+            (e) => e.contractAddress === product.paymentContract
+          );
+          setLoading(true);
+          const total = product.unitPrice * parseFloat(amount);
+          const boxScPrice = parseUnits(
+            formatPrice(total, 4),
+            purchaseToken.decimals
+          );
 
-        checkBeforeBuy(
-          config.purchaseContract,
-          product.paymentContract,
-          boxScPrice,
-          walletAddress,
-          _handleErrorCallback
-        ).then((result) => {
-          if (result) {
-            post(
-              ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
-              {
-                productId: data.id,
-                amount: parseFloat(amount),
-              },
-              (data) => {
-                purchaseBox(
-                  data,
-                  boxScPrice,
-                  product.paymentContract,
-                  config,
-                  _handleErrorCallback
-                ).then((e) => {
-                  getReceipt(e).then((result) => {
-                    if (result) {
-                      post(
-                        `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
-                        {},
-                        (data) => {
-                          setLoading(false);
-                          toast.success("Success");
-                        },
-                        (error) => {
-                          console.log(error);
-                          setLoading(false);
-                        }
-                      );
-                    }
+          checkBeforeBuy(
+            config.purchaseContract,
+            product.paymentContract,
+            boxScPrice,
+            walletAddress,
+            _handleErrorCallback
+          ).then((result) => {
+            if (result) {
+              post(
+                ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
+                {
+                  productId: data.id,
+                  amount: parseFloat(amount),
+                },
+                (data) => {
+                  purchaseBox(
+                    data,
+                    boxScPrice,
+                    product.paymentContract,
+                    config,
+                    _handleErrorCallback
+                  ).then((e) => {
+                    getReceipt(e).then((result) => {
+                      if (result) {
+                        post(
+                          `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
+                          {},
+                          (data) => {
+                            setLoading(false);
+                            toast.success("Success");
+                          },
+                          (error) => {
+                            console.log(error);
+                            setLoading(false);
+                          }
+                        );
+                      }
+                    });
                   });
-                });
-              },
-              (error) => {
-                toast.error(error.code);
-                setLoading(false);
-              }
-            );
-          }
-        });
+                },
+                (error) => {
+                  toast.error(error.code);
+                  setLoading(false);
+                }
+              );
+            }
+          });
+        }
+      } else {
+        toast.error(library.PLEASE_ENTER_AMOUNT);
       }
     } else {
-      toast.error(library.PLEASE_ENTER_AMOUNT);
+      toast.error("Please connect wallet and login");
     }
   };
 

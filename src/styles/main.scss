@@ -25,7 +25,8 @@ html {
   --white-text: #fff;
   --main-blue-color: #003362;
   --main-yellow-color: #c6ae55;
-  overflow-x: hidden;
+  overflow: auto;
+  min-width: 300px;
 }
 
 html[dark] {
@@ -60,7 +61,8 @@ html[dark] {
 
 ::-webkit-scrollbar {
   width: 5px;
-  height: calc(100vh - 80px);
+  height: 5px;
+  // height: calc(100vh - 80px);
 }
 
 ::-webkit-scrollbar-track {
@@ -74,7 +76,6 @@ html[dark] {
 body {
   margin: 0;
   background-color: var(--bg-color);
-  min-width: 300px;
   position: relative;
   min-height: 100vh;
   color: var(--text-color);

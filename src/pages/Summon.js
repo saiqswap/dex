@@ -112,79 +112,70 @@ const Summon = () => {
 
   return (
     <div className="summon">
-      <Hidden mdDown>
-        <Container
-          className="summon-page"
-          style={{ pointerEvents: !completed ? "none" : "" }}
-        >
-          <Grid container>
-            <div className="box-banner"></div>
-            <Hidden mdUp>
-              <Button
-                onClick={() => setShowList(true)}
-                className="show-btn custom-font"
-              >
-                Your boxes
-              </Button>
-            </Hidden>
-            <Grid
-              item
-              sm={12}
-              md={5}
-              lg={6}
-              className={`box-list ${showList ? "" : "hide"}`}
-            >
-              <Grid container spacing={3}>
-                {objToArray(BoxType).map((item, index) => (
-                  <Grid item xs={6} key={index}>
-                    <div
-                      className={`box-card ${
-                        keySelected === item.value ? "active" : ""
-                      }`}
-                      style={{ borderColor: item.color }}
-                      onClick={() => {
-                        setShowInfo(false);
-                        _handleSelectBox(item.value);
-                      }}
-                    >
-                      <img src={item.card} className="card" alt="" />
-                      <div className="base-light">
-                        <img src={item.light} alt="base-light" width="100%" />
-                      </div>
-                      <div className="base-light delay">
-                        <img src={item.light} alt="base-light" width="100%" />
-                      </div>
-                      <div className="content">
-                        {item ? (
-                          <img
-                            src={item.image}
-                            alt="box img"
-                            className="thumbnail"
-                          />
-                        ) : null}
-
-                        <Typography
-                          variant="h6"
-                          fontWeight={700}
-                          className={
-                            "custom-font name summon " +
-                            (item.value.length > 12 ? "long-name" : "")
-                          }
-                          style={{ color: item.color }}
-                        >
-                          {item.value.split("_").join(" ").toLowerCase()} Box
-                        </Typography>
-                        <Typography variant="body2" className="amount">
-                          Amount:{" "}
-                          <span style={{ marginLeft: 5 }}>
-                            {boxes && boxes[item.value]
-                              ? boxes[item.value].length
-                              : 0}
-                          </span>
-                        </Typography>
-                      </div>
+      <Container
+        className="summon-page"
+        style={{ pointerEvents: !completed ? "none" : "" }}
+      >
+        <Grid container>
+          <div className="box-banner"></div>
+          <Grid
+            item
+            sm={12}
+            md={5}
+            lg={6}
+            className={`box-list ${showList ? "" : "hide"}`}
+          >
+            <Grid container spacing={3}>
+              {objToArray(BoxType).map((item, index) => (
+                <Grid item xs={6} key={index}>
+                  <div
+                    className={`box-card ${
+                      keySelected === item.value ? "active" : ""
+                    }`}
+                    style={{ borderColor: item.color }}
+                    onClick={() => {
+                      setShowInfo(false);
+                      _handleSelectBox(item.value);
+                    }}
+                  >
+                    <img src={item.card} className="card" alt="" />
+                    <div className="base-light">
+                      <img src={item.light} alt="base-light" width="100%" />
                     </div>
-                    {/* <div
+                    <div className="base-light delay">
+                      <img src={item.light} alt="base-light" width="100%" />
+                    </div>
+                    <div className="content">
+                      {item ? (
+                        <img
+                          src={item.image}
+                          alt="box img"
+                          className="thumbnail"
+                        />
+                      ) : null}
+
+                      <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        className={
+                          "custom-font name summon " +
+                          (item.value.length > 12 ? "long-name" : "")
+                        }
+                        style={{ color: item.color }}
+                      >
+                        {item.value.split("_").join(" ").toLowerCase()} Box
+                      </Typography>
+                      <Typography variant="body2" className="amount">
+                        Amount:{" "}
+                        <span style={{ marginLeft: 5 }}>
+                          {boxes && boxes[item.value]
+                            ? boxes[item.value].length
+                            : 0}
+                        </span>
+                      </Typography>
+                    </div>
+                  </div>
+                  {/* <div
                       key={index}
                       className={
                         "box-item " +
@@ -237,47 +228,44 @@ const Summon = () => {
                       </div>
                       <div className="light-2"></div>
                     </div> */}
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>
-            <Grid
-              item
-              sm={12}
-              md={7}
-              lg={6}
-              className="summon-content"
-              style={{ transform: `scale(${scale})` }}
-            >
-              <SummonEffect
-                open={openBox}
-                data={item}
-                boxImage={BoxType[keySelected]}
-                showInfo={showInfo}
-              />
-              {
-                <div
-                  className={
-                    "btn-summon custom-font " +
-                    (boxesSelected.length > 0 ? "" : "disabled")
-                  }
-                  onClick={() => {
-                    _handleOpenBox();
-                  }}
-                >
-                  {!opening ? (
-                    "Summon"
-                  ) : (
-                    <CircularProgress
-                      style={{ width: "25px", height: "25px" }}
-                    />
-                  )}
-                </div>
-              }
+                </Grid>
+              ))}
             </Grid>
           </Grid>
-        </Container>
-      </Hidden>
+          <Grid
+            item
+            sm={12}
+            md={7}
+            lg={6}
+            className="summon-content"
+            style={{ transform: `scale(${scale})` }}
+          >
+            <SummonEffect
+              open={openBox}
+              data={item}
+              boxImage={BoxType[keySelected]}
+              showInfo={showInfo}
+            />
+            {
+              <div
+                className={
+                  "btn-summon custom-font " +
+                  (boxesSelected.length > 0 ? "" : "disabled")
+                }
+                onClick={() => {
+                  _handleOpenBox();
+                }}
+              >
+                {!opening ? (
+                  "Summon"
+                ) : (
+                  <CircularProgress style={{ width: "25px", height: "25px" }} />
+                )}
+              </div>
+            }
+          </Grid>
+        </Grid>
+      </Container>
     </div>
   );
 };

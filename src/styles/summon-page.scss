@@ -1,10 +1,10 @@
 .summon-page {
   // min-height: 790px;
-  height: calc(100vh - 80px);
-  overflow: hidden;
+  // height: calc(100vh - 80px);
+  // overflow: hidden;
 
   .box-banner {
-    height: 30vh;
+    // height: 30vh;
 
     &::before {
       content: "";
@@ -36,10 +36,10 @@
 
   .box-list {
     position: relative;
-    height: 500px;
+    // height: "100%";
     margin-top: 80px;
     padding-right: 20px;
-    max-height: 500px;
+    // max-height: 500px;
     overflow-y: scroll;
 
     .box-card {
@@ -51,7 +51,6 @@
         right: unset;
         bottom: 10px;
       }
-      
     }
 
     .box-item {

@@ -1,19 +1,51 @@
+import { config } from ".";
+
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
-export const CAPTCHA_KEY = "6LfFLgIeAAAAAAclTDxmyP3juN4Wj-TeNI_7jl30";
 export const DEFAULT_PROJECT_TITLE = `NFT Marketplace - Create and sell digital collectibles secured with blockchain`;
 export const LOGIN_MESSAGE = "This is sign message";
 export const RI_SLOT_LIMIT = 6;
-
-export const GOOGLE_SIGN_IN_CLIENT_KEY = `18376155216-2tj97cu70kvtg289u02dnjrvqgolb3pa.apps.googleusercontent.com`;
-
 export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
+export const CAPTCHA_KEY = config.CAPTCHA_KEY;
+export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
+
+export const MAIN_MENUS = [
+  // {
+  //   title: "HOME",
+  //   url: ["/"],
+  // },
+  // {
+  //   title: "MINTING",
+  //   url: ["/minting-box"],
+  // },
+  // {
+  //   title: "MARKETPLACE",
+  //   url: ["/marketplace"],
+  // },
+  // {
+  //   title: "BOXES",
+  //   url: ["/boxes"],
+  // },
+  // {
+  //   title: "SUMMON",
+  //   url: ["/summon"],
+  //   isLogged: true,
+  // },
+  // {
+  //   title: "R - I",
+  //   url: [
+  //     "/research-institute/R-I",
+  //     "/research-institute/slot",
+  //     "/research-institute/history",
+  //   ],
+  //   isLogged: true,
+  // },
+];
 
 export const ERROR = {
   INSUFFICIENT_FUNDS: "Insufficient funds ",
   RI_SLOT_IS_OVER: "R-I slot is over",
 };
-
 export const ranks = {
   BEGINNER: {
     title: "BEGINNER",

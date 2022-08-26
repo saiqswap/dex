@@ -9,7 +9,14 @@ import {
 } from "../../settings/endpoint";
 import { get } from "../../utils/api";
 import { logout } from "../../utils/auth";
-import { ADD_MY_ITEMS, FETCH_USER, GET_BALANCE } from "../constants";
+import {
+  ADD_MY_ITEMS,
+  ADD_WALLET_ADDRESS,
+  ADD_WALLET_SIGNATURE,
+  FETCH_USER,
+  GET_BALANCE,
+  UPDATE_WALLET_NAME,
+} from "../constants";
 
 export const _getNewProfile = () => (dispatch) => {
   get(
@@ -80,5 +87,83 @@ export const _getMyItems = (successCallback) => (dispatch) => {
       type: ADD_MY_ITEMS,
       payload: data,
     });
+  });
+};
+
+export const _setWalletName = (value) => (dispatch) => {
+  window.localStorage.setItem("wallet-name", value);
+  dispatch({
+    type: UPDATE_WALLET_NAME,
+    payload: value,
+  });
+};
+
+export const _setWalletAddress = (value) => (dispatch) => {
+  window.localStorage.setItem("wallet-address", value);
+  dispatch({
+    type: ADD_WALLET_ADDRESS,
+    payload: value,
+  });
+};
+
+export const _setWalletSignature = (value) => (dispatch) => {
+  window.localStorage.setItem("wallet-signature", value);
+  dispatch({
+    type: ADD_WALLET_SIGNATURE,
+    payload: value,
+  });
+};
+
+export const _getWalletInformation = () => (dispatch) => {
+  const walletName = window.localStorage.getItem("wallet-name")
+    ? window.localStorage.getItem("wallet-name")
+    : null;
+  const walletAddress = window.localStorage.getItem("wallet-address")
+    ? window.localStorage.getItem("wallet-address")
+    : null;
+  const walletSignature = window.localStorage.getItem("wallet-signature")
+    ? window.localStorage.getItem("wallet-signature")
+    : null;
+  dispatch({
+    type: UPDATE_WALLET_NAME,
+    payload: walletName,
+  });
+  dispatch({
+    type: ADD_WALLET_ADDRESS,
+    payload: walletAddress,
+  });
+  dispatch({
+    type: ADD_WALLET_SIGNATURE,
+    payload: walletSignature,
+  });
+};
+
+export const _getWalletLogout = () => (dispatch) => {
+  window.localStorage.removeItem("wallet-name");
+  window.localStorage.removeItem("wallet-address");
+  window.localStorage.removeItem("wallet-signature");
+  dispatch({
+    type: UPDATE_WALLET_NAME,
+    payload: null,
+  });
+  dispatch({
+    type: ADD_WALLET_ADDRESS,
+    payload: null,
+  });
+  dispatch({
+    type: ADD_WALLET_SIGNATURE,
+    payload: null,
+  });
+  dispatch({
+    type: FETCH_USER,
+    payload: null,
+  });
+  dispatch({
+    type: GET_BALANCE,
+    payload: null,
+  });
+  dispatch({
+    type: ADD_MY_ITEMS,
+    payload: null,
   });
 };

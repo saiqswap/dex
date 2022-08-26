@@ -1,5 +1,7 @@
 import { Typography } from "@mui/material";
 import { toast } from "react-toastify";
+import productionRoutes from "../routes/productionRoutes";
+import { production } from "./environment";
 import { formatAddress } from "./format";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const DEVICE_KEY = "uU5tEUmAgvBWArsv";
@@ -10,26 +12,14 @@ export const image_url =
 export const explorer_url = "https://bscscan.com/tx";
 
 export const hostname = window.location.hostname.replace("www.", "");
-export const APIs = {
-  // localhost: "https://miningapi.spdev.co/api",
-  // "mining.spdev.co": "https://miningapi.spdev.co/api",
-  // "beta.miningclub.org": "https://api.miningclub.org/api",
-  // "miningclub.org": "https://api.miningclub.org/api",
-  // "www.miningclub.org": "https://api.miningclub.org/api",
-  // localhost: "https://dev.ganet.io/api",
-};
-export const API = APIs[hostname]
-  ? APIs[hostname]
-  : `https://marketplace_api.megdev.co/api/v1`;
 
-const GANET_NODE_APIs = {
-  // localhost: "http://192.168.10.103:3108",
-  localhost: "https://ganet.io",
-};
+export const config = production;
+export const routes = productionRoutes;
 
-export const GANET_NODE_API = GANET_NODE_APIs[hostname]
-  ? GANET_NODE_APIs[hostname]
-  : "/";
+// export const config = staging;
+// export const routes = stagingRoutes;
+
+export const API = config.API;
 
 export const ETHERSCAN_LINK = `https://testnet.bscscan.com`;
 

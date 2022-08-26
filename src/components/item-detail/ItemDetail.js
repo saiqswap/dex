@@ -642,12 +642,8 @@ const BuyComponent = ({ data, _handleReload }) => {
                     post(
                       `/market/trigger-paid-nft?txHash=${e}`,
                       {},
-                      (data) => {
-                        console.log(data);
-                      },
-                      (error) => {
-                        console.log(error);
-                      }
+                      () => {},
+                      () => {}
                     );
                   } else {
                     toast.error("Buy NFT item fail");

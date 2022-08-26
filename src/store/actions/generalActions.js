@@ -211,7 +211,6 @@ export const _getMyNewsFeed =
         },
       },
       (data) => {
-        console.log(data);
         dispatch({
           type: GET_MY_NEWS_FEED,
           payload: data,

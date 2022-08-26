@@ -1,20 +1,22 @@
 import { Menu } from "@mui/icons-material";
 import {
   Box,
-  Grid,
-  IconButton,
+  Button,
+  Divider,
+  Hidden,
   Popover,
   styled,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { MAIN_MENUS } from "../../settings/constants";
 import { _changeLanguage } from "../../store/actions/settingActions";
 
-const MenuButton = styled(IconButton)(({ theme }) => ({
-  backgroundColor: "transparent!important",
-  border: "none!important",
+const MenuButton = styled(Button)(({ theme }) => ({
+  minWidth: "unset!important",
+  marginLeft: theme.spacing(1),
 }));
 
 const LanguageItem = styled(Box)({
@@ -35,14 +37,14 @@ const LanguageItem = styled(Box)({
   },
 });
 
-const Languages = ["en", "kr", "jp"];
+const Languages = ["en", "kr", "jp", "rus"];
 
 export default function SubMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { setting } = useSelector((state) => state);
+  const { setting, user } = useSelector((state) => state);
   const { library } = setting;
   const dispatch = useDispatch();
-
+  const { information } = user;
   const _handleClick = (event) => {
     setAnchorEl(anchorEl === null ? event.currentTarget : null);
   };
@@ -52,9 +54,10 @@ export default function SubMenu() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
   return (
     <>
-      <MenuButton onClick={_handleClick}>
+      <MenuButton onClick={_handleClick} className="custom-btn custom-font">
         <Menu />
       </MenuButton>
       <Popover
@@ -75,8 +78,40 @@ export default function SubMenu() {
           mt: 3,
         }}
       >
-        <Box pt={3} pb={3} pr={2} pl={2}>
+        <Box
+          pt={3}
+          pb={3}
+          pr={2}
+          pl={2}
+          sx={{
+            background: "#1b1c1d",
+          }}
+        >
           <Box>
+            <Hidden mdUp>
+              {MAIN_MENUS.map(
+                (item, index) =>
+                  (!item.isLogged || (item.isLogged && information)) && (
+                    <Link to={item.url[0]} key={index}>
+                      <Typography
+                        variant="body1"
+                        className="custom-font"
+                        fontWeight={300}
+                        sx={{
+                          pt: 1,
+                          pb: 1,
+                        }}
+                      >
+                        {library[item.title]}
+                      </Typography>
+                    </Link>
+                  )
+              )}
+              <Box mt={1} mb={3}>
+                <Divider />
+              </Box>
+            </Hidden>
+
             <Typography variant="body2">{library.LANGUAGE}</Typography>
             <Box display="flex" mt={1}>
               {Languages.map((l, index) => (

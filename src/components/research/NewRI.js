@@ -209,9 +209,6 @@ const NewRI = () => {
     }
   };
 
-  console.log(angel);
-  console.log(skin);
-
   const riPerformanceBonus = skin ? skin.properties.riPerformanceBonus : 0;
   const minPerformanceBonus =
     angel && skin

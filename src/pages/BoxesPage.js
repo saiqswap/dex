@@ -107,7 +107,7 @@ const BoxesContainer = () => {
                   post(
                     `/market/trigger-paid-box?txHash=${e}`,
                     {},
-                    (data) => {
+                    () => {
                       interval = setInterval(() => {
                         get(`/nft/my-box-by-hash?txHash=${e}`, (data) => {
                           if (data) {
@@ -122,7 +122,7 @@ const BoxesContainer = () => {
                             );
                           }
                         });
-                      }, 5000);
+                      }, 2000);
                     },
                     (error) => {
                       console.log(error);

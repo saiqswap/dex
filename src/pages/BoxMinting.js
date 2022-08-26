@@ -18,19 +18,21 @@ export default function BoxMinting() {
     >
       <Container maxWidth="lg">
         <Box mt={10} />
-        <Title variant="h6">MINTING</Title>
-        <Title
-          variant="h4"
-          sx={{
-            fontWeight: 700,
-            textAlign: "left",
-            color: "#1588d6",
-          }}
-        >
-          Angel, Minion Parts and
-          <br />
-          Costume Box
+        <Title variant="h6" sx={{ textAlign: "left" }}>
+          MINTING
         </Title>
+        <Container maxWidth="sm" sx={{ pl: "0px!important", marginLeft: 0 }}>
+          <Title
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              textAlign: "left",
+              color: "#1588d6",
+            }}
+          >
+            Angel, Minion Parts and Costume Box
+          </Title>
+        </Container>
         <Title variant="body1">The beginning of a great journey</Title>
         <MintingList />
       </Container>

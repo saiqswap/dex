@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardHeader,
+  Hidden,
   Stack,
   Step,
   StepContent,
@@ -20,6 +21,7 @@ import { BoxType } from "../../settings/constants";
 import { formatAmount } from "../../settings/format";
 import { _getMintingBoxList } from "../../store/actions/mintingActions";
 import { post } from "../../utils/api";
+import { formatNftName } from "../../utils/util";
 import Loader from "../common/Loader";
 import NewBoxMintingForm from "./NewBoxMintingForm";
 import Title from "./Title";
@@ -36,7 +38,7 @@ const CustomCard = styled(Card)(({ theme }) => ({
   padding: "2rem",
   position: "relative",
   backdropFilter: "blur(5px)",
-  zIndex: 99,
+  // zIndex: 99,
   [theme.breakpoints.down("sm")]: {
     padding: "0px 1rem 0px 0px",
   },
@@ -164,12 +166,15 @@ const BoxTypeLabel = styled(Typography)({
   fontWeight: 700,
 });
 
+const angels = ["Alice", "Ceci", "Dasha", "Emily", "Bestie"];
+
 export default function MintingList() {
   const { setting, minting } = useSelector((state) => state);
   const { library } = setting;
   const { mintingBoxList } = minting;
   const [selectedRound, setSelectedRound] = useState(null);
   const [template, setTemplate] = useState(null);
+  const [random] = useState(Math.floor(Math.random() * 5));
 
   useEffect(() => {
     const param = {
@@ -236,19 +241,21 @@ export default function MintingList() {
             })}
           </CustomStep>
         </CustomCard>
-        <img
-          src={`${image_url}/artwork_angel.png`}
-          alt="thumbnail"
-          className="animate__animated animate__fadeInRight"
-          style={{
-            position: "fixed",
-            height: "100vh",
-            top: 0,
-            right: 0,
-            zIndex: 0,
-            opacity: 0.6,
-          }}
-        />
+        <Hidden smDown>
+          <img
+            src={`${image_url}/artwork_${formatNftName(angels[random])}.png`}
+            alt="thumbnail"
+            className="animate__animated animate__fadeInRight"
+            style={{
+              position: "fixed",
+              width: "50%",
+              bottom: 0,
+              right: 0,
+              zIndex: 0,
+              opacity: 0.6,
+            }}
+          />
+        </Hidden>
       </CustomContainer>
       <NewBoxMintingForm
         data={selectedRound}
@@ -425,7 +432,7 @@ const RoundDetail = ({ product, library, _handleSelectRound }) => {
           className="custom-btn custom-font"
           sx={{ mt: 5 }}
           onClick={() => _handleSelectRound(selectedItem)}
-          // disabled={status === "SOLD_OUT" || status === "END_TIME"}
+          disabled={status === "SOLD_OUT" || status === "END_TIME"}
         >
           {library[status]}
         </CustomButton>

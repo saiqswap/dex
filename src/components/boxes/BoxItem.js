@@ -31,9 +31,10 @@ const BoxItem = ({ data, _handlePurchaseBox, loading, template }) => {
   const { config } = setting;
   const [type, setType] = useState(null);
 
-  const purchaseToken = config
-    ? config.contracts.find((e) => e.contractAddress === data.paymentContract)
-    : {};
+  let purchaseToken = config?.contracts.find(
+    (e) => e.contractAddress === data.paymentContract
+  );
+  purchaseToken = purchaseToken ? purchaseToken : {};
 
   const handleConfirm = (type) => {
     if (type.includes("MINION_PARTS")) {
@@ -119,6 +120,7 @@ const BoxItem = ({ data, _handlePurchaseBox, loading, template }) => {
         loading={loading}
         template={template}
         type={type}
+        purchaseToken={purchaseToken}
       />
     </>
   );
@@ -134,15 +136,9 @@ const ConfirmPopup = ({
   loading,
   template,
   type,
+  purchaseToken,
 }) => {
   const [available, setAvailable] = useState(null);
-  const { setting } = useSelector((state) => state);
-  const { config } = setting;
-
-  const purchaseToken = config
-    ? config.contracts.find((e) => e.contractAddress === data.paymentContract)
-    : {};
-
   useEffect(() => {
     if (type && template) {
       let data;

@@ -12,9 +12,9 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import BaseCard from "../common/base-card/BaseCard";
 
 const menus = [
-  { label: "angel", type: "angel" },
-  { label: "minion_parts", type: "minion_parts" },
-  { label: "costume", type: "costume" },
+  { label: "ANGEL", type: "angel" },
+  { label: "MINION_PARTS", type: "minion_parts" },
+  { label: "COSTUME", type: "costume" },
 ];
 
 function useQuery() {
@@ -27,6 +27,8 @@ const MyItems = () => {
   const history = useHistory();
   let query = useQuery();
   const type = query.get("type");
+  const { setting } = useSelector((state) => state);
+  const { library } = setting;
 
   return (
     <div className="my-items">
@@ -40,7 +42,7 @@ const MyItems = () => {
               }}
               className={`custom-font ${type === item.label ? "active" : ""}`}
             >
-              {item.label.replace("_", " ")}
+              {library[item.label]}
             </li>
           ))}
         </ul>

@@ -3,6 +3,7 @@ import {
   useHistory,
   useLocation,
 } from "react-router-dom/cjs/react-router-dom.min";
+import Homepage from "../pages/Homepage";
 
 function useQuery() {
   const { search } = useLocation();
@@ -20,11 +21,11 @@ const AddReferralId = () => {
     if (referral) {
       localStorage.setItem("referral", referral);
     }
-    history.push("/");
+    // history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return null;
+  return <Homepage />;
 };
 
 export default AddReferralId;

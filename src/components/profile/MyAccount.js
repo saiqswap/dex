@@ -16,27 +16,28 @@ import CopyBox from "../common/CopyBox";
 import Loader from "../common/Loader";
 
 const menu = {
-  title: "NFT History",
+  // title: "NFT History",
   type: ["BUY_NFT", "DELIST", "LISTING"],
   columns: [
-    { key: "senderEmail", label: "Email", format: (e) => `${e}` },
+    { key: "senderEmail", label: "EMAIL", format: (e) => `${e}` },
     {
       key: "boxType",
-      label: "Box type",
+      label: "BOX_TYPE",
       format: (e) => `${e.replace("_", " ")}`,
     },
-    { key: "price", label: "Price", format: (e) => `${formatAmount(e)}` },
+    { key: "price", label: "PRICE", format: (e) => `${formatAmount(e)}` },
   ],
 };
 
 const needSymbol = ["amount", "price"];
 
 const MyAccount = () => {
-  const { user } = useSelector((state) => state);
+  const { user, setting } = useSelector((state) => state);
   const history = useHistory();
   const { information } = user;
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
+  const { library } = setting;
 
   useEffect(() => {
     const param = {
@@ -52,7 +53,6 @@ const MyAccount = () => {
       param,
       (data) => {
         setData(data);
-        console.log(data.items);
       },
       (err) => {
         toast.error(err);
@@ -69,14 +69,12 @@ const MyAccount = () => {
   return (
     <Container maxWidth="xl" className="account-page">
       <Typography variant="h5" className="custom-font">
-        Account Setting
+        {library.ACCOUNT_SETTING}
       </Typography>
       <Divider className="mt-20" />
-      <p className="mt-20 opacity-05">Name</p>
-      <p className="username">{information.username}</p>
-      <p className="mt-20 opacity-05">Email address</p>
+      <p className="mt-20 opacity-05">{library.EMAIL}</p>
       <p className="email">{information.email}</p>
-      <p className="mt-20 opacity-05">Referral link</p>
+      <p className="mt-20 opacity-05">{library.REFERRAL_LINK}</p>
       <p className="referral">
         <CopyBox
           content={`${window.location.origin}/referral-link?referral=${information.id}`}
@@ -103,7 +101,7 @@ const MyAccount = () => {
         className="custom-font"
         style={{ marginTop: "50px" }}
       >
-        Affiliate
+        {library.AFFILIATE}
       </Typography>
       <Divider className="mt-20" />
       <div>
@@ -112,7 +110,7 @@ const MyAccount = () => {
             <tr>
               {menu.columns.map((col, index) => (
                 <th className="custom-font" key={index}>
-                  {col.label}
+                  {library[col.label]}
                 </th>
               ))}
             </tr>
@@ -134,7 +132,7 @@ const MyAccount = () => {
             {data && data.itemCount === 0 && (
               <tr>
                 <td className="blank" colSpan={menu.columns.length}>
-                  NO RECORD
+                  {library.NO_RECORDS_FOUND}
                 </td>
               </tr>
             )}

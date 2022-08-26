@@ -31,7 +31,7 @@ export default function BaseCard({
       className={`base-card ${data.type.toLowerCase()} ${
         isOwner ? "owner" : ""
       } ${data.status.toLowerCase()} ${data.level?.toLowerCase()} `}
-      // onMouseEnter={(e) => onMouseMove(e, data.name)}
+      onMouseEnter={(e) => onMouseMove(e, data.name)}
       onClick={() => history.push(`/nft/${data.tokenId}`)}
     >
       <div className="light" />

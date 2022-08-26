@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { explorer_url } from "../../settings";
 import { formatAddress, formatAmount, formatUSD } from "../../settings/format";
 import { post } from "../../utils/api";
@@ -18,17 +19,19 @@ import Loader from "../common/Loader";
 const History = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [detail, setDetail] = useState(null);
+  const { setting } = useSelector((state) => state);
+  const { library } = setting;
 
   const menus = [
     {
-      title: "Box History",
+      title: "BOX_HISTORY",
       type: ["BUY_BOX"],
       columns: [
         { key: "tokenId", label: "", format: (e) => `#${e}` },
         { key: "type", label: "TYPE", format: (e) => e.replace(/_/g, " ") },
         {
           key: "txHash",
-          label: "Tx Hash",
+          label: "TX_HASH",
           format: (e) => (
             <a target="_blank" rel="noreferrer" href={`${explorer_url}/${e}`}>
               {formatAddress(e)}
@@ -37,26 +40,26 @@ const History = () => {
         },
         {
           key: "price",
-          label: "Price",
+          label: "PRICE",
           format: (e, row) => `${formatAmount(e)} ${row.coin}`,
         },
         {
           key: "createdTime",
-          label: "Time",
+          label: "TIME",
           format: (e) => moment(e).format("YYYY-MM-DD HH:mm:ss"),
         },
       ],
     },
     {
-      title: "NFT History",
+      title: "NFT_HISTORY",
       type: ["BUY_NFT", "DELIST", "LISTING", "SELL_NFT"],
       columns: [
         { key: "id", label: "", format: (e) => `#${e}` },
         { key: "type", label: "TYPE", format: (e) => e.replace(/_/g, " ") },
-        { key: "refId", label: "NFT ID", format: (e) => e },
+        { key: "refId", label: "NFT_ID", format: (e) => e },
         {
           key: "txHash",
-          label: "Tx Hash",
+          label: "TX_HASH",
           format: (e) => (
             <a target="_blank" rel="noreferrer" href={`${explorer_url}/${e}`}>
               {formatAddress(e)}
@@ -65,12 +68,12 @@ const History = () => {
         },
         {
           key: "amount",
-          label: "Price",
+          label: "PRICE",
           format: (e, row) => `${formatAmount(e)} ${row.coin}`,
         },
         {
           key: "createdTime",
-          label: "Time",
+          label: "TIME",
           format: (e) => moment(e).format("YYYY-MM-DD HH:mm:ss"),
         },
       ],
@@ -86,7 +89,7 @@ const History = () => {
             onClick={() => setTabIndex(index)}
             className={`custom-font ${tabIndex === index ? "active" : ""}`}
           >
-            {item.title}
+            {library[item.title]}
           </li>
         ))}
       </ul>
@@ -107,7 +110,7 @@ const History = () => {
           <Box className="ri-detail-popup">
             <Grid container>
               <Grid item xs={3}>
-                <Typography className="label">Angel</Typography>
+                <Typography className="label">{library.ANGEL}</Typography>
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
@@ -120,7 +123,9 @@ const History = () => {
                 </Typography>
               </Grid>
               <Grid item xs={3}>
-                <Typography className="label">Minion Parts</Typography>
+                <Typography className="label">
+                  {library.MINION_PARTS}
+                </Typography>
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
@@ -133,7 +138,7 @@ const History = () => {
                 </Typography>
               </Grid>
               <Grid item xs={3}>
-                <Typography className="label">Costume</Typography>
+                <Typography className="label">{library.COSTUME}</Typography>
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
@@ -146,7 +151,7 @@ const History = () => {
                 </Typography>
               </Grid>
               <Grid item xs={3}>
-                <Typography className="label">Received</Typography>
+                <Typography className="label">{library.RECEIVED}</Typography>
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
@@ -154,7 +159,7 @@ const History = () => {
                 </Typography>
               </Grid>
               <Grid item xs={3}>
-                <Typography className="label">Ri-Time</Typography>
+                <Typography className="label">{library.RI_TIME}</Typography>
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
@@ -164,7 +169,7 @@ const History = () => {
                 </Typography>
               </Grid>
               <Grid item xs={3}>
-                <Typography className="label">Start time</Typography>
+                <Typography className="label">{library.START_TIME}</Typography>
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
@@ -184,8 +189,8 @@ export default History;
 const HistoryTable = ({ menu }) => {
   const [history, setHistory] = useState(null);
   const [page, setPage] = useState(1);
-
-  console.log(history);
+  const { setting } = useSelector((state) => state);
+  const { library } = setting;
 
   useEffect(() => {
     setHistory(null);
@@ -227,7 +232,7 @@ const HistoryTable = ({ menu }) => {
           <tr>
             {menu.columns.map((col, index) => (
               <th className="custom-font" key={index}>
-                {col.label}
+                {library[col.label]}
               </th>
             ))}
           </tr>
@@ -246,7 +251,7 @@ const HistoryTable = ({ menu }) => {
           {history && history.itemCount === 0 && (
             <tr>
               <td className="blank" colSpan={menu.columns.length}>
-                NO RECORD
+                {library.NO_RECORDS_FOUND}
               </td>
             </tr>
           )}

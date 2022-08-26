@@ -1,8 +1,10 @@
 import { ThemeProvider } from "@emotion/react";
-import { createTheme, Hidden } from "@mui/material";
+import { createTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import "animate.css";
+import { gapi } from "gapi-script";
 import { useEffect } from "react";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { useDispatch } from "react-redux";
 import {
   BrowserRouter as Router,
@@ -13,33 +15,51 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import BottomMenu from "./components/BottomMenu";
 import Header from "./components/Header";
 import ErrorPage from "./pages/ErrorPage";
 import routes from "./routes";
-import { DEFAULT_PROJECT_TITLE } from "./settings/constants";
 import {
-  _getMintingBoxList,
-  _getUserMintingBoxes,
-} from "./store/actions/mintingActions";
+  CAPTCHA_KEY,
+  DEFAULT_PROJECT_TITLE,
+  GOOGLE_SIGN_IN_CLIENT_KEY,
+} from "./settings/constants";
+import { _getMintingBoxList } from "./store/actions/mintingActions";
 import {
   _changeLanguage,
   _getConfig,
   _getTemplates,
 } from "./store/actions/settingActions";
-import { _getMyItems, _getNewProfile } from "./store/actions/userActions";
+import { _getWalletInformation } from "./store/actions/userActions";
 import "./styles/main.scss";
 import { isLoggedIn } from "./utils/auth";
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Poppins", "sans-serif"].join(","),
-    fontSize: 16,
-    color: "var(--text-color)",
-  },
-});
 
 function App() {
   const dispatch = useDispatch();
+
+  let theme = createTheme();
+  theme = createTheme(theme, {
+    typography: {
+      fontFamily: ["Poppins", "sans-serif"].join(","),
+      fontSize: 16,
+      color: "var(--text-color)",
+      h3: {
+        [theme.breakpoints.down("md")]: {
+          fontSize: "2.5rem",
+        },
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "1.5rem",
+        },
+      },
+      h2: {
+        [theme.breakpoints.down("md")]: {
+          fontSize: "2.75rem",
+        },
+        [theme.breakpoints.down("sm")]: {
+          fontSize: "1.75rem",
+        },
+      },
+    },
+  });
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].setAttribute("dark", true);
@@ -47,33 +67,45 @@ function App() {
     dispatch(_getMintingBoxList());
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
-    if (isLoggedIn()) {
-      dispatch(_getNewProfile());
-      dispatch(_getMyItems());
-      dispatch(_getUserMintingBoxes());
-    }
+    dispatch(_getWalletInformation());
   }, [dispatch]);
 
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: GOOGLE_SIGN_IN_CLIENT_KEY,
+        scope: "",
+      });
+    }
+
+    gapi.load("client:auth2", start);
+  }, []);
+
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <div className="App">
-          <Header />
-          <ModalSwitch />
-        </div>
-      </Router>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </ThemeProvider>
+    <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_KEY} language={"en"}>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <div className="App">
+            <Header />
+            <ModalSwitch />
+            {/* <Hidden mdUp>
+            <BottomMenu />
+          </Hidden> */}
+          </div>
+        </Router>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </ThemeProvider>
+    </GoogleReCaptchaProvider>
   );
 }
 
@@ -125,12 +157,12 @@ const AuthRoute = (props) => {
   }
   return (
     <>
-      <Box pt={5} pb={5} minHeight="100vh">
+      <Box pt={10} pb={5} minHeight="100vh">
         {isActive ? <Route {...props} /> : <ErrorPage />}
       </Box>
-      <Hidden mdUp>
+      {/* <Hidden mdUp>
         <BottomMenu />
-      </Hidden>
+      </Hidden> */}
     </>
   );
 };

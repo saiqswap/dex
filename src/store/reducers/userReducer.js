@@ -12,11 +12,11 @@ const initialState = {
   information: null,
   balances: null,
   myFeeds: null,
-  walletAddress: null,
-  walletSignature: null,
   metamaskProvider: null,
   myItems: null,
   walletName: null,
+  walletSignature: null,
+  walletAddress: null,
 };
 
 export const UserReducer = (state = initialState, action) => {
@@ -41,7 +41,7 @@ export const UserReducer = (state = initialState, action) => {
       return {
         ...state,
         walletName: payload,
-      }
+      };
     default:
       return { ...state };
   }

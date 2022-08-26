@@ -45,6 +45,7 @@ export const ADD_CONFIG = `ADD_CONFIG`;
 
 //setting reducer
 export const CHANGE_LANGUAGE = `CHANGE_LANGUAGE`;
+export const UPDATE_LOADING_STATUS = `UPDATE_LOADING_STATUS`;
 
 //user reducer
 export const ADD_MY_ITEMS = `ADD_MY_ITEMS`;

@@ -12,6 +12,7 @@ import {
   UPDATE_LEFT_MENU_STATUS,
   GET_TEMPLATES,
   CHANGE_LANGUAGE,
+  UPDATE_LOADING_STATUS,
 } from "../constants";
 
 const initialState = {
@@ -30,12 +31,15 @@ const initialState = {
   },
   config: null,
   templates: null,
+  loading: true,
 };
 
 export const SettingReducer = (state = initialState, action) => {
   const { type, payload } = action;
   const { pageYOffset } = state;
   switch (type) {
+    case UPDATE_LOADING_STATUS:
+      return { ...state, loading: payload };
     case CHANGE_LANGUAGE:
       return { ...state, library: payload };
     case GET_TEMPLATES:

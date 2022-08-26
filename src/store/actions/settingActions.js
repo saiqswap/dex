@@ -1,6 +1,7 @@
 import { en } from "../../languages/en";
 import { jp } from "../../languages/jp";
 import { kr } from "../../languages/kr";
+import { rus } from "../../languages/rus";
 import { get, post } from "../../utils/api";
 import {
   ADD_CONFIG,
@@ -12,6 +13,7 @@ import {
   SIDEBAR_PROFILE_STATUS,
   TOGGLE_RANKING_FORM,
   UPDATE_LEFT_MENU_STATUS,
+  UPDATE_LOADING_STATUS,
 } from "../constants";
 
 export const _handleLeftMenu = (toggle) => (dispatch) => {
@@ -114,6 +116,9 @@ export const _changeLanguage =
     localStorage.setItem("lang", lang);
     let payload;
     switch (lang) {
+      case "rus":
+        payload = rus;
+        break;
       case "kr":
         payload = kr;
         break;
@@ -129,3 +134,10 @@ export const _changeLanguage =
       payload,
     });
   };
+
+export const _updateLoadingStatus = (payload) => (dispatch) => {
+  dispatch({
+    type: UPDATE_LOADING_STATUS,
+    payload,
+  });
+};

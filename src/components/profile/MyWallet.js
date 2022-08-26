@@ -1,11 +1,9 @@
-import { ContentCopyRounded } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Container,
   Divider,
   Grid,
-  IconButton,
   InputAdornment,
   Modal,
   OutlinedInput,
@@ -15,11 +13,10 @@ import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { formatAddress, formatAmount, formatUSD } from "../../settings/format";
+import { formatAmount, formatUSD } from "../../settings/format";
 import { _getBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
-import CopyBox from "../common/CopyBox";
 
 const wallets = [
   {
@@ -61,7 +58,7 @@ const inGame = [
 const MyWallet = () => {
   const { user, setting } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const { config } = setting;
+  const { config, library } = setting;
   const { contracts } = config ? config : { contracts: [] };
   const { balances, walletAddress, metamaskProvider } = user;
   const [funds, setFunds] = useState(null);
@@ -106,7 +103,8 @@ const MyWallet = () => {
         setLoading(false);
         setConfirmClaim(null);
       },
-      () => {
+      (error) => {
+        toast.error(error.msg);
         setLoading(false);
       }
     );
@@ -118,29 +116,18 @@ const MyWallet = () => {
         <Container maxWidth="xl">
           <div>
             <Typography variant="h5" className="custom-font">
-              Wallet
+              {library.WALLET}
             </Typography>
-            <Divider className="mt-20" />
+            <Divider
+              sx={{
+                mt: 3,
+                mb: 3,
+              }}
+            />
             <Grid container>
-              <Grid
-                item
-                xs={12}
-                display="flex"
-                alignItems="center"
-                style={{ margin: "10px 0" }}
-              >
-                <CopyBox content={walletAddress}>
-                  <small style={{ color: "#fff" }}>
-                    {formatAddress(walletAddress, 18)}
-                  </small>
-                  <IconButton style={{ marginLeft: 10 }}>
-                    <ContentCopyRounded />
-                  </IconButton>
-                </CopyBox>
-              </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={2}>
-                  <Grid item xs={4}>
+                  <Grid item xs={12} md={6} lg={4}>
                     <div className="wallet-items">
                       <p className="custom-font">Other Currencies</p>
                       {otherFunds.map((item, index) => (
@@ -154,7 +141,7 @@ const MyWallet = () => {
                     </div>
                   </Grid>
                   {wallets.map((item, index) => (
-                    <Grid item xs={4} key={index}>
+                    <Grid item xs={12} md={6} lg={4} key={index}>
                       <div className="wallet-items">
                         <p className="custom-font">{item.label}</p>
                         <Box
@@ -187,12 +174,12 @@ const MyWallet = () => {
           </div>
           <div style={{ marginTop: 30 }}>
             <Typography variant="h5" className="custom-font">
-              Ingame Currency
+              {library.IN_GAME_CURRENCIES}
             </Typography>
             <Divider className="mt-20" />
             <Grid container spacing={2} style={{ marginTop: 10 }}>
               {inGame.map((item, index) => (
-                <Grid item xs={4} key={index}>
+                <Grid item xs={12} md={6} lg={4} key={index}>
                   <div className="wallet-items">
                     <p className="custom-font">{item.label}</p>
                     <Box
@@ -236,7 +223,7 @@ const MyWallet = () => {
         {confirmClaim && (
           <div className="listing-popup">
             <Typography variant="h6" className="custom-font">
-              Claim {confirmClaim.key} confirmation
+              {library.CLAIM} {confirmClaim.key} {library.CONFIRMATION}
             </Typography>
             <OutlinedInput
               className="custom-font input txt-right"
@@ -252,14 +239,14 @@ const MyWallet = () => {
               startAdornment={
                 <InputAdornment position="start" style={{ opacity: 0.5 }}>
                   <Typography variant="body1" className="custom-font">
-                    Amount:
+                    {library.AMOUNT}:
                   </Typography>
                 </InputAdornment>
               }
               aria-describedby="outlined-weight-helper-text"
             />
             <div className="mt-20 available">
-              <span>Available:</span>
+              <span>{library.AVAILABLE}:</span>
               <span className="value">
                 {formatUSD(funds[confirmClaim.key].amount)} {confirmClaim.key}
               </span>
@@ -269,14 +256,14 @@ const MyWallet = () => {
                   setAmount(formatUSD(funds[confirmClaim.key].amount))
                 }
               >
-                Max
+                {library.MAXIMUM}
               </span>
             </div>
             <Divider className="mt-20" />
             <Grid container alignItems={"center"} className="mt-20">
               <Grid item xs={12}>
                 <Typography variant="caption" className="mt-20">
-                  <span>Fee:</span>
+                  <span>{library.FEE}:</span>
                   <span className="value">
                     {f
                       ? `${formatUSD(f)} ${Fee.symbol}`
@@ -286,7 +273,7 @@ const MyWallet = () => {
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="caption">
-                  <span>Will get:</span>
+                  <span>{library.WILL_GET}:</span>
                   <span className="value">{`${
                     willGet > 0 ? formatUSD(willGet) : 0
                   } ${confirmClaim.key}`}</span>
@@ -298,14 +285,14 @@ const MyWallet = () => {
                     className="custom-font btn-cancel"
                     onClick={() => handleCancelConfirm(null)}
                   >
-                    Cancel
+                    {library.CANCEL}
                   </Button>
                   <LoadingButton
                     className="custom-font btn-submit"
                     onClick={() => handleClaim()}
                     loading={loading}
                   >
-                    Claim
+                    {library.CLAIM}
                   </LoadingButton>
                 </div>
               </Grid>

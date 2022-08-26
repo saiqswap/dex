@@ -15,33 +15,34 @@ const menus = [
   {
     icon: <AccountBoxIcon />,
     url: "/profile/account",
-    label: "Account",
+    label: "ACCOUNT",
     key: "account",
   },
   {
     icon: <WidgetsIcon />,
     url: "/profile/my-items?type=angel",
-    label: "My Items",
+    label: "MY_ITEMS",
     key: "my-items",
   },
   {
     icon: <HistoryEduIcon />,
     url: "/profile/history",
-    label: "History",
+    label: "HISTORY",
     key: "history",
   },
   {
     icon: <AccountBalanceWalletIcon />,
     url: "/profile/wallet",
-    label: "Wallet",
+    label: "WALLET",
     key: "wallet",
   },
 ];
 
 const UserMenu = ({ component }) => {
-  const { user } = useSelector((state) => state);
+  const { user, setting } = useSelector((state) => state);
   const history = useHistory();
   const { information, walletAddress } = user;
+  const { library } = setting;
 
   useEffect(() => {
     if (!user) history.replace("/");
@@ -82,7 +83,7 @@ const UserMenu = ({ component }) => {
           <li key={index} className={component === item.key ? "active" : ""}>
             <Link to={item.url}>
               <Button className="custom-font" startIcon={item.icon}>
-                {item.label}
+                {library[item.label]}
               </Button>
             </Link>
           </li>

@@ -137,13 +137,12 @@ const Rooms = () => {
                 post(
                   `/market/trigger-paid-ri-slot?txHash=${e}`,
                   {},
-                  (data) => {
+                  () => {
                     handleFetchLimitSlot(information.limitRiSlot, () => {
                       setLoading(false);
                       setOpen(false);
                       toast.success("Success...!");
                       dispatch(_getBalance(walletAddress, metamaskProvider));
-                      dispatch(_getNewProfile());
                     });
                   },
                   (error) => {

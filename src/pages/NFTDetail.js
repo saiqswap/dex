@@ -23,7 +23,10 @@ export default function NFTDetail() {
   const { config } = setting;
   const dispatch = useDispatch();
 
-  const _handleReload = () => dispatch(_getMyItems());
+  const _handleReload = () =>
+    setTimeout(() => {
+      dispatch(_getMyItems());
+    }, 3000);
 
   useEffect(() => {
     if (config && myItems) {
@@ -73,7 +76,7 @@ export default function NFTDetail() {
   }, [config]);
 
   return (
-    <Container className="detail-page nft-detail">
+    <Container maxWidth="lg" className="detail-page nft-detail">
       <Grid container>
         <Grid item xs={12}>
           {data && <ItemDetail data={data} _handleReload={_handleReload} />}
@@ -91,7 +94,7 @@ export default function NFTDetail() {
           )}
         </Grid>
         {transaction && transaction.items && transaction.items.length > 0 && (
-          <Grid item sx={12} spacing={2} className="transaction-history">
+          <Grid item xs={12} className="transaction-history">
             <Box>
               <h2 className="custom-font">History</h2>
               {transaction.items.map((item, index) => (

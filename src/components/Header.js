@@ -1,82 +1,88 @@
+import { Button, Container, Grid, Hidden, Typography } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Hidden,
-  Typography,
-} from "@mui/material";
-import { Buffer } from "buffer";
-import { useEffect, useState } from "react";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 // import { domain } from "../onchain/testnet-config";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { domain } from "../onchain/mainnet-config";
 import {
   prefix,
   provider,
   _changeChain,
-  _connectToMetamaskWallet,
+  _checkOldWalletAddress,
+  _setProvider,
 } from "../onchain/onchain";
-import { CAPTCHA_KEY, LOGIN_MESSAGE } from "../settings/constants";
+import { CAPTCHA_KEY, MAIN_MENUS } from "../settings/constants";
+import { _getUserMintingBoxes } from "../store/actions/mintingActions";
 import {
   _getBalance,
   _getMyItems,
   _getNewProfile,
+  _getWalletLogout,
 } from "../store/actions/userActions";
-import { ADD_WALLET_ADDRESS, ADD_WALLET_SIGNATURE } from "../store/constants";
 import { post } from "../utils/api";
-import { isLoggedIn, logoutReturnTo, setAccessToken } from "../utils/auth";
-import LoggedComponent from "./header/LoggedComponent";
+import { setAccessToken } from "../utils/auth";
 import ChoseWalletModal from "./header/ChoseWalletModal";
 import ConfirmChangeChain from "./header/ConfirmChangeChain";
+import LoggedComponent from "./header/LoggedComponent";
 import LoginPopup from "./header/LoginPopup";
+import SignPopup from "./header/SignPopup";
 import SubMenu from "./header/SubMenu";
-
-const menus = [
-  // {
-  //   title: "HOME",
-  //   url: ["/"],
-  // },
-  {
-    title: "MINTING",
-    url: ["/minting-box"],
-  },
-  {
-    title: "MARKETPLACE",
-    url: ["/marketplace"],
-  },
-  {
-    title: "BOXES",
-    url: ["/boxes"],
-  },
-  {
-    title: "SUMMON",
-    url: ["/summon"],
-    isLogged: true,
-  },
-  {
-    title: "R - I",
-    url: [
-      "/research-institute/R-I",
-      "/research-institute/slot",
-      "/research-institute/history",
-    ],
-    isLogged: true,
-  },
-];
 
 function Header() {
   const { user, setting } = useSelector((state) => state);
   const location = useLocation();
-  const { information, walletAddress, walletName } = user;
+  const { information, walletAddress, walletName, walletSignature } = user;
   const dispatch = useDispatch();
   const [accountNotFound, setAccountNotFound] = useState(false);
   const [pathname, setPathname] = useState("");
   const [showChoseWallet, setShowChoseWallet] = useState(false);
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const { library } = setting;
+  const [showSignPopup, setShowSignPopup] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
+  useEffect(() => {
+    if (information) {
+      dispatch(_getMyItems());
+      dispatch(_getUserMintingBoxes());
+      prefix.on("accountsChanged", () => {
+        dispatch(_getWalletLogout());
+      });
+      prefix.on("chainChanged", (newNetwork) => {
+        if (newNetwork && Number(newNetwork) !== domain.chainId && provider) {
+          setShowModalConfirm(true);
+        }
+      });
+    }
+  }, [dispatch, information]);
+
+  useEffect(() => {
+    if (executeRecaptcha) {
+      if (
+        typeof window.ethereum !== "undefined" ||
+        typeof window.bitkeep !== "undefined"
+      ) {
+        if (walletName && walletAddress) {
+          _setProvider(walletName, () => {
+            _checkOldWalletAddress(walletAddress, (check) => {
+              if (check && walletSignature) {
+                _loginBySignature(walletSignature);
+                if (Number(prefix.networkVersion) !== domain.chainId) {
+                  setShowModalConfirm(true);
+                }
+              }
+            });
+          });
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletAddress, walletName, walletSignature, executeRecaptcha]);
 
   useEffect(() => {
     if (location) setPathname(location.pathname);
@@ -88,112 +94,54 @@ function Header() {
     }
   }, [walletAddress, dispatch, information]);
 
-  useEffect(() => {
-    if (information && !walletAddress) {
-      _connectToMetamaskWallet(
-        localStorage.getItem("wallet"),
-        (address) => {
-          dispatch({
-            type: ADD_WALLET_ADDRESS,
-            payload: address,
-          });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const getReCaptcha = async (successCallback) => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const token = await executeRecaptcha("login");
+    if (successCallback) successCallback(token);
+  };
+
+  const _loginBySignature = async (signature) => {
+    getReCaptcha((reCaptcha) => {
+      post(
+        `/user/login-by-signature`,
+        {
+          signature,
+          message: "This is sign message",
+          address: walletAddress,
+          reCaptcha,
         },
-        dispatch
+        (data) => {
+          setAccessToken(data.accessToken);
+          dispatch(_getNewProfile());
+        },
+        (error) => {
+          if (error.code === "ACCOUNT_NOTFOUND") {
+            setAccountNotFound(true);
+          } else {
+            dispatch(_getWalletLogout());
+          }
+        }
       );
-    }
-  }, [dispatch, information, walletAddress]);
-
-  // check profile address === account logged metamask
-  useEffect(() => {
-    if (information && walletAddress) {
-      if (
-        information.address !== walletAddress ||
-        walletAddress === "UNKNOWN"
-      ) {
-        logoutReturnTo();
-      }
-    }
-  }, [information, walletAddress]);
-
-  const _loginBySignature = async () => {
-    const data = `0x${Buffer.from(LOGIN_MESSAGE, "utf8").toString("hex")}`;
-
-    const signature = await prefix.request({
-      method: "personal_sign",
-      params: [data, walletAddress],
     });
-
-    dispatch({
-      type: ADD_WALLET_SIGNATURE,
-      payload: signature,
-    });
-
-    post(
-      `/user/login-by-signature`,
-      {
-        signature,
-        message: "This is sign message",
-        address: walletAddress,
-        reCaptcha: "development",
-      },
-      (data) => {
-        setAccessToken(data.accessToken);
-        dispatch(_getNewProfile());
-        dispatch(_getBalance(walletAddress, provider));
-        dispatch(_getMyItems());
-      },
-      (error) => {
-        setAccountNotFound(true);
-        console.log(error);
-      }
-    );
   };
 
   const _openChoseWallet = () => setShowChoseWallet(true);
   const _closeChoseWallet = () => setShowChoseWallet(false);
 
-  //Handle change chain
-  const getPrefix = (walletName) => {
-    if (walletName === "bitkeep") {
-      return window.bitkeep.ethereum;
-    } else if (walletName === "metamask") {
-      return window.ethereum;
-    } else {
-      return null;
-    }
-  };
   const _closeModalConfirm = () => {
     setShowModalConfirm(false);
+    dispatch(_getWalletLogout());
   };
+
   const _onAccept = () => {
     _changeChain();
     setShowModalConfirm(false);
   };
-
-  useEffect(() => {
-    if (walletName) {
-      const prefixLocal = getPrefix(localStorage.getItem("wallet"));
-      if (prefixLocal) {
-        prefixLocal.on("chainChanged", (newNetwork) => {
-          if (newNetwork && Number(newNetwork) !== domain.chainId && provider) {
-            setShowModalConfirm(true);
-          }
-        });
-      }
-    }
-  }, [walletName]);
-
-  useEffect(() => {
-    if (walletName) {
-      const prefixLocal = getPrefix(localStorage.getItem("wallet"));
-      if (
-        prefixLocal &&
-        Number(prefixLocal.networkVersion) !== domain.chainId
-      ) {
-        setShowModalConfirm(true);
-      }
-    }
-  }, [walletName]);
 
   return (
     <>
@@ -213,9 +161,9 @@ function Header() {
                 justifyContent="center"
                 style={{ height: 80 }}
               >
-                {menus.map(
+                {MAIN_MENUS.map(
                   (item, index) =>
-                    (!item.isLogged || (item.isLogged && isLoggedIn())) && (
+                    (!item.isLogged || (item.isLogged && information)) && (
                       <Link
                         to={item.url[0]}
                         key={index}
@@ -241,43 +189,51 @@ function Header() {
               alignItems="center"
               justifyContent="center"
             >
-              <Box display="flex">
-                {information && <LoggedComponent information={information} />}
-                {!information &&
-                  (walletAddress && walletAddress !== "UNKNOWN" ? (
-                    <Button
-                      className="custom-btn custom-font"
-                      onClick={_loginBySignature}
-                      style={{ fontSize: 12 }}
-                    >
-                      LOGIN
-                    </Button>
-                  ) : (
-                    <Button
-                      className="custom-btn custom-font"
-                      style={{ padding: "0 30px", fontSize: 12 }}
-                      onClick={_openChoseWallet}
-                    >
-                      CONNECT WALLET
-                    </Button>
-                  ))}
-                <SubMenu />
-              </Box>
+              {information && <LoggedComponent information={information} />}
+              {!information && (
+                <Button
+                  className="custom-btn custom-font"
+                  sx={{
+                    padding: "0 30px",
+                    fontSize: 12,
+                    minWidth: "unset!important",
+                    p: 0,
+                    textTransform: "uppercase!important",
+                  }}
+                  onClick={_openChoseWallet}
+                  id="connect-wallet"
+                >
+                  <Hidden smDown>
+                    <div>{library.CONNECT_WALLET}</div>
+                  </Hidden>
+                  <Hidden smUp>
+                    <AccountBalanceWalletIcon />
+                  </Hidden>
+                </Button>
+              )}
+              <SubMenu />
             </Grid>
           </Grid>
         </Container>
       </div>
-      <GoogleReCaptchaProvider reCaptchaKey={CAPTCHA_KEY} language={"en"}>
-        <LoginPopup
-          open={accountNotFound}
-          _handleClose={() => setAccountNotFound(false)}
-        />
-      </GoogleReCaptchaProvider>
-      <ChoseWalletModal open={showChoseWallet} _onClose={_closeChoseWallet} />
+      <LoginPopup
+        open={accountNotFound}
+        _handleClose={() => setAccountNotFound(false)}
+      />
+      ≈{" "}
+      <ChoseWalletModal
+        open={showChoseWallet}
+        _onClose={_closeChoseWallet}
+        _successCallback={() => setShowSignPopup(true)}
+      />
       <ConfirmChangeChain
         open={showModalConfirm}
         _onClose={_closeModalConfirm}
         _onAccept={_onAccept}
+      />
+      <SignPopup
+        open={showSignPopup}
+        _onClose={() => setShowSignPopup(false)}
       />
     </>
   );
