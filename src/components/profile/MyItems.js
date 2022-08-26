@@ -61,13 +61,15 @@ const TabPanel = () => {
   let query = useQuery();
   const type = query.get("type");
   const [data, setData] = useState(null);
+  const { setting } = useSelector((state) => state);
+  const { library } = setting;
 
   useEffect(() => {
     if (myItems) {
       setData(null);
       setTimeout(() => {
         const tempData = myItems.filter((e) => {
-          return e.type.toLowerCase() === type;
+          return e.type.toLowerCase() === type.toLowerCase();
         });
         tempData.sort((a, b) => b.level.localeCompare(a.level));
         setData(tempData);
@@ -99,6 +101,9 @@ const TabPanel = () => {
 
   return (
     <div className="my-item-contents mt-20">
+      {data.length === 0 && (
+        <Typography variant="h6">{library.NO_RECORDS_FOUND}</Typography>
+      )}
       <Grid container spacing={6}>
         {data &&
           data.map((item, index) => (

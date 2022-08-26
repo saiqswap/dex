@@ -53,6 +53,7 @@ const MyAccount = () => {
       param,
       (data) => {
         setData(data);
+        console.log(data.items);
       },
       (err) => {
         toast.error(err);

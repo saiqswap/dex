@@ -35,7 +35,6 @@ import ConfirmChangeChain from "./header/ConfirmChangeChain";
 import LoginPopup from "./header/LoginPopup";
 import SubMenu from "./header/SubMenu";
 import SignPopup from "./header/SignPopup";
-import { toast } from "react-toastify";
 
 const menus = [
   // {
@@ -152,7 +151,7 @@ function Header() {
       },
       (error) => {
         setAccountNotFound(true);
-        toast.error(error.msg);
+        console.log(error);
       }
     );
   };

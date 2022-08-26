@@ -1,4 +1,5 @@
 export const en = {
+  lang: "en",
   //220808
   MARKETPLACE: "Marketplace",
   MINTING: "Minting",

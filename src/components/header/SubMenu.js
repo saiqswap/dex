@@ -17,6 +17,9 @@ import { _changeLanguage } from "../../store/actions/settingActions";
 const MenuButton = styled(Button)(({ theme }) => ({
   minWidth: "unset!important",
   marginLeft: theme.spacing(1),
+  " &.active": {
+    color: "red",
+  },
 }));
 
 const LanguageItem = styled(Box)({
@@ -117,7 +120,10 @@ export default function SubMenu() {
               {Languages.map((l, index) => (
                 <LanguageItem
                   key={index}
-                  onClick={() => dispatch(_changeLanguage(l))}
+                  onClick={() => {
+                    dispatch(_changeLanguage(l));
+                    _handleClose();
+                  }}
                   className={library.lang === l ? "active" : ""}
                 >
                   {l.toUpperCase()}

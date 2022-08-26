@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import productionRoutes from "../routes/productionRoutes";
-import { production } from "./environment";
+import { production, staging } from "./environment";
 import { formatAddress } from "./format";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const DEVICE_KEY = "uU5tEUmAgvBWArsv";
@@ -14,10 +13,7 @@ export const explorer_url = "https://bscscan.com/tx";
 export const hostname = window.location.hostname.replace("www.", "");
 
 export const config = production;
-export const routes = productionRoutes;
-
 // export const config = staging;
-// export const routes = stagingRoutes;
 
 export const API = config.API;
 

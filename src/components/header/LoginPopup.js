@@ -61,7 +61,6 @@ export default function LoginPopup({ open, _handleClose }) {
 
   const _handleLoginByGoogle = (e) => {
     getReCaptcha((reCaptcha) => {
-      console.log(reCaptcha);
       const referral = localStorage.getItem("referral");
       const param = {
         googleAccessToken: e.accessToken,

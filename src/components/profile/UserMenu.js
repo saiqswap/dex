@@ -20,7 +20,7 @@ const menus = [
   },
   {
     icon: <WidgetsIcon />,
-    url: "/profile/my-items?type=angel",
+    url: "/profile/my-items?type=ANGEL",
     label: "MY_ITEMS",
     key: "my-items",
   },

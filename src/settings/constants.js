@@ -9,38 +9,7 @@ export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
 
-export const MAIN_MENUS = [
-  // {
-  //   title: "HOME",
-  //   url: ["/"],
-  // },
-  // {
-  //   title: "MINTING",
-  //   url: ["/minting-box"],
-  // },
-  // {
-  //   title: "MARKETPLACE",
-  //   url: ["/marketplace"],
-  // },
-  // {
-  //   title: "BOXES",
-  //   url: ["/boxes"],
-  // },
-  // {
-  //   title: "SUMMON",
-  //   url: ["/summon"],
-  //   isLogged: true,
-  // },
-  // {
-  //   title: "R - I",
-  //   url: [
-  //     "/research-institute/R-I",
-  //     "/research-institute/slot",
-  //     "/research-institute/history",
-  //   ],
-  //   isLogged: true,
-  // },
-];
+export const MAIN_MENUS = config.MAIN_MENU;
 
 export const ERROR = {
   INSUFFICIENT_FUNDS: "Insufficient funds ",
