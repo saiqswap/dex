@@ -71,4 +71,7 @@ export const jp = {
   CONTINUE: "コンティニュー",
   BOXES: "ボックス",
   HOME: "ホーム",
+  REGISTER_WITH_EMAIL: "Sign-up with email",
+  SUBMIT: "Submit",
+  SEND_OTP: "Send OTP",
 };

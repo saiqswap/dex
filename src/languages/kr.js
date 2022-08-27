@@ -63,4 +63,7 @@ export const kr = {
   CONTINUE: "계속하기",
   BOXES: "박스",
   HOME: "홈",
+  REGISTER_WITH_EMAIL: "Sign-up with email",
+  SUBMIT: "Submit",
+  SEND_OTP: "Send OTP",
 };

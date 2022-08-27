@@ -64,4 +64,7 @@ export const rus = {
   CONTINUE: "Продолжить",
   BOXES: "Бокс",
   HOME: "Домой",
+  REGISTER_WITH_EMAIL: "Sign-up with email",
+  SUBMIT: "Submit",
+  SEND_OTP: "Send OTP",
 };

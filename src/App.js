@@ -68,6 +68,7 @@ function App() {
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
+    console.log("Infinity Angel Marketplace - Ver 0.0.1");
   }, [dispatch]);
 
   useEffect(() => {

@@ -64,4 +64,7 @@ export const en = {
   CONTINUE: "Continue",
   BOXES: "Boxes",
   HOME: "Home",
+  REGISTER_WITH_EMAIL: "Sign-up with email",
+  SUBMIT: "Submit",
+  SEND_OTP: "Send OTP",
 };

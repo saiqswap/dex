@@ -10,9 +10,11 @@ export const CustomButton = styled(Button)(({ theme }) => ({
   textTransform: "uppercase!important",
   background: "rgba(255, 255, 255, 0.1) !important",
   fontFamily: "Orbitron !important",
-
   "&:hover": {
     background: "rgba(255, 255, 255, 0.2) !important",
+  },
+  "&:disabled": {
+    opacity: 0.6,
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: "0.7rem",
