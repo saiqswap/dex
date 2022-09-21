@@ -10,14 +10,14 @@ import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
 
 const routes = [
-  //   {
-  //     exact: true,
-  //     path: "/minting-box",
-  //     component: BoxMinting,
-  //     type: "guest",
-  //     isActive: true,
-  //     title: "Box Minting",
-  //   },
+  {
+    exact: true,
+    path: "/minting-box",
+    component: BoxMinting,
+    type: "guest",
+    isActive: true,
+    title: "Box Minting",
+  },
   //   {
   //     exact: true,
   //     path: "/marketplace",

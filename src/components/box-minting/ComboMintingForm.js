@@ -20,33 +20,21 @@ import {
 } from "@mui/material";
 import { parseUnits } from "ethers/lib/utils";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { checkBeforeBuy, getReceipt, purchaseBox } from "../../onchain/onchain";
 import { image_url } from "../../settings";
+import { BoxType, MINTING_COMBOS } from "../../settings/constants";
 import {
-  BoxType,
-  tierAngelDescription,
-  tierCostumeDescription,
-  tierMinionPartDescription,
-} from "../../settings/constants";
-import {
-  ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
-  ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT,
+  ENDPOINT_MINTING_BOX_COMBO_PAID,
+  ENDPOINT_MINTING_BOX_COMBO_SC_INPUT,
 } from "../../settings/endpoint";
 import { deleteText, formatAmount, formatPrice } from "../../settings/format";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import GeneralPopup from "../common/GeneralPopup";
 
-const DropRateDetail = styled(Box)(() => ({
-  background: "rgba(0, 0, 0, 0.4)",
-  padding: "20px",
-  borderRadius: "5px",
-  marginTop: "0px",
-  textAlign: "left",
-}));
 const PurchaseBox = styled(Box)({
   boxShadow: "inset 0px 0px 5px #000",
   borderBottom: "1px solid rgba(255, 255, 255, 0.35)",
@@ -89,29 +77,30 @@ const socials = [
     link: "https://t.me/infinityangel_global",
   },
 ];
-
-const NewBoxMintingForm = ({ onClose, data }) => {
-  const [available, setAvailable] = useState(null);
+const BoxItem = styled(Box)({
+  background: "rgba(255,255,255,0.05)",
+  borderRadius: "5px",
+  whiteSpace: "nowrap",
+  height: 50,
+  width: 50,
+  cursor: "pointer",
+  display: "flex",
+  textAlign: "center",
+  img: {
+    width: "100%",
+    margin: "auto",
+  },
+});
+const BoxTypeLabel = styled(Typography)({
+  textTransform: "capitalize",
+  fontWeight: 700,
+});
+const ComboMintingForm = ({ onClose, data }) => {
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const { setting, user } = useSelector((state) => state);
-  const { library, config, templates } = setting;
-  const { walletAddress, information } = user;
-
-  useEffect(() => {
-    if (data) {
-      if (data.boxType && templates) {
-        let tempData;
-        tempData = templates.filter((x) =>
-          data.boxType.toLowerCase().includes(x.type.toLowerCase())
-        );
-        tempData.sort((a, b) =>
-          a.level.toLowerCase().localeCompare(b.level.toLowerCase())
-        );
-        setAvailable(tempData);
-      }
-    }
-  }, [data, templates]);
+  const { library, config } = setting;
+  const { walletAddress } = user;
 
   const _onChangeAmount = (value) => {
     value = value.replace(".", "");
@@ -152,9 +141,9 @@ const NewBoxMintingForm = ({ onClose, data }) => {
         ).then((result) => {
           if (result) {
             post(
-              ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
+              ENDPOINT_MINTING_BOX_COMBO_SC_INPUT,
               {
-                productId: data.id,
+                comboId: data.id,
                 amount: parseFloat(amount),
                 address: walletAddress,
               },
@@ -170,9 +159,9 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                     getReceipt(e).then((result) => {
                       if (result) {
                         post(
-                          `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
+                          `${ENDPOINT_MINTING_BOX_COMBO_PAID}?txHash=${e}`,
                           {},
-                          () => {
+                          (data) => {
                             setLoading(false);
                             toast.success("Success");
                           },
@@ -235,7 +224,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
         <Grid container spacing={3}>
           <Grid item xs={12} md={5} className="submit-box">
             <div className="box-image">
-              <img src={BoxType[data.boxType].image} alt="boxImg" />
+              <img src={MINTING_COMBOS[data.name].image} alt="boxImg" />
             </div>
             <Typography className="price">
               {formatAmount(data.unitPrice)} {data.paymentCurrency}
@@ -261,8 +250,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                   textTransform: "capitalize",
                 }}
               >
-                {library.TYPE}:{" "}
-                {data.boxType.split("_").join(" ").toLowerCase()}{" "}
+                {data.name.split("_").join(" ").toLowerCase()}{" "}
               </Typography>
               <TextField
                 fullWidth
@@ -313,12 +301,56 @@ const NewBoxMintingForm = ({ onClose, data }) => {
               </LoadingButton>
             </PurchaseBox>
           </Grid>
-          <Grid item xs={12} md={5} className="box-info">
+          <Grid item xs={12}>
+            <Divider sx={{ margin: "1rem 0px" }} />
+            <Typography textAlign="left">{library.WILL_RECEIVE}</Typography>
+            <Box
+              display="flex"
+              direction="row"
+              alignItems="flex-start"
+              spacing={5}
+              mt={1}
+            >
+              {data.products.map(({ product }, index) => {
+                const information = BoxType[product.boxType];
+                return (
+                  <Box key={index} textAlign="left" mr={5}>
+                    <BoxItem
+                      sx={{
+                        border: `1px solid ${information.color}`,
+                      }}
+                      p={1}
+                    >
+                      <img
+                        src={information.image}
+                        alt="box img"
+                        className="thumbnail"
+                      />
+                    </BoxItem>
+                    <BoxTypeLabel
+                      className={
+                        "custom-font name " +
+                        (product.boxType.length > 12 ? "long-name" : "")
+                      }
+                      variant="body2"
+                      sx={{
+                        color: information.color,
+                      }}
+                    >
+                      {product.boxType.split("_").join(" ").toLowerCase()}{" "}
+                      {library.BOX}
+                    </BoxTypeLabel>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Grid>
+          {/* <Grid item xs={12} md={5} className="box-info">
             <DropRate data={data} />
           </Grid>
           <Grid item xs={12} md={7} className="box-info">
             <AvailableTemplate available={available} library={library} />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <NoticeAndInformation library={library} />
           </Grid>
@@ -328,7 +360,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
   );
 };
 
-export default NewBoxMintingForm;
+export default ComboMintingForm;
 
 const SocialComponent = () => {
   return (
@@ -406,51 +438,51 @@ const AvailableTemplate = ({ available, library }) => {
   );
 };
 
-const DropRate = ({ data }) => {
-  let tierDescriptions = tierAngelDescription;
-  let indexTierDescription = 0;
-  if (data) {
-    if (data.boxType.includes("MINION")) {
-      tierDescriptions = tierMinionPartDescription;
-      indexTierDescription = 2;
-    }
-    if (data.boxType.includes("COSTUME")) {
-      tierDescriptions = tierCostumeDescription;
-      indexTierDescription = 1;
-    }
-  }
-  return (
-    <>
-      <Typography className="custom-font" textAlign={"left"} mb={1}>
-        Drop Rate Detail
-      </Typography>
-      <DropRateDetail>
-        {BoxType[data.boxType].rate.map((item, index) => (
-          <Box key={index}>
-            <Typography>
-              <span
-                className="custom-font mr-10"
-                style={{
-                  fontSize: data.boxType.includes("COSTUME")
-                    ? "0.7rem"
-                    : "0.8rem",
-                  width: data.boxType.includes("COSTUME") ? "75px" : "65px",
-                  display: "inline-block",
-                }}
-              >
-                {item.name}:
-              </span>
-              <span style={{ fontSize: "1rem" }}>{item.rate}%</span>
-            </Typography>
-            <small>
-              {tierDescriptions[index + indexTierDescription].split(":")[1]}
-            </small>
-          </Box>
-        ))}
-      </DropRateDetail>
-    </>
-  );
-};
+// const DropRate = ({ data }) => {
+//   let tierDescriptions = tierAngelDescription;
+//   let indexTierDescription = 0;
+//   if (data) {
+//     if (data.boxType.includes("MINION")) {
+//       tierDescriptions = tierMinionPartDescription;
+//       indexTierDescription = 2;
+//     }
+//     if (data.boxType.includes("COSTUME")) {
+//       tierDescriptions = tierCostumeDescription;
+//       indexTierDescription = 1;
+//     }
+//   }
+//   return (
+//     <>
+//       <Typography className="custom-font" textAlign={"left"} mb={1}>
+//         Drop Rate Detail
+//       </Typography>
+//       <DropRateDetail>
+//         {BoxType[data.boxType].rate.map((item, index) => (
+//           <Box key={index}>
+//             <Typography>
+//               <span
+//                 className="custom-font mr-10"
+//                 style={{
+//                   fontSize: data.boxType.includes("COSTUME")
+//                     ? "0.7rem"
+//                     : "0.8rem",
+//                   width: data.boxType.includes("COSTUME") ? "75px" : "65px",
+//                   display: "inline-block",
+//                 }}
+//               >
+//                 {item.name}:
+//               </span>
+//               <span style={{ fontSize: "1rem" }}>{item.rate}%</span>
+//             </Typography>
+//             <small>
+//               {tierDescriptions[index + indexTierDescription].split(":")[1]}
+//             </small>
+//           </Box>
+//         ))}
+//       </DropRateDetail>
+//     </>
+//   );
+// };
 
 const NoticeAndInformation = ({ library }) => {
   return (

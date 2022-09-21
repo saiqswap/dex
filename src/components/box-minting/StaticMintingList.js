@@ -11,9 +11,13 @@ import {
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { useSelector } from "react-redux";
+import {
+  FAKE_MINTING_BOXES,
+  FAKE_MINTING_COMBOS,
+} from "../../settings/constants";
 import Loader from "../common/Loader";
-import RoundBoxDetail from "./RoundBoxDetail";
-import RoundComboDetail from "./RoundComboDetail";
+import StaticRoundBoxDetail from "./StaticRoundBoxDetail";
+import StaticRoundComboDetail from "./StaticRoundComboDetail";
 import Title from "./Title";
 
 const CustomContainer = styled(Box)(() => ({
@@ -104,10 +108,11 @@ const CustomStep = styled(Stepper)(({ theme }) => ({
     },
   },
 }));
-export default function MintingList() {
-  const { setting, minting } = useSelector((state) => state);
+export default function StaticMintingList() {
+  const { setting } = useSelector((state) => state);
   const { library } = setting;
-  const { mintingBoxList, mintingComboList } = minting;
+  const mintingBoxList = FAKE_MINTING_BOXES;
+  const mintingComboList = FAKE_MINTING_COMBOS;
 
   return mintingBoxList && mintingComboList ? (
     <>
@@ -133,7 +138,9 @@ export default function MintingList() {
                             fontWeight: 700,
                           }}
                         >
-                          Minting Box Round {round.roundNumber}
+                          {index === 0
+                            ? "Minting OG Sale"
+                            : `Minting WL R${index}`}
                         </Title>
                       }
                     />
@@ -141,11 +148,11 @@ export default function MintingList() {
                   <StepContent sx={{ width: "100%", mt: 1 }}>
                     <Grid container spacing={5}>
                       <Grid item xs={12} md={6}>
-                        <RoundBoxDetail round={round} library={library} />
+                        <StaticRoundBoxDetail round={round} />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         {mintingComboList[index] ? (
-                          <RoundComboDetail
+                          <StaticRoundComboDetail
                             round={mintingComboList[index]}
                             library={library}
                           />

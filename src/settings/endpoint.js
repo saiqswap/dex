@@ -79,4 +79,6 @@ export const ENDPOINT_MY_NFT = `/nft/my-nfts`;
 //minting box
 export const ENDPOINT_PRESALE_PRODUCT_SC_INPUT = `/presale/product-sc-input`;
 export const ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT = `/presale/trigger-paid-product`;
-export const ENPOINT_PRESALE_GET_TRANSACTION_LIST = `/presale/transaction/get-list`;
+export const ENDPOINT_PRESALE_GET_TRANSACTION_LIST = `/presale/transaction/get-list`;
+export const ENDPOINT_MINTING_BOX_COMBO_SC_INPUT = `/presale/combo-sc-input`;
+export const ENDPOINT_MINTING_BOX_COMBO_PAID = `/presale/trigger-paid-combo`;

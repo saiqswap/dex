@@ -1,4 +1,4 @@
-import { ENPOINT_PRESALE_GET_TRANSACTION_LIST } from "../../settings/endpoint";
+import { ENDPOINT_PRESALE_GET_TRANSACTION_LIST } from "../../settings/endpoint";
 import { get, post } from "../../utils/api";
 import { GET_MINTING_BOX_LIST, GET_USER_MINTING_BOX } from "../constants";
 
@@ -13,7 +13,7 @@ export const _getMintingBoxList = () => (dispatch) => {
 
 export const _getUserMintingBoxes = () => (dispatch) => {
   post(
-    `${ENPOINT_PRESALE_GET_TRANSACTION_LIST}`,
+    `${ENDPOINT_PRESALE_GET_TRANSACTION_LIST}`,
     {
       page: 1,
       pageSize: 10,

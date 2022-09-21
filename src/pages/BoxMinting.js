@@ -1,6 +1,7 @@
 import { Box, Container } from "@mui/material";
 import React from "react";
 import MintingList from "../components/box-minting/MintingList";
+import StaticMintingList from "../components/box-minting/StaticMintingList";
 import Title from "../components/box-minting/Title";
 
 export default function BoxMinting() {
@@ -34,7 +35,7 @@ export default function BoxMinting() {
           </Title>
         </Container>
         <Title variant="body1">The beginning of a great journey</Title>
-        <MintingList />
+        <StaticMintingList />
       </Container>
     </div>
   );

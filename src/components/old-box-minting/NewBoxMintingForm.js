@@ -19,7 +19,6 @@ import {
   Typography,
 } from "@mui/material";
 import { parseUnits } from "ethers/lib/utils";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -90,19 +89,19 @@ const socials = [
   },
 ];
 
-const NewBoxMintingForm = ({ onClose, data }) => {
+const NewBoxMintingForm = ({ onClose, data, template }) => {
   const [available, setAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const { setting, user } = useSelector((state) => state);
-  const { library, config, templates } = setting;
+  const { library, config } = setting;
   const { walletAddress, information } = user;
 
   useEffect(() => {
     if (data) {
-      if (data.boxType && templates) {
+      if (data.boxType && template) {
         let tempData;
-        tempData = templates.filter((x) =>
+        tempData = template.filter((x) =>
           data.boxType.toLowerCase().includes(x.type.toLowerCase())
         );
         tempData.sort((a, b) =>
@@ -111,7 +110,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
         setAvailable(tempData);
       }
     }
-  }, [data, templates]);
+  }, [data, template]);
 
   const _onChangeAmount = (value) => {
     value = value.replace(".", "");
@@ -124,42 +123,40 @@ const NewBoxMintingForm = ({ onClose, data }) => {
   };
 
   const _handleSubmit = () => {
-    // if (information) {
-    if (amount) {
-      const amountNumber = parseFloat(amount);
-      if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
-        toast.error(
-          `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
-        );
-      } else {
-        const product = data;
-        const purchaseToken = config.contracts.find(
-          (e) => e.contractAddress === product.paymentContract
-        );
-        setLoading(true);
-        const total = product.unitPrice * parseFloat(amount);
-        const boxScPrice = parseUnits(
-          formatPrice(total, 4),
-          purchaseToken.decimals
-        );
+    if (information) {
+      if (amount) {
+        const amountNumber = parseFloat(amount);
+        if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
+          toast.error(
+            `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
+          );
+        } else {
+          const product = data;
+          const purchaseToken = config.contracts.find(
+            (e) => e.contractAddress === product.paymentContract
+          );
+          setLoading(true);
+          const total = product.unitPrice * parseFloat(amount);
+          const boxScPrice = parseUnits(
+            formatPrice(total, 4),
+            purchaseToken.decimals
+          );
 
-        checkBeforeBuy(
-          config.purchaseContract,
-          product.paymentContract,
-          boxScPrice,
-          walletAddress,
-          _handleErrorCallback
-        ).then((result) => {
-          if (result) {
-            post(
-              ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
-              {
-                productId: data.id,
-                amount: parseFloat(amount),
-                address: walletAddress,
-              },
-              (data) => {
-                if (data) {
+          checkBeforeBuy(
+            config.purchaseContract,
+            product.paymentContract,
+            boxScPrice,
+            walletAddress,
+            _handleErrorCallback
+          ).then((result) => {
+            if (result) {
+              post(
+                ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
+                {
+                  productId: data.id,
+                  amount: parseFloat(amount),
+                },
+                (data) => {
                   purchaseBox(
                     data,
                     boxScPrice,
@@ -172,7 +169,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                         post(
                           `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
                           {},
-                          () => {
+                          (data) => {
                             setLoading(false);
                             toast.success("Success");
                           },
@@ -184,46 +181,22 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                       }
                     });
                   });
-                } else {
-                  toast.error(library.SOMETHING_WRONG);
+                },
+                (error) => {
+                  toast.error(error.code);
                   setLoading(false);
                 }
-              },
-              (error) => {
-                toast.error(error.code);
-                setLoading(false);
-              }
-            );
-          }
-        });
+              );
+            }
+          });
+        }
+      } else {
+        toast.error(library.PLEASE_ENTER_AMOUNT);
       }
     } else {
-      toast.error(library.PLEASE_ENTER_AMOUNT);
+      toast.error("Please connect wallet and login");
     }
-    // } else {
-    //   toast.error("Please connect wallet and login");
-    // }
   };
-
-  const _getStatusProduct = (product) => {
-    const { startTime, endTime, sold, totalSell } = product;
-    const now = moment().utc().unix() * 1000;
-    const start = startTime;
-    const end = endTime;
-    let status = "BUY_NOW";
-    if (now - end > 0) {
-      status = "END_TIME";
-    }
-    if (start - now > 0) {
-      status = "COMING_SOON";
-    }
-    if (totalSell - sold <= 0) {
-      status = "SOLD_OUT";
-    }
-    return status;
-  };
-
-  const status = data ? _getStatusProduct(data) : "";
 
   return (
     <GeneralPopup open={Boolean(data)}>
@@ -307,9 +280,8 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                 className="submit custom-font"
                 onClick={_handleSubmit}
                 style={{ width: "190px" }}
-                disabled={status !== "BUY_NOW"}
               >
-                {library[status]}
+                {!loading && "PURCHASE"}
               </LoadingButton>
             </PurchaseBox>
           </Grid>
