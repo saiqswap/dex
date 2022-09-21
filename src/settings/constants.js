@@ -9,8 +9,6 @@ export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
 
-export const MAIN_MENUS = config.MAIN_MENU;
-
 export const ERROR = {
   INSUFFICIENT_FUNDS: "Insufficient funds ",
   RI_SLOT_IS_OVER: "R-I slot is over",
@@ -47,6 +45,109 @@ export const ranks = {
     friendCondition: 100,
   },
 };
+export const MINTING_BOXES = [
+  {
+    roundNumber: 1,
+    items: [
+      {
+        id: 48,
+        location: "GLOBAL",
+        useWhitelist: false,
+        boxType: "ANGEL",
+        paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+        paymentCurrency: "BUSD",
+        unitPrice: 0.01,
+        supply: 1000,
+        available: 0,
+        startTime: 1664092800000,
+        endTime: 1664504523000,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 10,
+      },
+      {
+        id: 53,
+        location: "GLOBAL",
+        useWhitelist: false,
+        boxType: "MINION_PARTS_COMMON",
+        paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+        paymentCurrency: "BUSD",
+        unitPrice: 0.01,
+        supply: 100,
+        available: 0,
+        startTime: 1664092800000,
+        endTime: 1664504523000,
+        isActive: true,
+        minOrder: 100,
+        maxOrder: 1,
+      },
+      {
+        id: 54,
+        location: "GLOBAL",
+        useWhitelist: false,
+        boxType: "MINION_PARTS_EPIC",
+        paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+        paymentCurrency: "BUSD",
+        unitPrice: 0.015,
+        supply: 1000,
+        available: 0,
+        startTime: 1664092800000,
+        endTime: 1664504523000,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 10,
+      },
+      {
+        id: 55,
+        location: "GLOBAL",
+        useWhitelist: false,
+        boxType: "COSTUME_COMMON",
+        paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+        paymentCurrency: "BUSD",
+        unitPrice: 0.01,
+        supply: 1000,
+        available: 0,
+        startTime: 1664092800000,
+        endTime: 1661932824000,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 10,
+      },
+      {
+        id: 56,
+        location: "GLOBAL",
+        useWhitelist: false,
+        boxType: "COSTUME_EPIC",
+        paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+        paymentCurrency: "BUSD",
+        unitPrice: 0.015,
+        supply: 1000,
+        available: 0,
+        startTime: 1664092800000,
+        endTime: 1661932824000,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 10,
+      },
+      {
+        id: 57,
+        location: "GLOBAL",
+        useWhitelist: false,
+        boxType: "ANGEL",
+        paymentContract: "0x0000000000000000000000000000000000000000",
+        paymentCurrency: "BNB",
+        unitPrice: 0.0001,
+        supply: 888,
+        available: 0,
+        startTime: 1664092800000,
+        endTime: 1664504523000,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 10,
+      },
+    ],
+  },
+];
 export const BoxType = {
   ANGEL: {
     value: "ANGEL",
@@ -194,6 +295,29 @@ export const BoxType = {
     ],
   },
 };
+export const MINTING_COMBOS = {
+  COMBO_1: {
+    value: "Compo 1",
+    image: "/images/boxes/combo-1.png",
+    color: "#1588d6",
+  },
+  COMBO_2: {
+    value: "Compo 2",
+    image: "/images/boxes/combo-2.png",
+    color: "#1588d6",
+  },
+  COMBO_3: {
+    value: "Compo 3",
+    image: "/images/boxes/combo-3.png",
+    color: "#1588d6",
+  },
+  COMBO_4: {
+    value: "Compo 4",
+    image: "/images/boxes/combo-4.png",
+    color: "#1588d6",
+  },
+};
+
 export const Angels = {
   ALICE: {
     image: "/images/character/body/Alice_1.png",

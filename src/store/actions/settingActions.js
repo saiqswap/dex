@@ -72,23 +72,12 @@ export const _selectVersion = (version) => (dispatch) => {
 };
 
 export const _getConfig = () => (dispatch) => {
-  get(`/config`, (data) =>
-    get(
-      `/market/get-price`,
-      (res) => {
-        dispatch({
-          type: ADD_CONFIG,
-          payload: { ...data, listingLimitPrice: res },
-        });
-      },
-      () => {
-        dispatch({
-          type: ADD_CONFIG,
-          payload: data,
-        });
-      }
-    )
-  );
+  get(`/config`, (data) => {
+    dispatch({
+      type: ADD_CONFIG,
+      payload: data,
+    });
+  });
 };
 
 export const _getTemplates = () => (dispatch) => {

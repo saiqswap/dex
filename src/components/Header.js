@@ -6,9 +6,7 @@ import {
 } from "react-google-recaptcha-v3";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-// import { domain } from "../onchain/testnet-config";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import { domain } from "../onchain/mainnet-config";
 import {
   prefix,
   provider,
@@ -16,7 +14,6 @@ import {
   _checkOldWalletAddress,
   _setProvider,
 } from "../onchain/onchain";
-import { CAPTCHA_KEY, MAIN_MENUS } from "../settings/constants";
 import { _getUserMintingBoxes } from "../store/actions/mintingActions";
 import {
   _getBalance,
@@ -32,6 +29,7 @@ import LoggedComponent from "./header/LoggedComponent";
 import LoginPopup from "./header/LoginPopup";
 import SignPopup from "./header/SignPopup";
 import SubMenu from "./header/SubMenu";
+import { config, MAIN_MENUS } from "../settings";
 
 function Header() {
   const { user, setting } = useSelector((state) => state);
@@ -55,7 +53,11 @@ function Header() {
         dispatch(_getWalletLogout());
       });
       prefix.on("chainChanged", (newNetwork) => {
-        if (newNetwork && Number(newNetwork) !== domain.chainId && provider) {
+        if (
+          newNetwork &&
+          Number(newNetwork) !== config.BLOCKCHAIN.domain.chainId &&
+          provider
+        ) {
           setShowModalConfirm(true);
         }
       });
@@ -73,7 +75,10 @@ function Header() {
             _checkOldWalletAddress(walletAddress, (check) => {
               if (check && walletSignature) {
                 _loginBySignature(walletSignature);
-                if (Number(prefix.networkVersion) !== domain.chainId) {
+                if (
+                  Number(prefix.networkVersion) !==
+                  config.BLOCKCHAIN.domain.chainId
+                ) {
                   setShowModalConfirm(true);
                 }
               } else {
@@ -225,7 +230,6 @@ function Header() {
         open={accountNotFound}
         _handleClose={() => setAccountNotFound(false)}
       />
-      ≈{" "}
       <ChoseWalletModal
         open={showChoseWallet}
         _onClose={_closeChoseWallet}

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { image_url } from "../../settings";
 import "../../styles/summon-effect.scss";
 import { formatNftName } from "../../utils/util";
-import { formatAmount } from "../../settings/format";
+import { formatAmount, _formatNameToLink } from "../../settings/format";
 
 const SummonEffect = ({ open, data, boxImage, showInfo }) => {
   const [opening, setOpening] = useState(false);
@@ -73,7 +73,7 @@ const SummonEffect = ({ open, data, boxImage, showInfo }) => {
               <>
                 <img
                   src={`${image_url}/body_${
-                    data && data.nft ? formatNftName(data.nft.name) : ""
+                    data && data.nft ? _formatNameToLink(data.nft.name) : ""
                   }.png?a=1`}
                   alt=""
                 />

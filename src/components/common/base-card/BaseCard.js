@@ -2,7 +2,11 @@ import { Hidden, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
-import { formatBigNumber } from "../../../settings/format";
+import {
+  formatAmount,
+  formatBigNumber,
+  _formatNameToLink,
+} from "../../../settings/format";
 import { formatNftName } from "../../../utils/util";
 import CopyBox from "../CopyBox";
 import "./base-card.scss";
@@ -107,7 +111,7 @@ export default function BaseCard({
           {data.listingPrice > 0 && !isOwner && (
             <div className="character-price">
               <Typography variant="body1" className="custom-font">
-                {formatBigNumber(data.listingPrice)}{" "}
+                {formatAmount(data.listingPrice)}{" "}
                 {data.paymentInformation && (
                   <span>{data.paymentInformation.symbol}</span>
                 )}
@@ -119,7 +123,9 @@ export default function BaseCard({
 
           {data.properties.class && (
             <img
-              src={`${image_url}/class_${data.properties.class.toLowerCase()}.png`}
+              src={`${image_url}/class_${_formatNameToLink(
+                data.properties.class
+              )}.png`}
               className="character-class"
               alt="class"
               onError={({ currentTarget }) => {
@@ -132,10 +138,9 @@ export default function BaseCard({
 
           {data.properties.effect && (
             <img
-              src={`${image_url}/effect_${data.properties.effect
-                .toLowerCase()
-                .split(" ")
-                .join("_")}.png`}
+              src={`${image_url}/effect_${_formatNameToLink(
+                data.properties.effect
+              )}.png`}
               className="character-class"
               alt=""
               onError={({ currentTarget }) => {
@@ -148,10 +153,9 @@ export default function BaseCard({
 
           {data.properties.costumeEffect && (
             <img
-              src={`${image_url}/effect_${data.properties.costumeEffect
-                .toLowerCase()
-                .split(" ")
-                .join("_")}.png`}
+              src={`${image_url}/effect_${_formatNameToLink(
+                data.properties.costumeEffect
+              )}.png`}
               className="character-class"
               alt=""
               onError={({ currentTarget }) => {

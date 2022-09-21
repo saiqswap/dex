@@ -23,7 +23,10 @@ import {
   DEFAULT_PROJECT_TITLE,
   GOOGLE_SIGN_IN_CLIENT_KEY,
 } from "./settings/constants";
-import { _getMintingBoxList } from "./store/actions/mintingActions";
+import {
+  _getMintingBoxList,
+  _getMintingComboList,
+} from "./store/actions/mintingActions";
 import {
   _changeLanguage,
   _getConfig,
@@ -65,10 +68,11 @@ function App() {
     document.getElementsByTagName("html")[0].setAttribute("dark", true);
     dispatch(_getConfig());
     dispatch(_getMintingBoxList());
+    dispatch(_getMintingComboList());
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
-    console.log("Infinity Angel Marketplace - Ver 0.0.1");
+    console.log("Infinity Angel Marketplace - Ver 0.0.3");
   }, [dispatch]);
 
   useEffect(() => {

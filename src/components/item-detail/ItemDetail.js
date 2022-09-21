@@ -17,15 +17,13 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { config } from "../../onchain/mainnet-config";
-// import { config } from "../../onchain/testnet-config";
 import {
   checkBeforeBuy,
   getReceipt,
   prefix,
   purchaseECR721,
 } from "../../onchain/onchain";
-import { image_url } from "../../settings";
+import { config, image_url } from "../../settings";
 import {
   formatAddress,
   formatAmount,
@@ -35,6 +33,7 @@ import {
 import { get, post, _delete } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import CopyBox from "../common/CopyBox";
+import CustomTooltip from "../common/CustomTooltip";
 import Model3d from "../common/Model3d";
 import TierDescription from "../common/TierDescription";
 import ItemSkills from "./ItemSkills";
@@ -43,7 +42,7 @@ const StatImage = styled("img")({
   width: "auto",
   height: "90px",
   padding: "10px",
-  marginRight: "30px",
+  // marginRight: "30px",
   background: "rgba(255, 255, 255, 0.05)",
   opacity: 0.8,
   borderRadius: "10px",
@@ -167,9 +166,9 @@ const ItemDetail = ({ data, _handleReload }) => {
                   />
                 );
               } else {
-                ActionButton = () => (
-                  <MintComponent data={data} _handleReload={_reload} />
-                );
+                // ActionButton = () => (
+                //   <MintComponent data={data} _handleReload={_reload} />
+                // );
               }
             }
           } else {
@@ -191,16 +190,33 @@ const ItemDetail = ({ data, _handleReload }) => {
       <Grid container spacing={2} className={`nft-${oldType}-detail`}>
         <Grid item xs={12} md={6}>
           <div className="identification">
-            <div className="nft-id">
-              <CopyBox content={data.tokenId}>
-                <p>#{data.tokenId}</p>
-              </CopyBox>
-              <CopyBox content={data.ownerAddress}>
-                <p className="nft-owner">
-                  {library.OWNER}: {formatAddress(data.ownerAddress)}
-                </p>
-              </CopyBox>
-            </div>
+            <Box
+              sx={(theme) => ({
+                display: "flex",
+                [theme.breakpoints.down("lg")]: {
+                  display: "block!important",
+                },
+              })}
+              className="nft-id"
+            >
+              <Box width="fit-content">
+                <CopyBox content={data.tokenId}>
+                  <p>#{data.tokenId}</p>
+                </CopyBox>
+              </Box>
+              <Box>
+                <CopyBox content={data.ownerAddress}>
+                  <p
+                    className="nft-owner"
+                    style={{
+                      marginRight: 0,
+                    }}
+                  >
+                    {library.OWNER}: {formatAddress(data.ownerAddress)}
+                  </p>
+                </CopyBox>
+              </Box>
+            </Box>
             <div
               style={{
                 display: "flex",
@@ -219,14 +235,6 @@ const ItemDetail = ({ data, _handleReload }) => {
                 </div>
               </TierDescription>
             </div>
-            <div className="nft-class">
-              {data.type === "ANGEL" && (
-                <img
-                  src={`${image_url}/class_${data.properties.class.toLowerCase()}.png`}
-                  alt=""
-                />
-              )}
-            </div>
           </div>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -237,7 +245,59 @@ const ItemDetail = ({ data, _handleReload }) => {
             </div>
           </div>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} style={{ position: "relative" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              right: 16,
+              top: 32,
+              zIndex: 1,
+            }}
+          >
+            {data.type === "ANGEL" && (
+              <CustomTooltip title={data.properties.class}>
+                <StatImage
+                  src={`${image_url}/class_${data.properties.class.toLowerCase()}.png`}
+                  alt=""
+                  // style={{ width: "50px" }}
+                />
+              </CustomTooltip>
+            )}
+            {data.type === "MINION_PARTS" && (
+              <CustomTooltip title={data.properties.effect}>
+                <StatImage
+                  src={`${image_url}/effect_${data.properties.effect
+                    .toLowerCase()
+                    .split(" ")
+                    .join("_")}.png`}
+                  alt=""
+                  // style={{ width: "50px" }}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = "";
+                    currentTarget.className = "image-passive-skill-error";
+                  }}
+                />
+              </CustomTooltip>
+            )}
+            {data.type === "COSTUME" && (
+              <CustomTooltip title={data.properties.costumeEffect}>
+                <StatImage
+                  src={`${image_url}/effect_${data.properties.costumeEffect
+                    .toLowerCase()
+                    .split(" ")
+                    .join("_")}.png`}
+                  alt=""
+                  // style={{ width: "50px" }}
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = "";
+                    currentTarget.className = "image-passive-skill-error";
+                  }}
+                />
+              </CustomTooltip>
+            )}
+          </Box>
           <div className="shape">
             {image}
             {data.type === "ANGEL" ? (
@@ -255,7 +315,7 @@ const ItemDetail = ({ data, _handleReload }) => {
         </Grid>
         <Grid item xs={12} md={6}>
           <div className="statistical">
-            {data.type === "COSTUME" && (
+            {/* {data.type === "COSTUME" && (
               <StatImage
                 alt=""
                 src={`/images/effect-icons/${data.properties.costumeEffect
@@ -268,14 +328,18 @@ const ItemDetail = ({ data, _handleReload }) => {
                   currentTarget.className = "image-passive-skill-error";
                 }}
               />
-            )}
+            )} */}
             <div className="stats">
               <h2 className="custom-font">Stats</h2>
               {statsComponent}
             </div>
             <div className="skills">
               <h2 className="custom-font">
-                {data.type === "ANGEL" ? "Skills" : "Passive Skills"}
+                {data.type === "ANGEL"
+                  ? "Skills"
+                  : data.type === "COSTUME"
+                  ? "Passive Skills"
+                  : ""}
               </h2>
               <ItemSkills
                 data={data}
@@ -373,7 +437,7 @@ const MintComponent = ({ data, _handleReload }) => {
         onClick={() => setShowMintingPopup(true)}
         disabled={loading}
       >
-        {loading ? <CircularProgress size="29px" /> : "Minting"}
+        {loading ? <CircularProgress size="29px" /> : "Mint"}
       </Button>
       <Modal
         open={showMintingPopup}
@@ -442,27 +506,33 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
 
   const _sendSignalForChain = async () => {
     if (price) {
-      setShowListingPopup(false);
-      const message = {
-        tokenId: data.tokenId.toString(),
-        tokenContract: data.isOwner.contractAddress.toString(),
-        price: utils
-          .parseUnits(formatPrice(price, 4), paymentInfo.decimals)
-          .toString(),
-        decimals: paymentInfo.decimals,
-        paymentContract: paymentInfo.contractAddress,
-        foundationFeePercent: reducerConfig.foundationFeePercent,
-      };
-      var listingParams = config.LISTING_PARAMS(message);
-      listingParams.domain.verifyingContract =
-        setting.config.marketplaceContract;
+      if (parseFloat(price) >= data.minListingPrice) {
+        setShowListingPopup(false);
+        const message = {
+          tokenId: data.tokenId.toString(),
+          tokenContract: data.isOwner.contractAddress.toString(),
+          price: utils
+            .parseUnits(formatPrice(price, 4), paymentInfo.decimals)
+            .toString(),
+          decimals: paymentInfo.decimals,
+          paymentContract: paymentInfo.contractAddress,
+          foundationFeePercent: reducerConfig.foundationFeePercent,
+        };
+        var listingParams = config.BLOCKCHAIN.config.LISTING_PARAMS(message);
+        listingParams.domain.verifyingContract =
+          setting.config.marketplaceContract;
 
-      const signature = await prefix.request({
-        method: "eth_signTypedData_v4",
-        params: [walletAddress, JSON.stringify(listingParams)],
-      });
-      _handleListing(signature);
-      setLoading(true);
+        const signature = await prefix.request({
+          method: "eth_signTypedData_v4",
+          params: [walletAddress, JSON.stringify(listingParams)],
+        });
+        _handleListing(signature);
+        setLoading(true);
+      } else {
+        toast.error(
+          `Please enter listing price greater than ${data.minListingPrice} ${paymentInfo.symbol}`
+        );
+      }
     } else {
       toast.error("Please enter your price");
     }

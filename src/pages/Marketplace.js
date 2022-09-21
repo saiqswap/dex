@@ -232,14 +232,14 @@ export default function Marketplace() {
                 <Tabs value={nftType} onChange={handleChange}>
                   <Tab label="angels" className="custom-font" value="angel" />
                   <Tab
-                    label="costume"
-                    className="custom-font"
-                    value="costume"
-                  />
-                  <Tab
                     label="minion parts"
                     className="custom-font"
                     value="minion_parts"
+                  />
+                  <Tab
+                    label="costume"
+                    className="custom-font"
+                    value="costume"
                   />
                 </Tabs>
                 <Button

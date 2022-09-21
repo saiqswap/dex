@@ -1,18 +1,9 @@
 import { constants, ethers } from "ethers";
 import { toast } from "react-toastify";
 import { ADDRESS_0 } from "../settings/constants";
+import { BLOCKCHAIN } from "../settings";
 
-//mainnet
-import { EXCHANGE_ABI } from "./mainnet-abi";
-import { PURCHASE_ITEM_ABI } from "./mainnet-abi";
-import { ERC20_ABI } from "./mainnet-abi";
-import { config } from "./mainnet-config";
-
-//testnet
-// import { EXCHANGE_ABI } from "./testnet-abi.js";
-// import { PURCHASE_ITEM_ABI } from "./testnet-abi.js";
-// import { ERC20_ABI } from "./testnet-abi.js";
-// import { config } from "./testnet-config";
+const { EXCHANGE_ABI, PURCHASE_ITEM_ABI, ERC20_ABI, config } = BLOCKCHAIN;
 
 export let prefix = null;
 export let provider = null;

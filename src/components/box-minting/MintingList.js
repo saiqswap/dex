@@ -1,29 +1,22 @@
 import {
   Box,
-  Button,
   Card,
   CardHeader,
+  Divider,
+  Grid,
   Hidden,
-  Stack,
   Step,
   StepContent,
   StepLabel,
   Stepper,
-  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import Countdown from "react-countdown";
-import { useDispatch, useSelector } from "react-redux";
-import { image_url } from "../../settings";
-import { BoxType } from "../../settings/constants";
-import { formatAmount } from "../../settings/format";
-import { _getMintingBoxList } from "../../store/actions/mintingActions";
+import { useSelector } from "react-redux";
 import { post } from "../../utils/api";
-import { formatNftName } from "../../utils/util";
 import Loader from "../common/Loader";
-import NewBoxMintingForm from "./NewBoxMintingForm";
+import RoundBoxDetail from "./RoundBoxDetail";
+import RoundComboDetail from "./RoundComboDetail";
 import Title from "./Title";
 
 const CustomContainer = styled(Box)(() => ({
@@ -37,7 +30,7 @@ const CustomCard = styled(Card)(({ theme }) => ({
   boxShadow: "none",
   padding: "2rem",
   position: "relative",
-  backdropFilter: "blur(5px)",
+  backdropFilter: "blur(20px)",
   // zIndex: 99,
   [theme.breakpoints.down("sm")]: {
     padding: "0px 1rem 0px 0px",
@@ -114,67 +107,47 @@ const CustomStep = styled(Stepper)(({ theme }) => ({
     },
   },
 }));
-const FieldLabel = styled(Typography)({
-  width: 120,
-});
-const CustomButton = styled(Button)({
-  padding: "0 30px",
-  width: 200,
-  textTransform: "uppercase",
-});
-const CustomStack = ({ children }) => (
-  <Stack
-    direction="row"
-    alignItems="center"
-    justifyContent="flex-start"
-    color="#fff"
-    flexWrap={"wrap"}
-  >
-    {children}
-  </Stack>
-);
-const CountdownStack = ({ children }) => (
-  <Stack
-    sx={{
-      background: "rgba(255,255,255,0.1)",
-      width: "60px",
-      height: "60px",
-      color: "#fff",
-      borderRadius: "10px",
-    }}
-    justifyContent="center"
-  >
-    {children}
-  </Stack>
-);
-const BoxItem = styled(Box)({
-  background: "rgba(255,255,255,0.05)",
-  borderRadius: "5px",
-  whiteSpace: "nowrap",
-  height: 50,
-  width: 50,
-  cursor: "pointer",
-  display: "flex",
-  textAlign: "center",
-  img: {
-    width: "100%",
-    margin: "auto",
-  },
-});
-const BoxTypeLabel = styled(Typography)({
-  textTransform: "capitalize",
-  fontWeight: 700,
-});
-
-const angels = ["Alice", "Ceci", "Dasha", "Emily", "Bestie"];
+// const COMBO_LIST = [
+//   {
+//     boxType: "COMBO_1",
+//     supply: 1000,
+//     unitPrice: 0.01,
+//     startTime: 1661241624000,
+//     endTime: 1661932824000,
+//     items: ["ANGEL", "MINION_PARTS_COMMON", "COSTUME_COMMON"],
+//   },
+//   {
+//     boxType: "COMBO_2",
+//     supply: 1000,
+//     unitPrice: 0.01,
+//     startTime: 1661241624000,
+//     endTime: 1661932824000,
+//     items: ["ANGEL", "MINION_PARTS_EPIC", "COSTUME_COMMON"],
+//   },
+//   {
+//     boxType: "COMBO_3",
+//     supply: 1000,
+//     unitPrice: 0.01,
+//     startTime: 1661241624000,
+//     endTime: 1661932824000,
+//     items: ["ANGEL", "MINION_PARTS_COMMON", "COSTUME_EPIC"],
+//   },
+//   {
+//     boxType: "COMBO_4",
+//     supply: 1000,
+//     unitPrice: 0.01,
+//     startTime: 1661241624000,
+//     endTime: 1661932824000,
+//     items: ["ANGEL", "MINION_PARTS_EPIC", "COSTUME_EPIC"],
+//   },
+// ];
 
 export default function MintingList() {
   const { setting, minting } = useSelector((state) => state);
   const { library } = setting;
-  const { mintingBoxList } = minting;
-  const [selectedRound, setSelectedRound] = useState(null);
+  const { mintingBoxList, mintingComboList } = minting;
+  const [selectedList, setSelectedList] = useState(null);
   const [template, setTemplate] = useState(null);
-  const [random] = useState(Math.floor(Math.random() * 5));
 
   useEffect(() => {
     const param = {
@@ -192,20 +165,20 @@ export default function MintingList() {
     );
   }, []);
 
-  const _handleSelectRound = (product) => {
-    setSelectedRound(product);
+  const _handleSelectRound = (list) => {
+    setSelectedList(list);
   };
 
   const _handleRemoveSelectedRound = () => {
-    setSelectedRound(null);
+    setSelectedList(null);
   };
 
-  return mintingBoxList ? (
+  return mintingBoxList && mintingComboList ? (
     <>
       <CustomContainer>
         <CustomCard>
           <CustomStep orientation="vertical">
-            {mintingBoxList.map((product, index) => {
+            {mintingBoxList.map((round, index) => {
               return (
                 <Step
                   key={index}
@@ -224,219 +197,39 @@ export default function MintingList() {
                             fontWeight: 700,
                           }}
                         >
-                          Minting NFT Box Round {product.roundNumber}
+                          Minting NFT Box Round {round.roundNumber}
                         </Title>
                       }
                     />
                   </StepLabel>
-                  <StepContent sx={{ width: "100%", maxWidth: "600px", mt: 1 }}>
-                    <RoundDetail
-                      product={product}
-                      library={library}
-                      _handleSelectRound={_handleSelectRound}
-                    />
+                  <StepContent sx={{ width: "100%", mt: 1 }}>
+                    <Grid container spacing={5}>
+                      <Grid item xs={12} md={6}>
+                        <RoundBoxDetail
+                          round={round}
+                          library={library}
+                          _handleSelectRound={_handleSelectRound}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        {mintingComboList[index] ? (
+                          <RoundComboDetail
+                            round={mintingComboList[index]}
+                            library={library}
+                            _handleSelectRound={_handleSelectRound}
+                          />
+                        ) : null}
+                      </Grid>
+                    </Grid>
                   </StepContent>
                 </Step>
               );
             })}
           </CustomStep>
         </CustomCard>
-        <Hidden smDown>
-          <img
-            src={`${image_url}/artwork_${formatNftName(angels[random])}.png`}
-            alt="thumbnail"
-            className="animate__animated animate__fadeInRight"
-            style={{
-              position: "fixed",
-              width: "50%",
-              bottom: 0,
-              right: 0,
-              zIndex: 0,
-              opacity: 0.6,
-            }}
-          />
-        </Hidden>
       </CustomContainer>
-      <NewBoxMintingForm
-        data={selectedRound}
-        template={template}
-        onClose={_handleRemoveSelectedRound}
-      />
     </>
   ) : (
     <Loader />
   );
 }
-
-const countDownRenderer = ({ days, hours, minutes, seconds, completed }) => {
-  if (completed) {
-    return "";
-  } else {
-    return (
-      <Stack direction="row" spacing={1}>
-        <CountdownStack>
-          <Typography fontSize="1.5rem" textAlign="center">
-            {days < 10 ? "0" : ""}
-            {days}
-          </Typography>
-          <Typography fontSize="0.7rem" mt="-0.5rem" textAlign="center">
-            days
-          </Typography>
-        </CountdownStack>
-        <CountdownStack>
-          <Typography fontSize="1.5rem" textAlign="center">
-            {hours < 10 ? "0" : ""}
-            {hours}
-          </Typography>
-          <Typography fontSize="0.7rem" mt="-0.5rem" textAlign="center">
-            hours
-          </Typography>
-        </CountdownStack>
-        <CountdownStack>
-          <Typography fontSize="1.5rem" textAlign="center">
-            {minutes < 10 ? "0" : ""}
-            {minutes}
-          </Typography>
-          <Typography fontSize="0.7rem" mt="-0.5rem" textAlign="center">
-            min
-          </Typography>
-        </CountdownStack>
-        <CountdownStack>
-          <Typography fontSize="1.5rem" textAlign="center">
-            {seconds < 10 ? "0" : ""}
-            {seconds}
-          </Typography>
-          <Typography fontSize="0.7rem" mt="-0.5rem" textAlign="center">
-            sec
-          </Typography>
-        </CountdownStack>
-      </Stack>
-    );
-  }
-};
-
-const RoundDetail = ({ product, library, _handleSelectRound }) => {
-  const now = moment().utc().unix() * 1000;
-  const [selectedItem, setSelectedItem] = useState(product.items[0]);
-  const itemInformation = BoxType[selectedItem.boxType];
-  const start = product.items[0].startTime;
-  const dispatch = useDispatch();
-
-  const _getStatusProduct = (product) => {
-    const { startTime, endTime, sold, totalSell } = product;
-    const now = moment().utc().unix() * 1000;
-    const start = startTime;
-    const end = endTime;
-    let status = "BUY_NOW";
-    if (now - end > 0) {
-      status = "END_TIME";
-    }
-    if (start - now > 0) {
-      status = "COMING_SOON";
-    }
-    if (totalSell - sold <= 0) {
-      status = "SOLD_OUT";
-    }
-    return status;
-  };
-
-  const status = _getStatusProduct(selectedItem);
-
-  return (
-    <>
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={2}
-        width="fit-content"
-        mb={3}
-      >
-        {product.items.map((item, j) => {
-          const information = BoxType[item.boxType];
-          return (
-            <BoxItem
-              key={j}
-              sx={{
-                border: `1px solid ${
-                  selectedItem.boxType === item.boxType
-                    ? information.color
-                    : "var(--main-color)"
-                }`,
-              }}
-              p={1}
-              onClick={() => setSelectedItem(item)}
-            >
-              <img
-                src={information.image}
-                alt="box img"
-                className="thumbnail"
-              />
-            </BoxItem>
-          );
-        })}
-      </Stack>
-      <CustomStack>
-        <BoxTypeLabel
-          className={
-            "custom-font name " +
-            (selectedItem.boxType.length > 12 ? "long-name" : "")
-          }
-          variant="h6"
-          sx={{
-            color: itemInformation.color,
-          }}
-        >
-          {selectedItem.boxType.split("_").join(" ").toLowerCase()}{" "}
-          {library.BOX}
-        </BoxTypeLabel>
-      </CustomStack>
-      <CustomStack>
-        <Typography sx={{ width: 120 }}>{library.TOTAL_SELL}:</Typography>
-        <Typography> {formatAmount(selectedItem.supply)}</Typography>
-      </CustomStack>
-      <CustomStack>
-        <FieldLabel>{library.PRICE}:</FieldLabel>
-        <Typography>
-          {formatAmount(selectedItem.unitPrice)} {selectedItem.paymentCurrency}
-        </Typography>
-      </CustomStack>
-      <CustomStack>
-        <FieldLabel>{library.TIME}:</FieldLabel>
-        <Typography sx={{ color: "#fff" }}>
-          {`${moment(selectedItem.startTime).format(
-            "YYYY-MM-DD HH:mm"
-          )} to ${moment(selectedItem.endTime).format("YYYY-MM-DD HH:mm")}`}
-        </Typography>
-        {status === "COMING_SOON" && (
-          <Box
-            sx={{
-              transform: "scale(0.7)",
-              width: "fit-content",
-              marginLeft: "-2.5rem",
-            }}
-          >
-            <Countdown
-              date={Date.now() + (start - now)}
-              renderer={(props) => countDownRenderer(props)}
-              onComplete={() => dispatch(_getMintingBoxList())}
-            />
-          </Box>
-        )}
-      </CustomStack>
-      <CustomStack>
-        <FieldLabel>{library.CONDITION}:</FieldLabel>
-        <Typography> {product.condition}</Typography>
-      </CustomStack>
-      <Stack>
-        <CustomButton
-          className="custom-btn custom-font"
-          sx={{ mt: 5 }}
-          onClick={() => _handleSelectRound(selectedItem)}
-          disabled={status === "SOLD_OUT" || status === "END_TIME"}
-        >
-          {library[status]}
-        </CustomButton>
-      </Stack>
-    </>
-  );
-};

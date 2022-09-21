@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { production, staging } from "./environment";
+import { develop, production, staging } from "./environment";
 import { formatAddress } from "./format";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const DEVICE_KEY = "uU5tEUmAgvBWArsv";
@@ -12,12 +12,13 @@ export const explorer_url = "https://bscscan.com/tx";
 
 export const hostname = window.location.hostname.replace("www.", "");
 
-export const config = production;
-// export const config = staging;
-
-export const API = config.API;
-
-export const ETHERSCAN_LINK = `https://testnet.bscscan.com`;
+const configs = {
+  localhost: develop,
+  "marketplace.megdev.co": staging,
+  "38cc-113-161-47-125.ap.ngrok.io": develop,
+};
+export const config = configs[hostname] ? configs[hostname] : production;
+export const { API, ETHERSCAN_LINK, MAIN_MENUS, BLOCKCHAIN } = config;
 
 export const makeID = (length) => {
   var result = "";

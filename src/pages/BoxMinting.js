@@ -33,7 +33,14 @@ export default function BoxMinting() {
             Angel, Minion Parts and Costume Box
           </Title>
         </Container>
-        <Title variant="body1">The beginning of a great journey</Title>
+        <Title
+          variant="body1"
+          sx={{
+            textAlign: "left",
+          }}
+        >
+          The beginning of a great journey
+        </Title>
         <MintingList />
       </Container>
     </div>

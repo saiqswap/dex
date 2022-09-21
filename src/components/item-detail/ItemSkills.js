@@ -7,7 +7,7 @@ import { formatNftName } from "../../utils/util";
 const MinionSkill = ({ data }) => {
   return (
     <div className="passive-skill">
-      <div>
+      {/* <div>
         <img
           src={`${image_url}/effect_${data.properties.effect
             .toLowerCase()
@@ -20,7 +20,7 @@ const MinionSkill = ({ data }) => {
             currentTarget.className = "image-passive-skill-error";
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

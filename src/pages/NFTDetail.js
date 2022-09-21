@@ -135,7 +135,7 @@ export default function NFTDetail() {
 }
 
 function getNftDetail(id, successCallback, errorCallback) {
-  let url = `${API.replace("/api/v1", "")}/nft/${id}`;
+  let url = `${API}/nft?tokenId=${id}`;
   let headers = defaultHeaders;
   headers["Authorization"] = "bearer " + getAccessToken();
   fetch(url, {

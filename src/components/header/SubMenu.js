@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { MAIN_MENUS } from "../../settings/constants";
+import { MAIN_MENUS } from "../../settings";
 import { _changeLanguage } from "../../store/actions/settingActions";
 
 const MenuButton = styled(Button)(({ theme }) => ({

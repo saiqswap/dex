@@ -26,7 +26,7 @@ const BoxesContainer = () => {
   const [boxes, setBoxes] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user, setting } = useSelector((state) => state);
-  const { metamaskProvider, walletAddress } = user;
+  const { metamaskProvider, walletAddress, balances } = user;
   const { config } = setting;
   const [mounted, setMounted] = useState(true);
   const [template, setTemplate] = useState(null);
@@ -71,6 +71,7 @@ const BoxesContainer = () => {
   }, [mounted]);
 
   const _handleErrorCallback = (error) => {
+    console.log(error);
     toast.error(error.message);
     // console.log(error);
     setLoading(false);
@@ -80,66 +81,71 @@ const BoxesContainer = () => {
     const purchaseToken = config.contracts.find(
       (e) => e.contractAddress === box.paymentContract
     );
-    setLoading(true);
-
-    var boxScPrice = parseUnits(box.price.toString(), purchaseToken.decimals);
-
-    checkBeforeBuy(
-      config.purchaseContract,
-      box.paymentContract,
-      boxScPrice,
-      walletAddress,
-      _handleErrorCallback
-    ).then((result) => {
-      if (result) {
-        get(
-          `/market/box-sc-input?boxId=${box.id}&qty=1`,
-          (data) => {
-            purchaseBox(
-              data,
-              boxScPrice,
-              box.paymentContract,
-              config,
-              _handleErrorCallback
-            ).then((e) => {
-              getReceipt(e, metamaskProvider).then((result) => {
-                if (result) {
-                  post(
-                    `/market/trigger-paid-box?txHash=${e}`,
-                    {},
-                    () => {
-                      interval = setInterval(() => {
-                        get(`/nft/my-box-by-hash?txHash=${e}`, (data) => {
-                          if (data) {
-                            _clearInterval();
-                            setLoading(false);
-                            toast.success(
-                              `Congratulations ! You own a Box. Please go to Summon page to unbox.`
-                            );
-                            handleGetBoxes();
-                            dispatch(
-                              _getBalance(walletAddress, metamaskProvider)
-                            );
-                          }
-                        });
-                      }, 2000);
-                    },
-                    (error) => {
-                      console.log(error);
-                      setLoading(false);
-                    }
-                  );
-                }
+    const purchaseBalance = balances.find(
+      (e) => e.contractAddress === purchaseToken.contractAddress
+    );
+    if (purchaseBalance.onChainBalance >= box.price) {
+      setLoading(true);
+      var boxScPrice = parseUnits(box.price.toString(), purchaseToken.decimals);
+      checkBeforeBuy(
+        config.purchaseContract,
+        box.paymentContract,
+        boxScPrice,
+        walletAddress,
+        _handleErrorCallback
+      ).then((result) => {
+        if (result) {
+          get(
+            `/market/box-sc-input?boxId=${box.id}&qty=1`,
+            (data) => {
+              purchaseBox(
+                data,
+                boxScPrice,
+                box.paymentContract,
+                config,
+                _handleErrorCallback
+              ).then((e) => {
+                getReceipt(e, metamaskProvider).then((result) => {
+                  if (result) {
+                    post(
+                      `/market/trigger-paid-box?txHash=${e}`,
+                      {},
+                      () => {
+                        interval = setInterval(() => {
+                          get(`/nft/my-box-by-hash?txHash=${e}`, (data) => {
+                            if (data) {
+                              _clearInterval();
+                              setLoading(false);
+                              toast.success(
+                                `Congratulations ! You own a Box. Please go to Summon page to unbox.`
+                              );
+                              handleGetBoxes();
+                              dispatch(
+                                _getBalance(walletAddress, metamaskProvider)
+                              );
+                            }
+                          });
+                        }, 2000);
+                      },
+                      (error) => {
+                        console.log(error);
+                        setLoading(false);
+                      }
+                    );
+                  }
+                });
               });
-            });
-          },
-          (error) => {
-            console.log(error);
-            setLoading(false);
-          }
-        );
-      }
-    });
+            },
+            (error) => {
+              console.log(error);
+              setLoading(false);
+            }
+          );
+        }
+      });
+    } else {
+      toast.error("Insufficient balance");
+    }
   };
 
   return (
