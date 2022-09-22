@@ -8,7 +8,7 @@ export let prefix = null;
 export let provider = null;
 export let signer = null;
 
-export const _checkLogin = async (walletName, _updateAddress) => {
+export const _checkLogin = async (walletName, _updateAddress, _handleError) => {
   _setProvider(walletName, async () => {
     try {
       const address = await signer.getAddress();
@@ -147,14 +147,6 @@ export const purchaseBox = async (
   _handleErrorCallback
 ) => {
   try {
-    console.log({
-      inputData,
-      value,
-      paymentContract,
-      config,
-      _handleErrorCallback,
-    });
-
     const contractInstance = new ethers.Contract(
       config.purchaseContract,
       PURCHASE_ITEM_ABI,

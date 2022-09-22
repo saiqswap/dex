@@ -13,6 +13,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  LinearProgress,
   Link,
   TextField,
   Tooltip,
@@ -21,6 +22,7 @@ import {
 import { parseUnits } from "ethers/lib/utils";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { checkBeforeBuy, getReceipt, purchaseBox } from "../../onchain/onchain";
@@ -35,7 +37,13 @@ import {
   ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
   ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT,
 } from "../../settings/endpoint";
-import { deleteText, formatAmount, formatPrice } from "../../settings/format";
+import {
+  deleteText,
+  formatAmount,
+  formatNumberWithDecimal,
+  formatPrice,
+} from "../../settings/format";
+import { _getMintingBoxList } from "../../store/actions/mintingActions";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import GeneralPopup from "../common/GeneralPopup";
@@ -70,6 +78,17 @@ const SelectAmountButton = styled(Box)(({ theme }) => ({
   cursor: "pointer",
   marginRight: theme.spacing(1),
 }));
+const LinearProgressCustom = styled(LinearProgress)(() => ({
+  borderRadius: "10px",
+  height: "15px",
+  backgroundColor: "rgba(0, 51, 98, 0.1)!important",
+  backdropFilter: "blur(20px)",
+  border: "1px solid var(--border-color)",
+  boxShadow: "0 0 10px #F6B323",
+  ".MuiLinearProgress-bar": {
+    backgroundColor: "#F6B323",
+  },
+}));
 const selectAmount = [20, 50, 70, 100];
 const socials = [
   {
@@ -97,6 +116,8 @@ const NewBoxMintingForm = ({ onClose, data }) => {
   const { setting, user } = useSelector((state) => state);
   const { library, config, templates } = setting;
   const { walletAddress } = user;
+  const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (data) {
@@ -113,96 +134,119 @@ const NewBoxMintingForm = ({ onClose, data }) => {
     }
   }, [data, templates]);
 
+  useEffect(() => {
+    if (data) {
+      const availablePercent = parseInt(
+        ((data.supply - data.available) / data.supply) * 100
+      );
+      const timer = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress < availablePercent) {
+            return prevProgress + 10;
+          } else {
+            clearInterval(timer);
+            return prevProgress;
+          }
+        });
+      }, 200);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+    return () => setProgress(0);
+  }, [data]);
+
   const _onChangeAmount = (value) => {
     value = value.replace(".", "");
     setAmount(deleteText(value));
   };
 
   const _handleErrorCallback = (error) => {
-    console.log(error.message);
     setLoading(false);
+    console.log(error.message);
   };
 
   const _handleSubmit = () => {
-    // if (information) {
-    if (amount) {
-      const amountNumber = parseFloat(amount);
-      if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
-        toast.error(
-          `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
-        );
-      } else {
-        const product = data;
-        const purchaseToken = config.contracts.find(
-          (e) => e.contractAddress === product.paymentContract
-        );
-        setLoading(true);
-        const total = product.unitPrice * parseFloat(amount);
-        const boxScPrice = parseUnits(
-          formatPrice(total, 4),
-          purchaseToken.decimals
-        );
+    if (walletAddress) {
+      if (amount) {
+        const amountNumber = parseFloat(amount);
+        if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
+          toast.error(
+            `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
+          );
+        } else {
+          const product = data;
+          const purchaseToken = config.contracts.find(
+            (e) => e.contractAddress === product.paymentContract
+          );
+          setLoading(true);
+          const total = product.unitPrice * parseFloat(amount);
+          const boxScPrice = parseUnits(
+            formatPrice(total, 4),
+            purchaseToken.decimals
+          );
 
-        checkBeforeBuy(
-          config.purchaseContract,
-          product.paymentContract,
-          boxScPrice,
-          walletAddress,
-          _handleErrorCallback
-        ).then((result) => {
-          if (result) {
-            post(
-              ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
-              {
-                productId: data.id,
-                amount: parseFloat(amount),
-                address: walletAddress,
-              },
-              (data) => {
-                if (data) {
-                  purchaseBox(
-                    data,
-                    boxScPrice,
-                    product.paymentContract,
-                    config,
-                    _handleErrorCallback
-                  ).then((e) => {
-                    getReceipt(e).then((result) => {
-                      if (result) {
-                        post(
-                          `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
-                          {},
-                          () => {
-                            setLoading(false);
-                            toast.success("Success");
-                          },
-                          (error) => {
-                            console.log(error);
-                            setLoading(false);
-                          }
-                        );
-                      }
+          checkBeforeBuy(
+            config.purchaseContract,
+            product.paymentContract,
+            boxScPrice,
+            walletAddress,
+            _handleErrorCallback
+          ).then((result) => {
+            if (result) {
+              post(
+                ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
+                {
+                  productId: data.id,
+                  amount: parseFloat(amount),
+                  address: walletAddress,
+                },
+                (data) => {
+                  if (data) {
+                    purchaseBox(
+                      data,
+                      boxScPrice,
+                      product.paymentContract,
+                      config,
+                      _handleErrorCallback
+                    ).then((e) => {
+                      getReceipt(e).then((result) => {
+                        if (result) {
+                          post(
+                            `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
+                            {},
+                            () => {
+                              setLoading(false);
+                              toast.success("Success");
+                              dispatch(_getMintingBoxList);
+                            },
+                            (error) => {
+                              console.log(error);
+                              setLoading(false);
+                            }
+                          );
+                        }
+                      });
                     });
-                  });
-                } else {
-                  toast.error(library.SOMETHING_WRONG);
+                  } else {
+                    toast.error(library.SOMETHING_WRONG);
+                    setLoading(false);
+                  }
+                },
+                (error) => {
+                  toast.error(library[error.code]);
                   setLoading(false);
                 }
-              },
-              (error) => {
-                toast.error(library[error.code]);
-                setLoading(false);
-              }
-            );
-          }
-        });
+              );
+            }
+          });
+        }
+      } else {
+        toast.error(library.PLEASE_ENTER_AMOUNT);
       }
     } else {
-      toast.error(library.PLEASE_ENTER_AMOUNT);
+      toast.error(library.PLEASE_CONNECT_WALLET);
     }
-    // } else {
-    //   toast.error("Please connect wallet and login");
-    // }
   };
 
   const _getStatusProduct = (product) => {
@@ -264,6 +308,23 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                 {library.TYPE}:{" "}
                 {data.boxType.split("_").join(" ").toLowerCase()}{" "}
               </Typography>
+              <Box mt={2} mb={1}>
+                <LinearProgressCustom variant="determinate" value={progress} />
+                <Box
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  px={1}
+                  mt={0.5}
+                >
+                  <Typography variant="caption" color="#fff">
+                    {formatNumberWithDecimal(data.supply - data.available, 2)}{" "}
+                    {library.BOX}
+                  </Typography>
+                  <Typography variant="caption" color="#fff">
+                    {formatNumberWithDecimal(data.supply, 2)} {library.BOX}
+                  </Typography>
+                </Box>
+              </Box>
               <TextField
                 fullWidth
                 label="Amount"

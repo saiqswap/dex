@@ -18,9 +18,10 @@ import {
   _getWalletLogout,
   _setWalletAddress,
   _setWalletName,
+  _handleLogout,
 } from "../store/actions/userActions";
 import { post } from "../utils/api";
-import { isLoggedIn, setAccessToken } from "../utils/auth";
+import { isLoggedIn, logout, setAccessToken } from "../utils/auth";
 import ConfirmChangeChain from "./header/ConfirmChangeChain";
 import LoggedProfile from "./header/LoggedProfile";
 import LoginPopup from "./header/LoginPopup";
@@ -46,6 +47,9 @@ function Header() {
         dispatch(_setWalletAddress(address));
         dispatch(_setWalletName(walletName));
       });
+    } else {
+      logout();
+      dispatch(_handleLogout());
     }
   }, [dispatch, walletName]);
 
@@ -56,7 +60,13 @@ function Header() {
         setShowModalConfirm(true);
       }
       prefix.on("accountsChanged", (address) => {
-        dispatch(_setWalletAddress(address[0]));
+        if (address[0]) {
+          dispatch(_setWalletAddress(address[0]));
+        } else {
+          dispatch(_getWalletLogout());
+          dispatch(_handleLogout());
+          logout();
+        }
       });
       prefix.on("chainChanged", (newNetwork) => {
         if (Number(newNetwork) !== BLOCKCHAIN.domain.chainId) {

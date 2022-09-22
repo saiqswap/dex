@@ -89,4 +89,6 @@ export const en = {
   PRESALE_PRODUCT_OVER_LIMIT: "You bought over limit",
   ADD: "Add",
   PROFILE: "Profile",
+  PLEASE_CONNECT_WALLET: "Please connect wallet.",
+  DISCONNECT: "Disconnect",
 };

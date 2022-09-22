@@ -22,18 +22,25 @@ export const SUPPORT_TOKENS = [
     image: "https://marketplace.megdev.co/images/coins/USDT.png",
   },
   {
-    contractAddress: `0xAe7c682Ba26AD6835B6150FfB35F22Db9987f509`,
-    // contractAddress: `0xeF92cc5adcF971f7C2976131B4Fe3E2000Df53a7`, //testnet
+    // contractAddress: `0xAe7c682Ba26AD6835B6150FfB35F22Db9987f509`,
+    contractAddress: `0x61817932552a742De092f9196a20b1eF2a484Ccb`, //testnet
     asset: "ING",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/ING.png",
   },
-  // {
-  //   contractAddress: `0x1d996E6A143F8581690f4CFCE44345c29ABB0c8c`,
-  //   asset: "INC",
-  //   decimals: 18,
-  //   image: "https://marketplace.megdev.co/images/coins/INC.png",
-  // },
+  {
+    contractAddress: `0x5Cc31aDC4F86fb73C4a15799eB222A98fd469219`,
+    asset: "BUSD",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/BUSD.png",
+  },
+  {
+    // contractAddress: `0x1d996E6A143F8581690f4CFCE44345c29ABB0c8c`,
+    contractAddress: "0x927Ae32c40F40d24a2ea272629025d15104aE608", //testnet
+    asset: "INC",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/INC.png",
+  },
 ];
 export const PRE_SALE_ROUNDS = [
   {
@@ -536,7 +543,6 @@ export const MINTING_COMBOS = {
     color: "#1588d6",
   },
 };
-
 export const Angels = {
   ALICE: {
     image: "/images/character/body/Alice_1.png",
