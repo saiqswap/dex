@@ -15,7 +15,7 @@ export const hostname = window.location.hostname.replace("www.", "");
 const configs = {
   localhost: develop,
   "marketplace.megdev.co": staging,
-  "38cc-113-161-47-125.ap.ngrok.io": develop,
+  "marketplaceinfinity.feliciastation.com": develop,
 };
 export const config = configs[hostname] ? configs[hostname] : production;
 export const { API, ETHERSCAN_LINK, MAIN_MENUS, BLOCKCHAIN } = config;

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Button, Typography } from "@mui/material";
+import { Button, Fade, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Buffer } from "buffer";
 import React from "react";

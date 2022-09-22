@@ -96,7 +96,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
   const [amount, setAmount] = useState("");
   const { setting, user } = useSelector((state) => state);
   const { library, config, templates } = setting;
-  const { walletAddress, information } = user;
+  const { walletAddress } = user;
 
   useEffect(() => {
     if (data) {
@@ -190,7 +190,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                 }
               },
               (error) => {
-                toast.error(error.code);
+                toast.error(library[error.code]);
                 setLoading(false);
               }
             );

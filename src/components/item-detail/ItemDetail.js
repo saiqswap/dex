@@ -395,73 +395,73 @@ const ItemDetail = ({ data, _handleReload }) => {
 
 export default ItemDetail;
 
-const MintComponent = ({ data, _handleReload }) => {
-  const [showMintingPopup, setShowMintingPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
+// const MintComponent = ({ data, _handleReload }) => {
+//   const [showMintingPopup, setShowMintingPopup] = useState(false);
+//   const [loading, setLoading] = useState(false);
 
-  const _handleMinNFT = () => {
-    setLoading(true);
-    setShowMintingPopup(false);
-    post(
-      `/nft/mint?tokenId=${data.tokenId.toString()}`,
-      null,
-      () => {
-        var temp = setInterval(() => {
-          get(
-            `/nft/get-by-id?tokenId=${data.tokenId.toString()}`,
-            (res) => {
-              if (res.mintTxHash) {
-                _handleReload();
-                clearInterval(temp);
-              }
-            },
-            () => {
-              toast.error("Listing failed");
-              setLoading(false);
-              clearInterval(temp);
-            }
-          );
-        }, 5000);
-      },
-      () => {
-        toast.error("Listing failed");
-        setLoading(false);
-      }
-    );
-  };
+//   const _handleMinNFT = () => {
+//     setLoading(true);
+//     setShowMintingPopup(false);
+//     post(
+//       `/nft/mint?tokenId=${data.tokenId.toString()}`,
+//       null,
+//       () => {
+//         var temp = setInterval(() => {
+//           get(
+//             `/nft/get-by-id?tokenId=${data.tokenId.toString()}`,
+//             (res) => {
+//               if (res.mintTxHash) {
+//                 _handleReload();
+//                 clearInterval(temp);
+//               }
+//             },
+//             () => {
+//               toast.error("Listing failed");
+//               setLoading(false);
+//               clearInterval(temp);
+//             }
+//           );
+//         }, 5000);
+//       },
+//       () => {
+//         toast.error("Listing failed");
+//         setLoading(false);
+//       }
+//     );
+//   };
 
-  return (
-    <>
-      <Button
-        className="btn-listing"
-        onClick={() => setShowMintingPopup(true)}
-        disabled={loading}
-      >
-        {loading ? <CircularProgress size="29px" /> : "Mint"}
-      </Button>
-      <Modal
-        open={showMintingPopup}
-        onClose={() => setShowMintingPopup(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="custom-modal-vk"
-      >
-        <div className="listing-popup">
-          <Typography variant="h6" className="custom-font">
-            Are you sure for mint NFT #{data && data.tokenId} ?
-          </Typography>
-          <LoadingButton
-            className="custom-btn custom-font mt-20"
-            onClick={_handleMinNFT}
-            loading={loading}
-          >
-            {loading ? "" : "Mint NFT"}
-          </LoadingButton>
-        </div>
-      </Modal>
-    </>
-  );
-};
+//   return (
+//     <>
+//       <Button
+//         className="btn-listing"
+//         onClick={() => setShowMintingPopup(true)}
+//         disabled={loading}
+//       >
+//         {loading ? <CircularProgress size="29px" /> : "Mint"}
+//       </Button>
+//       <Modal
+//         open={showMintingPopup}
+//         onClose={() => setShowMintingPopup(false)}
+//         aria-labelledby="modal-modal-title"
+//         aria-describedby="modal-modal-description"
+//         className="custom-modal-vk"
+//       >
+//         <div className="listing-popup">
+//           <Typography variant="h6" className="custom-font">
+//             Are you sure for mint NFT #{data && data.tokenId} ?
+//           </Typography>
+//           <LoadingButton
+//             className="custom-btn custom-font mt-20"
+//             onClick={_handleMinNFT}
+//             loading={loading}
+//           >
+//             {loading ? "" : "Mint NFT"}
+//           </LoadingButton>
+//         </div>
+//       </Modal>
+//     </>
+//   );
+// };
 
 const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
   const history = useHistory();

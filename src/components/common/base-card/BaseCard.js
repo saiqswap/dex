@@ -2,11 +2,7 @@ import { Hidden, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
-import {
-  formatAmount,
-  formatBigNumber,
-  _formatNameToLink,
-} from "../../../settings/format";
+import { formatAmount, _formatNameToLink } from "../../../settings/format";
 import { formatNftName } from "../../../utils/util";
 import CopyBox from "../CopyBox";
 import "./base-card.scss";

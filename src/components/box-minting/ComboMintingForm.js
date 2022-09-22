@@ -9,13 +9,11 @@ import {
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
-  CircularProgress,
   Divider,
   Grid,
   IconButton,
   Link,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { parseUnits } from "ethers/lib/utils";
@@ -24,7 +22,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { checkBeforeBuy, getReceipt, purchaseBox } from "../../onchain/onchain";
-import { image_url } from "../../settings";
 import { BoxType, MINTING_COMBOS } from "../../settings/constants";
 import {
   ENDPOINT_MINTING_BOX_COMBO_PAID,
@@ -32,7 +29,6 @@ import {
 } from "../../settings/endpoint";
 import { deleteText, formatAmount, formatPrice } from "../../settings/format";
 import { post } from "../../utils/api";
-import { formatNftName } from "../../utils/util";
 import GeneralPopup from "../common/GeneralPopup";
 
 const PurchaseBox = styled(Box)({
@@ -179,7 +175,7 @@ const ComboMintingForm = ({ onClose, data }) => {
                 }
               },
               (error) => {
-                toast.error(error.code);
+                toast.error(library[error.code]);
                 setLoading(false);
               }
             );
@@ -382,61 +378,61 @@ const SocialComponent = () => {
   );
 };
 
-const AvailableTemplate = ({ available, library }) => {
-  return (
-    <div className="items" style={{ marginLeft: 0 }}>
-      <Typography className="custom-font" textAlign={"left"} mb={1}>
-        {library.AVAILABLE}:{" "}
-        {available && (
-          <span>{`${available.length} ${
-            available[0]
-              ? available[0].type.toLowerCase().replace("_", " ")
-              : ""
-          }${available[0]?.type.toLowerCase() === "angel" ? "s" : ""}`}</span>
-        )}
-      </Typography>
-      {available ? (
-        <ul>
-          {available.map((item, index) => (
-            <Tooltip
-              key={index}
-              title={
-                <div
-                  style={{
-                    padding: "5px 20px",
-                    fontSize: "1rem",
-                  }}
-                >
-                  {`${item.name} ${item.level.replace("_", " ")}`}
-                </div>
-              }
-              placement="right-end"
-              arrow
-            >
-              <li className={item.level.toLowerCase()}>
-                <span className="custom-font">
-                  {item.level.replace("_", " ")}
-                </span>
-                <img
-                  src={`${image_url}/${
-                    item.type === "ANGEL"
-                      ? `avatar_${formatNftName(item.name)}`
-                      : `body_${formatNftName(item.name)}`
-                  }.png`}
-                  alt=""
-                />
-              </li>
-            </Tooltip>
-          ))}
-        </ul>
-      ) : (
-        <ul style={{ justifyContent: "center", opacity: 0.2 }}>
-          <CircularProgress />
-        </ul>
-      )}
-    </div>
-  );
-};
+// const AvailableTemplate = ({ available, library }) => {
+//   return (
+//     <div className="items" style={{ marginLeft: 0 }}>
+//       <Typography className="custom-font" textAlign={"left"} mb={1}>
+//         {library.AVAILABLE}:{" "}
+//         {available && (
+//           <span>{`${available.length} ${
+//             available[0]
+//               ? available[0].type.toLowerCase().replace("_", " ")
+//               : ""
+//           }${available[0]?.type.toLowerCase() === "angel" ? "s" : ""}`}</span>
+//         )}
+//       </Typography>
+//       {available ? (
+//         <ul>
+//           {available.map((item, index) => (
+//             <Tooltip
+//               key={index}
+//               title={
+//                 <div
+//                   style={{
+//                     padding: "5px 20px",
+//                     fontSize: "1rem",
+//                   }}
+//                 >
+//                   {`${item.name} ${item.level.replace("_", " ")}`}
+//                 </div>
+//               }
+//               placement="right-end"
+//               arrow
+//             >
+//               <li className={item.level.toLowerCase()}>
+//                 <span className="custom-font">
+//                   {item.level.replace("_", " ")}
+//                 </span>
+//                 <img
+//                   src={`${image_url}/${
+//                     item.type === "ANGEL"
+//                       ? `avatar_${formatNftName(item.name)}`
+//                       : `body_${formatNftName(item.name)}`
+//                   }.png`}
+//                   alt=""
+//                 />
+//               </li>
+//             </Tooltip>
+//           ))}
+//         </ul>
+//       ) : (
+//         <ul style={{ justifyContent: "center", opacity: 0.2 }}>
+//           <CircularProgress />
+//         </ul>
+//       )}
+//     </div>
+//   );
+// };
 
 // const DropRate = ({ data }) => {
 //   let tierDescriptions = tierAngelDescription;

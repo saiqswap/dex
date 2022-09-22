@@ -86,4 +86,7 @@ export const en = {
   MINTING_FORM_NOTICE_3: `Please contact the Issuer for any questions regarding Box NFT.`,
   WILL_RECEIVE: "Will receive",
   SOMETHING_WRONG: "Something wrong. Please try again later.",
+  PRESALE_PRODUCT_OVER_LIMIT: "You bought over limit",
+  ADD: "Add",
+  PROFILE: "Profile",
 };

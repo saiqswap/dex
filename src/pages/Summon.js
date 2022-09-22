@@ -1,5 +1,4 @@
 import {
-  Button,
   CircularProgress,
   Container,
   Grid,
@@ -27,7 +26,7 @@ const Summon = () => {
   const [completed, setCompleted] = useState(true);
   const [mounted, setMounted] = useState(true);
   const [scale, setScale] = useState(1);
-  const [showList, setShowList] = useState(true);
+  const [showList] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const dispatch = useDispatch();
 

@@ -2,18 +2,15 @@ import {
   Box,
   Card,
   CardHeader,
-  Divider,
   Grid,
-  Hidden,
   Step,
   StepContent,
   StepLabel,
   Stepper,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { post } from "../../utils/api";
 import Loader from "../common/Loader";
 import RoundBoxDetail from "./RoundBoxDetail";
 import RoundComboDetail from "./RoundComboDetail";
@@ -107,71 +104,10 @@ const CustomStep = styled(Stepper)(({ theme }) => ({
     },
   },
 }));
-// const COMBO_LIST = [
-//   {
-//     boxType: "COMBO_1",
-//     supply: 1000,
-//     unitPrice: 0.01,
-//     startTime: 1661241624000,
-//     endTime: 1661932824000,
-//     items: ["ANGEL", "MINION_PARTS_COMMON", "COSTUME_COMMON"],
-//   },
-//   {
-//     boxType: "COMBO_2",
-//     supply: 1000,
-//     unitPrice: 0.01,
-//     startTime: 1661241624000,
-//     endTime: 1661932824000,
-//     items: ["ANGEL", "MINION_PARTS_EPIC", "COSTUME_COMMON"],
-//   },
-//   {
-//     boxType: "COMBO_3",
-//     supply: 1000,
-//     unitPrice: 0.01,
-//     startTime: 1661241624000,
-//     endTime: 1661932824000,
-//     items: ["ANGEL", "MINION_PARTS_COMMON", "COSTUME_EPIC"],
-//   },
-//   {
-//     boxType: "COMBO_4",
-//     supply: 1000,
-//     unitPrice: 0.01,
-//     startTime: 1661241624000,
-//     endTime: 1661932824000,
-//     items: ["ANGEL", "MINION_PARTS_EPIC", "COSTUME_EPIC"],
-//   },
-// ];
 
 export default function MintingList() {
-  const { setting, minting } = useSelector((state) => state);
-  const { library } = setting;
+  const { minting } = useSelector((state) => state);
   const { mintingBoxList, mintingComboList } = minting;
-  const [selectedList, setSelectedList] = useState(null);
-  const [template, setTemplate] = useState(null);
-
-  useEffect(() => {
-    const param = {
-      page: 1,
-      pageSize: 200,
-      getMeta: false,
-    };
-    post(
-      "/nft/templates",
-      param,
-      (result) => {
-        setTemplate(result.items);
-      },
-      () => {}
-    );
-  }, []);
-
-  const _handleSelectRound = (list) => {
-    setSelectedList(list);
-  };
-
-  const _handleRemoveSelectedRound = () => {
-    setSelectedList(null);
-  };
 
   return mintingBoxList && mintingComboList ? (
     <>
@@ -205,19 +141,11 @@ export default function MintingList() {
                   <StepContent sx={{ width: "100%", mt: 1 }}>
                     <Grid container spacing={5}>
                       <Grid item xs={12} md={6}>
-                        <RoundBoxDetail
-                          round={round}
-                          library={library}
-                          _handleSelectRound={_handleSelectRound}
-                        />
+                        <RoundBoxDetail round={round} />
                       </Grid>
                       <Grid item xs={12} md={6}>
                         {mintingComboList[index] ? (
-                          <RoundComboDetail
-                            round={mintingComboList[index]}
-                            library={library}
-                            _handleSelectRound={_handleSelectRound}
-                          />
+                          <RoundComboDetail round={mintingComboList[index]} />
                         ) : null}
                       </Grid>
                     </Grid>

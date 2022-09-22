@@ -15,7 +15,6 @@ import { BoxType, MINTING_COMBOS } from "../../settings/constants";
 import { formatAmount } from "../../settings/format";
 import { _getMintingBoxList } from "../../store/actions/mintingActions";
 import ComboMintingForm from "./ComboMintingForm";
-import NewBoxMintingForm from "./NewBoxMintingForm";
 
 const BoxItem = styled(Box)(({ theme }) => ({
   background: "rgba(255,255,255,0.05)",

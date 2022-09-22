@@ -16,7 +16,7 @@ export const logout = () => {
   localStorage.removeItem("wallet");
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(SCOPES_KEY);
-  window.location.href = "/";
+  // window.location.href = "/";
 };
 
 export const setAccessToken = (accessToken) => {

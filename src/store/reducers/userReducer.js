@@ -5,6 +5,10 @@ import {
   ADD_WALLET_SIGNATURE,
   FETCH_USER,
   GET_BALANCE,
+  GET_ONCHAIN_BALANCE,
+  GET_PRE_SALE_BALANCE,
+  UPDATE_PARTNER_REF,
+  UPDATE_REF,
   UPDATE_WALLET_NAME,
 } from "../constants";
 
@@ -17,11 +21,23 @@ const initialState = {
   walletName: null,
   walletSignature: null,
   walletAddress: null,
+  ref: null,
+  partnerRef: null,
+  preSaleTokenBalances: null,
+  onChainBalances: null,
 };
 
 export const UserReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case GET_ONCHAIN_BALANCE:
+      return { ...state, onChainBalances: payload };
+    case GET_PRE_SALE_BALANCE:
+      return { ...state, preSaleTokenBalances: payload };
+    case UPDATE_PARTNER_REF:
+      return { ...state, partnerRef: payload };
+    case UPDATE_REF:
+      return { ...state, ref: payload };
     case ADD_WALLET_SIGNATURE:
       return { ...state, walletSignature: payload };
     case ADD_MY_ITEMS:

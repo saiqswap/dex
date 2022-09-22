@@ -40,7 +40,7 @@ const LanguageItem = styled(Box)({
   },
 });
 
-const Languages = ["en", "jp"];
+const Languages = ["en", "kr", "jp", "rus"];
 
 export default function SubMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -114,6 +114,7 @@ export default function SubMenu() {
                 <Divider />
               </Box>
             </Hidden>
+
             <Typography variant="body2">{library.LANGUAGE}</Typography>
             <Box display="flex" mt={1}>
               {Languages.map((l, index) => (

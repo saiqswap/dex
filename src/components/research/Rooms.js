@@ -26,7 +26,7 @@ import { image_url } from "../../settings";
 import { RI_SLOT_LIMIT } from "../../settings/constants";
 import { ENDPOINT_GET_PROFILE } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
-import { _getBalance, _getNewProfile } from "../../store/actions/userActions";
+import { _getBalance } from "../../store/actions/userActions";
 import { get, post } from "../../utils/api";
 
 const BoxItem = styled(Box)({

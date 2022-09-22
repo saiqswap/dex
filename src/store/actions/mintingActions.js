@@ -1,4 +1,3 @@
-import { MINTING_BOXES } from "../../settings/constants";
 import {
   ENDPOINT_MINTING_BOX_COMBOS,
   ENDPOINT_MINTING_BOX_PRODUCTS,

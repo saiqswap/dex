@@ -1,53 +1,20 @@
-import { Menu } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Divider,
-  Hidden,
-  Popover,
-  styled,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Hidden, Popover, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { MAIN_MENUS } from "../../settings";
-import { _changeLanguage } from "../../store/actions/settingActions";
+import { _handleLogout } from "../../store/actions/userActions";
+import { logout } from "../../utils/auth";
+import { CustomButton } from "../common/CustomButton";
+import UserAvatar from "../common/UserAvatar";
 
-const MenuButton = styled(Button)(({ theme }) => ({
-  minWidth: "unset!important",
-  marginLeft: theme.spacing(1),
-  " &.active": {
-    color: "red",
-  },
-}));
-
-const LanguageItem = styled(Box)({
-  background: "rgba(255,255,255,0.05)",
-  borderRadius: "5px",
-  whiteSpace: "nowrap",
-  height: 30,
-  width: 30,
-  display: "flex",
-  textAlign: "center",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: 12,
-  marginRight: 8,
-  cursor: "pointer",
-  "&.active": {
-    background: "var(--main-blue-color)",
-  },
-});
-
-const Languages = ["en", "jp"];
-
-export default function SubMenu() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const { setting, user } = useSelector((state) => state);
+export default function LoggedProfile({ _handleSignClick }) {
+  const { user, setting } = useSelector((state) => state);
+  const { information, walletAddress } = user;
   const { library } = setting;
+  const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
-  const { information } = user;
+
   const _handleClick = (event) => {
     setAnchorEl(anchorEl === null ? event.currentTarget : null);
   };
@@ -58,11 +25,27 @@ export default function SubMenu() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
+  const _logout = () => {
+    logout();
+    dispatch(_handleLogout());
+    _handleClose();
+  };
+
   return (
-    <>
-      <MenuButton onClick={_handleClick} className="custom-btn custom-font">
-        <Menu />
-      </MenuButton>
+    <Box mr={1}>
+      {information ? (
+        <UserAvatar
+          src={information.avatarImage}
+          onClick={_handleClick}
+          style={{ cursor: "pointer" }}
+          id={information.id}
+          size="header"
+        />
+      ) : (
+        walletAddress && (
+          <CustomButton onClick={_handleSignClick}>Login</CustomButton>
+        )
+      )}
       <Popover
         id={id}
         open={open}
@@ -110,28 +93,35 @@ export default function SubMenu() {
                     </Link>
                   )
               )}
-              <Box mt={1} mb={3}>
-                <Divider />
-              </Box>
             </Hidden>
-            <Typography variant="body2">{library.LANGUAGE}</Typography>
-            <Box display="flex" mt={1}>
-              {Languages.map((l, index) => (
-                <LanguageItem
-                  key={index}
-                  onClick={() => {
-                    dispatch(_changeLanguage(l));
-                    _handleClose();
-                  }}
-                  className={library.lang === l ? "active" : ""}
-                >
-                  {l.toUpperCase()}
-                </LanguageItem>
-              ))}
+            <Link to="/profile/account">
+              <Typography
+                variant="body1"
+                className="custom-font"
+                fontWeight={300}
+                sx={{
+                  pt: 1,
+                  pb: 1,
+                }}
+              >
+                {library.PROFILE}
+              </Typography>
+            </Link>
+            <Box mt={1} mb={3}>
+              <Divider />
+            </Box>
+            <Box onClick={_logout} sx={{ cursor: "pointer" }}>
+              <Typography
+                variant="body1"
+                className="custom-font"
+                fontWeight={300}
+              >
+                {library.LOGOUT}
+              </Typography>
             </Box>
           </Box>
         </Box>
       </Popover>
-    </>
+    </Box>
   );
 }

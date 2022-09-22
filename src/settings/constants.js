@@ -8,7 +8,96 @@ export const RI_SLOT_LIMIT = 6;
 export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
-
+export const PRE_SALE_TOKEN = "ING";
+export const SUPPORT_TOKENS = [
+  {
+    contractAddress: ADDRESS_0,
+    asset: "BNB",
+  },
+  {
+    contractAddress: `0x55d398326f99059fF775485246999027B3197955`,
+    // contractAddress: "0xaB45dE984925d49CC189Ed734Ec628091D1C7918", //testnet
+    asset: "USDT",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/USDT.png",
+  },
+  {
+    contractAddress: `0xAe7c682Ba26AD6835B6150FfB35F22Db9987f509`,
+    // contractAddress: `0xeF92cc5adcF971f7C2976131B4Fe3E2000Df53a7`, //testnet
+    asset: "ING",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/ING.png",
+  },
+  // {
+  //   contractAddress: `0x1d996E6A143F8581690f4CFCE44345c29ABB0c8c`,
+  //   asset: "INC",
+  //   decimals: 18,
+  //   image: "https://marketplace.megdev.co/images/coins/INC.png",
+  // },
+];
+export const PRE_SALE_ROUNDS = [
+  {
+    key: 0,
+    roundId: `0x1000000000000000000000000000000000000000`,
+    name: `${PRE_SALE_TOKEN} Token OG Pre-sale`,
+    notices: ["PRESALE_ROUND_O_TIME", "PRESALE_ROUND_0_VESTING_INFORMATION"],
+    time: "19:00 ~ 23:00 September 17, 2022 (UTC+9)",
+    totalSupply: 2857142.86,
+    currentSold: 0,
+    USDPrice: 0.0141,
+    startAt: 1663408800,
+    endAt: 1663423200,
+    minUSD: 400,
+    isSync: true,
+    isStaticEnd: true,
+  },
+  {
+    key: 1,
+    roundId: `0x1000000000000000000000000000000000000001`,
+    name: `${PRE_SALE_TOKEN} Token Pre-sale Round 1`,
+    notices: ["PRESALE_ROUND_1_TIME", "PRESALE_ROUND_1_VESTING_INFORMATION"],
+    time: "19:00 September 20 ~ 23:00 September 21, 2022 (UTC+9)",
+    totalSupply: 33333333.3,
+    currentSold: 0,
+    USDPrice: 0.015,
+    startAt: 1663668000,
+    endAt: 1663768800,
+    minUSD: 800,
+    isSync: true,
+    isStaticEnd: true,
+  },
+  {
+    key: 2,
+    roundId: `0x1000000000000000000000000000000000000002`,
+    name: `${PRE_SALE_TOKEN} Token Pre-sale Round 2`,
+    notices: [
+      "PRESALE_ROUND_2_TIME",
+      "PRESALE_ROUND_2_BENEFIT",
+      "PRESALE_ROUND_2_VESTING_INFORMATION",
+    ],
+    time: "15:00 September 23 ~ 23:00 September 27, 2022 (UTC+9)",
+    totalSupply: 93750000,
+    currentSold: 0,
+    USDPrice: 0.016,
+    startAt: 1663912800,
+    endAt: 1664287200,
+    isSync: false,
+  },
+  // {
+  //   key: 3,
+  //   roundId: `0x2000000000000000000000000000000000000000`,
+  //   name: `${PRE_SALE_TOKEN} Token Pre-sale Round 3`,
+  //   notices: [
+  //     "PRESALE_ROUND_3_TIME",
+  //     "PRESALE_ROUND_3_BENEFIT",
+  //     "PRESALE_ROUND_3_VESTING_INFORMATION",
+  //   ],
+  //   time: "19:00 September 29 ~ 23:00 October 6, 2022 (UTC+9)",
+  //   staticTotalSupply: 88235294.1,
+  //   staticPrice: 0.017,
+  //   isSync: true,
+  // },
+];
 export const ERROR = {
   INSUFFICIENT_FUNDS: "Insufficient funds ",
   RI_SLOT_IS_OVER: "R-I slot is over",
@@ -45,7 +134,10 @@ export const ranks = {
     friendCondition: 100,
   },
 };
-export const MINTING_BOXES = [
+const staticMintingStartTime = 1664100000000;
+const staticMintingEndTime = 1664200800000;
+
+export const STATIC_MINTING_BOXES = [
   {
     roundNumber: 1,
     items: [
@@ -55,12 +147,12 @@ export const MINTING_BOXES = [
         useWhitelist: false,
         boxType: "ANGEL",
         paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-        paymentCurrency: "BUSD",
-        unitPrice: 0.01,
-        supply: 1000,
+        paymentCurrency: "USDT",
+        unitPrice: 100,
+        supply: 800,
         available: 0,
-        startTime: 1664092800000,
-        endTime: 1664504523000,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
         isActive: true,
         minOrder: 1,
         maxOrder: 10,
@@ -71,12 +163,12 @@ export const MINTING_BOXES = [
         useWhitelist: false,
         boxType: "MINION_PARTS_COMMON",
         paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-        paymentCurrency: "BUSD",
-        unitPrice: 0.01,
-        supply: 100,
+        paymentCurrency: "USDT",
+        unitPrice: 50,
+        supply: 400,
         available: 0,
-        startTime: 1664092800000,
-        endTime: 1664504523000,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
         isActive: true,
         minOrder: 100,
         maxOrder: 1,
@@ -87,12 +179,12 @@ export const MINTING_BOXES = [
         useWhitelist: false,
         boxType: "MINION_PARTS_EPIC",
         paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-        paymentCurrency: "BUSD",
-        unitPrice: 0.015,
-        supply: 1000,
+        paymentCurrency: "USDT",
+        unitPrice: 60,
+        supply: 400,
         available: 0,
-        startTime: 1664092800000,
-        endTime: 1664504523000,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
         isActive: true,
         minOrder: 1,
         maxOrder: 10,
@@ -103,12 +195,12 @@ export const MINTING_BOXES = [
         useWhitelist: false,
         boxType: "COSTUME_COMMON",
         paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-        paymentCurrency: "BUSD",
-        unitPrice: 0.01,
-        supply: 1000,
+        paymentCurrency: "USDT",
+        unitPrice: 50,
+        supply: 400,
         available: 0,
-        startTime: 1664092800000,
-        endTime: 1661932824000,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
         isActive: true,
         minOrder: 1,
         maxOrder: 10,
@@ -119,31 +211,158 @@ export const MINTING_BOXES = [
         useWhitelist: false,
         boxType: "COSTUME_EPIC",
         paymentContract: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-        paymentCurrency: "BUSD",
-        unitPrice: 0.015,
-        supply: 1000,
+        paymentCurrency: "USDT",
+        unitPrice: 60,
+        supply: 400,
         available: 0,
-        startTime: 1664092800000,
-        endTime: 1661932824000,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
         isActive: true,
         minOrder: 1,
         maxOrder: 10,
       },
+    ],
+  },
+];
+export const STATIC_MINTING_COMBOS = [
+  {
+    roundNumber: 1,
+    items: [
       {
-        id: 57,
+        id: 1,
+        name: "COMBO_1",
         location: "GLOBAL",
         useWhitelist: false,
-        boxType: "ANGEL",
+        products: [
+          {
+            product: {
+              boxType: "ANGEL",
+            },
+          },
+          {
+            product: {
+              boxType: "MINION_PARTS_COMMON",
+            },
+          },
+          {
+            product: {
+              boxType: "COSTUME_COMMON",
+            },
+          },
+        ],
         paymentContract: "0x0000000000000000000000000000000000000000",
-        paymentCurrency: "BNB",
-        unitPrice: 0.0001,
-        supply: 888,
+        paymentCurrency: "USDT",
+        unitPrice: 200,
+        supply: 800,
         available: 0,
-        startTime: 1664092800000,
-        endTime: 1664504523000,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
         isActive: true,
         minOrder: 1,
-        maxOrder: 10,
+        maxOrder: 30,
+        roundNumber: 1,
+      },
+      {
+        id: 2,
+        name: "COMBO_2",
+        location: "GLOBAL",
+        useWhitelist: false,
+        products: [
+          {
+            product: {
+              boxType: "ANGEL",
+            },
+          },
+          {
+            product: {
+              boxType: "MINION_PARTS_EPIC",
+            },
+          },
+          {
+            product: {
+              boxType: "COSTUME_COMMON",
+            },
+          },
+        ],
+        paymentContract: "0x0000000000000000000000000000000000000000",
+        paymentCurrency: "USDT",
+        unitPrice: 210,
+        supply: 800,
+        available: 0,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 30,
+        roundNumber: 1,
+      },
+      {
+        id: 3,
+        name: "COMBO_3",
+        location: "GLOBAL",
+        useWhitelist: false,
+        products: [
+          {
+            product: {
+              boxType: "ANGEL",
+            },
+          },
+          {
+            product: {
+              boxType: "MINION_PARTS_COMMON",
+            },
+          },
+          {
+            product: {
+              boxType: "COSTUME_EPIC",
+            },
+          },
+        ],
+        paymentContract: "0x0000000000000000000000000000000000000000",
+        paymentCurrency: "USDT",
+        unitPrice: 210,
+        supply: 800,
+        available: 0,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 30,
+        roundNumber: 1,
+      },
+      {
+        id: 4,
+        name: "COMBO_4",
+        location: "GLOBAL",
+        useWhitelist: false,
+        products: [
+          {
+            product: {
+              boxType: "ANGEL",
+            },
+          },
+          {
+            product: {
+              boxType: "MINION_PARTS_EPIC",
+            },
+          },
+          {
+            product: {
+              boxType: "COSTUME_EPIC",
+            },
+          },
+        ],
+        paymentContract: "0x0000000000000000000000000000000000000000",
+        paymentCurrency: "USDT",
+        unitPrice: 220,
+        supply: 800,
+        available: 0,
+        startTime: staticMintingStartTime,
+        endTime: staticMintingEndTime,
+        isActive: true,
+        minOrder: 1,
+        maxOrder: 30,
+        roundNumber: 1,
       },
     ],
   },

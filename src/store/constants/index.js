@@ -46,6 +46,12 @@ export const ADD_CONFIG = `ADD_CONFIG`;
 //setting reducer
 export const CHANGE_LANGUAGE = `CHANGE_LANGUAGE`;
 export const UPDATE_LOADING_STATUS = `UPDATE_LOADING_STATUS`;
+export const UPDATE_REF = `UPDATE_REF`;
+export const UPDATE_PARTNER_REF = `UPDATE_PARTNER_REF`;
+
+//pre-sale
+export const GET_PRE_SALE_ROUND_LIST = `GET_PRE_SALE_ROUND_LIST`;
+export const GET_PRE_SALE_BALANCE = `GET_PRE_SALE_BALANCE`;
 
 //user reducer
 export const ADD_MY_ITEMS = `ADD_MY_ITEMS`;
@@ -56,3 +62,5 @@ export const GET_TEMPLATES = `GET_TEMPLATES`;
 export const GET_MINTING_BOX_LIST = `GET_MINTING_BOX_LIST`;
 export const GET_USER_MINTING_BOX = `GET_USER_MINTING_BOX`;
 export const GET_MINTING_COMBO_LIST = `GET_MINTING_COMBO_LIST`;
+
+export const GET_ONCHAIN_BALANCE = "GET_ONCHAIN_BALANCE";

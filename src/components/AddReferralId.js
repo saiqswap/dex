@@ -1,8 +1,5 @@
 import { useEffect, useMemo } from "react";
-import {
-  useHistory,
-  useLocation,
-} from "react-router-dom/cjs/react-router-dom.min";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import Homepage from "../pages/Homepage";
 
 function useQuery() {
@@ -13,7 +10,6 @@ function useQuery() {
 
 const AddReferralId = () => {
   let query = useQuery();
-  const history = useHistory();
 
   useEffect(() => {
     const referral = query.get("referral");
