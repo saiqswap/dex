@@ -10,6 +10,7 @@ import {
   _checkLogin,
 } from "../onchain/onchain";
 import { BLOCKCHAIN, MAIN_MENUS } from "../settings";
+import { _getMintingBoxInformation } from "../store/actions/mintingActions";
 import {
   _addPartnerRef,
   _addRef,
@@ -19,6 +20,9 @@ import {
   _setWalletAddress,
   _setWalletName,
   _handleLogout,
+  _getBalance,
+  _getMyItems,
+  _handleProfileLogout,
 } from "../store/actions/userActions";
 import { post } from "../utils/api";
 import { isLoggedIn, logout, setAccessToken } from "../utils/auth";
@@ -36,10 +40,11 @@ function Header() {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const location = useLocation();
   const [pathname, setPathname] = useState("");
-  const { library } = setting;
+  const { library, config } = setting;
   const [accountNotFound, setAccountNotFound] = useState(false);
   const [showSignPopup, setShowSignPopup] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (walletName) {
@@ -54,13 +59,19 @@ function Header() {
   }, [dispatch, walletName]);
 
   useEffect(() => {
+    if (config) {
+      dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
+    }
+  }, [config, dispatch, walletAddress]);
+
+  useEffect(() => {
     if (walletAddress) {
-      dispatch(_getOnchainBalance(walletAddress, provider));
       if (Number(prefix.networkVersion) !== BLOCKCHAIN.domain.chainId) {
         setShowModalConfirm(true);
       }
       prefix.on("accountsChanged", (address) => {
         if (address[0]) {
+          dispatch(_handleProfileLogout());
           dispatch(_setWalletAddress(address[0]));
         } else {
           dispatch(_getWalletLogout());
@@ -88,6 +99,9 @@ function Header() {
   useEffect(() => {
     dispatch(_addRef());
     dispatch(_addPartnerRef());
+    if (walletAddress) {
+      dispatch(_getMintingBoxInformation(walletAddress));
+    }
     if (isLoggedIn()) {
       dispatch(_getNewProfile());
     }
@@ -108,11 +122,21 @@ function Header() {
   };
 
   useEffect(() => {
-    if (walletSignature) {
-      _loginBySignature(walletSignature);
+    if (executeRecaptcha) {
+      if (walletSignature) {
+        _loginBySignature(walletSignature);
+      } else {
+        setLoading(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletSignature]);
+  }, [executeRecaptcha, walletSignature]);
+
+  useEffect(() => {
+    if (information) {
+      setLoading(false);
+    }
+  }, [information]);
 
   const _loginBySignature = async (signature) => {
     getReCaptcha((reCaptcha) => {
@@ -127,8 +151,11 @@ function Header() {
         (data) => {
           setAccessToken(data.accessToken);
           dispatch(_getNewProfile());
+          dispatch(_getBalance(walletAddress, provider));
+          dispatch(_getMyItems());
         },
         (error) => {
+          setLoading(false);
           if (error.code === "ACCOUNT_NOTFOUND") {
             setAccountNotFound(true);
           }
@@ -183,7 +210,10 @@ function Header() {
               alignItems="center"
               justifyContent="center"
             >
-              <LoggedProfile _handleSignClick={() => setShowSignPopup(true)} />
+              <LoggedProfile
+                _handleSignClick={() => setShowSignPopup(true)}
+                loading={loading}
+              />
               <MyWallet />
               <SubMenu />
             </Grid>

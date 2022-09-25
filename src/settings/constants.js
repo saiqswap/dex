@@ -16,27 +16,27 @@ export const SUPPORT_TOKENS = [
   },
   {
     contractAddress: `0x55d398326f99059fF775485246999027B3197955`,
-    // contractAddress: "0xaB45dE984925d49CC189Ed734Ec628091D1C7918", //testnet
+    // contractAddress: "0x291Eb0647c520D01a7f9A694B83b4160bEF351DD", //testnet
     asset: "USDT",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/USDT.png",
   },
   {
-    // contractAddress: `0xAe7c682Ba26AD6835B6150FfB35F22Db9987f509`,
-    contractAddress: `0x61817932552a742De092f9196a20b1eF2a484Ccb`, //testnet
+    contractAddress: `0xAe7c682Ba26AD6835B6150FfB35F22Db9987f509`,
+    // contractAddress: `0x61817932552a742De092f9196a20b1eF2a484Ccb`, //testnet
     asset: "ING",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/ING.png",
   },
+  // {
+  //   contractAddress: `0x5Cc31aDC4F86fb73C4a15799eB222A98fd469219`,
+  //   asset: "BUSD",
+  //   decimals: 18,
+  //   image: "https://marketplace.megdev.co/images/coins/BUSD.png",
+  // },
   {
-    contractAddress: `0x5Cc31aDC4F86fb73C4a15799eB222A98fd469219`,
-    asset: "BUSD",
-    decimals: 18,
-    image: "https://marketplace.megdev.co/images/coins/BUSD.png",
-  },
-  {
-    // contractAddress: `0x1d996E6A143F8581690f4CFCE44345c29ABB0c8c`,
-    contractAddress: "0x927Ae32c40F40d24a2ea272629025d15104aE608", //testnet
+    contractAddress: `0x1d996E6A143F8581690f4CFCE44345c29ABB0c8c`,
+    // contractAddress: "0x927Ae32c40F40d24a2ea272629025d15104aE608", //testnet
     asset: "INC",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/INC.png",
@@ -523,22 +523,22 @@ export const BoxType = {
 };
 export const MINTING_COMBOS = {
   COMBO_1: {
-    value: "Compo 1",
+    value: "Combo box 1",
     image: "/images/boxes/combo-1.png",
     color: "#1588d6",
   },
   COMBO_2: {
-    value: "Compo 2",
+    value: "Combo box 2",
     image: "/images/boxes/combo-2.png",
     color: "#1588d6",
   },
   COMBO_3: {
-    value: "Compo 3",
+    value: "Combo box 3",
     image: "/images/boxes/combo-3.png",
     color: "#1588d6",
   },
   COMBO_4: {
-    value: "Compo 4",
+    value: "Combo box 4",
     image: "/images/boxes/combo-4.png",
     color: "#1588d6",
   },

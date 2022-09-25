@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { MAIN_MENUS } from "../../settings";
-import { _handleLogout } from "../../store/actions/userActions";
+import {
+  _handleLogout,
+  _removeWalletSignature,
+} from "../../store/actions/userActions";
 import { logout } from "../../utils/auth";
 import { CustomButton } from "../common/CustomButton";
 import UserAvatar from "../common/UserAvatar";
 
-export default function LoggedProfile({ _handleSignClick }) {
+export default function LoggedProfile({ loading, _handleSignClick }) {
   const { user, setting } = useSelector((state) => state);
   const { information, walletAddress } = user;
   const { library } = setting;
@@ -27,25 +30,28 @@ export default function LoggedProfile({ _handleSignClick }) {
 
   const _logout = () => {
     logout();
-    dispatch(_handleLogout());
     _handleClose();
+    dispatch(_handleLogout());
+    dispatch(_removeWalletSignature());
   };
 
   return (
     <Box mr={1}>
-      {information ? (
-        <UserAvatar
-          src={information.avatarImage}
-          onClick={_handleClick}
-          style={{ cursor: "pointer" }}
-          id={information.id}
-          size="header"
-        />
-      ) : (
-        walletAddress && (
-          <CustomButton onClick={_handleSignClick}>Login</CustomButton>
+      {!loading ? (
+        information ? (
+          <UserAvatar
+            src={information.avatarImage}
+            onClick={_handleClick}
+            style={{ cursor: "pointer" }}
+            id={information.id}
+            size="header"
+          />
+        ) : (
+          walletAddress && (
+            <CustomButton onClick={_handleSignClick}>Login</CustomButton>
+          )
         )
-      )}
+      ) : null}
       <Popover
         id={id}
         open={open}

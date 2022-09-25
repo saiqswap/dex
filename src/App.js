@@ -73,6 +73,11 @@ function App() {
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
     console.log("Infinity Angel Marketplace - Ver 0.0.3");
+    const timer = setInterval(() => {
+      dispatch(_getMintingBoxList());
+      dispatch(_getMintingComboList());
+    }, 10000);
+    return () => clearInterval(timer);
   }, [dispatch]);
 
   useEffect(() => {

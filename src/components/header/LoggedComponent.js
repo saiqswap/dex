@@ -1,11 +1,9 @@
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import { Button, Divider, Grid, styled, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { _addToken } from "../../onchain/onchain";
 import { formatAddress, formatNumberWithDecimal } from "../../settings/format";
 import { _getWalletLogout } from "../../store/actions/userActions";
@@ -46,12 +44,11 @@ const InstallButton = styled(Button)(({ theme }) => ({
   minWidth: "unset!important",
 }));
 
-const LoggedComponent = ({ _onClose }) => {
+const LoggedComponent = () => {
   const { user, setting } = useSelector((state) => state);
   const { onChainBalances, walletAddress } = user;
   const dispatch = useDispatch();
   const { library } = setting;
-  const history = useHistory();
 
   const _handleLogout = () => {
     dispatch(_getWalletLogout());
@@ -109,7 +106,7 @@ const LoggedComponent = ({ _onClose }) => {
                       <Grid item>
                         <img
                           alt={item.asset}
-                          src={`/images/coins/${item.asset}.png`}
+                          src={`/images/coins/${item.symbol}.png`}
                           style={{ height: 24 }}
                         />
                       </Grid>
@@ -129,9 +126,9 @@ const LoggedComponent = ({ _onClose }) => {
                     onClick={() => {
                       _addToken({
                         tokenAddress: item.contractAddress,
-                        tokenSymbol: item.asset,
+                        tokenSymbol: item.symbol,
                         tokenDecimals: item.decimals,
-                        tokenImage: item.image,
+                        tokenImage: `https://marketplace.infinityangel.io/images/coins/${item.symbol}.png`,
                       });
                     }}
                   >
@@ -143,7 +140,7 @@ const LoggedComponent = ({ _onClose }) => {
         </Box>
       </Box>
       <Box pl={3} pr={3} pb={3}>
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             history.push("/pre-sale/statistic");
             _onClose();
@@ -151,7 +148,7 @@ const LoggedComponent = ({ _onClose }) => {
         >
           <AccessTimeIcon />
           <Box ml={2}> {library.VESTING_SCHEDULE}</Box>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={_handleLogout}>
           <ExitToAppOutlinedIcon /> <Box ml={2}>{library.LOGOUT}</Box>
         </MenuItem>

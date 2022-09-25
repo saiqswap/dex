@@ -8,8 +8,8 @@ export const MAINNET_DOMAIN = {
 export const MAINNET_CONFIG = {
   CHAIN_INFO: {
     chainId: "0x38",
-    rpcUrls: ["https://rpc.ankr.com/bsc"],
-    chainName: "Binance Smart Chain",
+    rpcUrls: ["https://bsc-dataseed1.binance.org"],
+    chainName: "Binance Smart Chain Mainnet",
     nativeCurrency: { name: "Binance", decimals: 18, symbol: "BNB" },
     blockExplorerUrls: ["https://bscscan.com"],
   },

@@ -1,19 +1,13 @@
-import styled from "@emotion/styled";
-import {
-  Close,
-  Facebook,
-  Instagram,
-  Telegram,
-  Twitter,
-} from "@mui/icons-material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Checkbox,
   CircularProgress,
   Divider,
+  FormControlLabel,
+  FormGroup,
   Grid,
-  IconButton,
-  LinearProgress,
   Link,
   TextField,
   Tooltip,
@@ -22,10 +16,14 @@ import {
 import { parseUnits } from "ethers/lib/utils";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { checkBeforeBuy, getReceipt, purchaseBox } from "../../onchain/onchain";
+import {
+  checkBeforeBuy,
+  getReceipt,
+  provider,
+  purchaseBox,
+} from "../../onchain/onchain";
 import { image_url } from "../../settings";
 import {
   BoxType,
@@ -43,81 +41,65 @@ import {
   formatNumberWithDecimal,
   formatPrice,
 } from "../../settings/format";
-import { _getMintingBoxList } from "../../store/actions/mintingActions";
+import {
+  _getMintingBoxInformation,
+  _getMintingBoxList,
+} from "../../store/actions/mintingActions";
+import { _getOnchainBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import GeneralPopup from "../common/GeneralPopup";
+import MintingLimit from "./MintingLimit";
+import {
+  DropRateDetail,
+  LinearProgressCustom,
+  PurchaseBox,
+  SelectAmountButton,
+} from "./MintingStyles";
+import { NoticeAndInformation } from "./NoticeAndInformation";
+import { SocialComponent } from "./SocialComponent";
 
-const DropRateDetail = styled(Box)(() => ({
-  background: "rgba(0, 0, 0, 0.4)",
-  padding: "20px",
-  borderRadius: "5px",
-  marginTop: "0px",
-  textAlign: "left",
-}));
-const PurchaseBox = styled(Box)({
-  boxShadow: "inset 0px 0px 5px #000",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.35)",
-  borderRight: "1px solid rgba(255, 255, 255, 0.25)",
-  backgroundColor: "rgba(0, 0, 0, 0.4)",
-  borderRadius: "5px",
-  padding: "20px",
-});
-const CloseButton = styled(IconButton)({
-  position: "absolute",
-  top: 0,
-  right: 0,
-  minWidth: "unset!important",
-  marginTop: "0px!important",
-});
-const SelectAmountButton = styled(Box)(({ theme }) => ({
-  backgroundColor: "rgba(0,0,0,0.5)",
-  width: 70,
-  padding: theme.spacing(1),
-  borderRadius: "5px",
-  cursor: "pointer",
-  marginRight: theme.spacing(1),
-}));
-const LinearProgressCustom = styled(LinearProgress)(() => ({
-  borderRadius: "10px",
-  height: "15px",
-  backgroundColor: "rgba(0, 51, 98, 0.1)!important",
-  backdropFilter: "blur(20px)",
-  border: "1px solid var(--border-color)",
-  boxShadow: "0 0 10px #F6B323",
-  ".MuiLinearProgress-bar": {
-    backgroundColor: "#F6B323",
-  },
-}));
-const selectAmount = [20, 50, 70, 100];
-const socials = [
-  {
-    icon: <Facebook fontSize="small" />,
-    link: "https://www.facebook.com/InfinityAngel.io/",
-  },
-  {
-    icon: <Twitter fontSize="small" />,
-    link: "https://twitter.com/InfinityAngelio",
-  },
-  {
-    icon: <Instagram fontSize="small" />,
-    link: "https://www.instagram.com/infinity_angel_official/",
-  },
-  {
-    icon: <Telegram fontSize="small" />,
-    link: "https://t.me/infinityangel_global",
-  },
-];
+const selectAmount = [10, 20, 30];
 
-const NewBoxMintingForm = ({ onClose, data }) => {
+const NewBoxMintingForm = ({ onClose, data, open }) => {
   const [available, setAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
-  const { setting, user } = useSelector((state) => state);
+  const { setting, user, minting } = useSelector((state) => state);
   const { library, config, templates } = setting;
-  const { walletAddress } = user;
+  const { walletAddress, ref } = user;
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
+  const [checked, setChecked] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const { mintingBoxInformation } = minting;
+  const [userMintingInformation, setUserMintingInformation] = useState(null);
+  const [mintingBoxSetting, setMintingBoxSetting] = useState(null);
+
+  useEffect(() => {
+    if (!open) {
+      setChecked(false);
+      setAmount("");
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (data && mintingBoxInformation) {
+      const userMintingInformation = mintingBoxInformation?.items.find(
+        (e) => e.round === data.roundNumber
+      );
+      if (userMintingInformation) {
+        const tempUserMintingInformation = {
+          boughtBoxes: userMintingInformation.boxes,
+          boughtCombos: userMintingInformation.combos,
+        };
+        setUserMintingInformation(tempUserMintingInformation);
+        const tempMintingBoxSetting = userMintingInformation.inoSetting;
+        setMintingBoxSetting(tempMintingBoxSetting);
+      }
+    }
+  }, [data, mintingBoxInformation]);
 
   useEffect(() => {
     if (data) {
@@ -136,9 +118,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
 
   useEffect(() => {
     if (data) {
-      const availablePercent = parseInt(
-        ((data.supply - data.available) / data.supply) * 100
-      );
+      const availablePercent = parseInt((data.totalSold / data.supply) * 100);
       const timer = setInterval(() => {
         setProgress((prevProgress) => {
           if (prevProgress < availablePercent) {
@@ -167,90 +147,116 @@ const NewBoxMintingForm = ({ onClose, data }) => {
   };
 
   const _handleSubmit = () => {
-    if (walletAddress) {
-      if (amount) {
-        const amountNumber = parseFloat(amount);
-        if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
-          toast.error(
-            `You can buy width Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
-          );
-        } else {
-          const product = data;
-          const purchaseToken = config.contracts.find(
-            (e) => e.contractAddress === product.paymentContract
-          );
-          setLoading(true);
-          const total = product.unitPrice * parseFloat(amount);
-          const boxScPrice = parseUnits(
-            formatPrice(total, 4),
-            purchaseToken.decimals
-          );
-
-          checkBeforeBuy(
-            config.purchaseContract,
-            product.paymentContract,
-            boxScPrice,
-            walletAddress,
-            _handleErrorCallback
-          ).then((result) => {
-            if (result) {
-              post(
-                ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
-                {
-                  productId: data.id,
-                  amount: parseFloat(amount),
-                  address: walletAddress,
-                },
-                (data) => {
-                  if (data) {
-                    purchaseBox(
-                      data,
-                      boxScPrice,
-                      product.paymentContract,
-                      config,
-                      _handleErrorCallback
-                    ).then((e) => {
-                      getReceipt(e).then((result) => {
-                        if (result) {
-                          post(
-                            `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}`,
-                            {},
-                            () => {
-                              setLoading(false);
-                              toast.success("Success");
-                              dispatch(_getMintingBoxList);
-                            },
-                            (error) => {
-                              console.log(error);
-                              setLoading(false);
-                            }
-                          );
-                        }
-                      });
-                    });
-                  } else {
-                    toast.error(library.SOMETHING_WRONG);
-                    setLoading(false);
-                  }
-                },
-                (error) => {
-                  toast.error(library[error.code]);
-                  setLoading(false);
-                }
-              );
-            }
-          });
-        }
-      } else {
-        toast.error(library.PLEASE_ENTER_AMOUNT);
-      }
-    } else {
+    const amountNumber = parseFloat(amount);
+    if (!walletAddress) {
       toast.error(library.PLEASE_CONNECT_WALLET);
+    } else if (!amountNumber) {
+      toast.error(library.PLEASE_ENTER_AMOUNT);
+    } else if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
+      toast.error(
+        `You can buy with Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
+      );
+    } else if (
+      amountNumber >
+      mintingBoxSetting.boxes - userMintingInformation.boughtBoxes
+    ) {
+      toast.error(library.PRESALE_PRODUCT_OVER_LIMIT);
+    } else if (!checked) {
+      toast.error(library.PLEASE_READ_AND_ACCEPT);
+    } else {
+      _handlePurchase();
     }
   };
 
+  const _handlePurchase = () => {
+    const product = data;
+    const purchaseToken = config.contracts.find(
+      (e) => e.contractAddress === product.paymentContract
+    );
+    setLoading(true);
+    const total = product.unitPrice * parseFloat(amount);
+    const boxScPrice = parseUnits(
+      formatPrice(total, 10),
+      purchaseToken.decimals
+    );
+    checkBeforeBuy(
+      config.purchaseContract,
+      product.paymentContract,
+      boxScPrice,
+      walletAddress,
+      _handleErrorCallback
+    ).then((result) => {
+      if (result) {
+        setIsApproved(true);
+        post(
+          ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
+          {
+            productId: data.id,
+            amount: parseFloat(amount),
+            address: walletAddress,
+          },
+          (data) => {
+            if (data) {
+              purchaseBox(
+                data,
+                boxScPrice,
+                product.paymentContract,
+                config,
+                _handleErrorCallback
+              ).then((e) => {
+                getReceipt(e).then((result) => {
+                  if (result) {
+                    setIsConfirmed(true);
+                    post(
+                      `${ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT}?txHash=${e}${
+                        ref ? `&refId=${ref}` : ""
+                      }`,
+                      {},
+                      () => {
+                        setLoading(false);
+                        toast.success(library.SUCCESS);
+                        setIsApproved(false);
+                        setIsConfirmed(false);
+                        setTimeout(() => {
+                          dispatch(
+                            _getOnchainBalance(
+                              config.contracts,
+                              walletAddress,
+                              provider
+                            )
+                          );
+                          dispatch(_getMintingBoxList());
+                          dispatch(_getMintingBoxInformation(walletAddress));
+                        }, 3000);
+                      },
+                      (error) => {
+                        console.log(error);
+                        toast.error(error.code);
+                        toast.error(library.SOMETHING_WRONG);
+                        setLoading(false);
+                        setIsApproved(false);
+                        setIsConfirmed(false);
+                      }
+                    );
+                  }
+                });
+              });
+            } else {
+              toast.error(library.SOMETHING_WRONG);
+              setLoading(false);
+            }
+          },
+          (error) => {
+            toast.error(library[error.code]);
+            setLoading(false);
+          }
+        );
+      }
+    });
+  };
+
   const _getStatusProduct = (product) => {
-    const { startTime, endTime, sold, totalSell } = product;
+    const { startTime, endTime, totalSold, totalSell } = product;
     const now = moment().utc().unix() * 1000;
     const start = startTime;
     const end = endTime;
@@ -261,7 +267,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
     if (start - now > 0) {
       status = "COMING_SOON";
     }
-    if (totalSell - sold <= 0) {
+    if (totalSell - totalSold <= 0) {
       status = "SOLD_OUT";
     }
     return status;
@@ -270,10 +276,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
   const status = data ? _getStatusProduct(data) : "";
 
   return (
-    <GeneralPopup open={Boolean(data)}>
-      <CloseButton size="small" onClick={onClose}>
-        <Close fontSize="small" />
-      </CloseButton>
+    <GeneralPopup open={open} onClose={onClose} disabled={loading}>
       <Box mt={3} />
       {data && (
         <Grid container spacing={3}>
@@ -285,6 +288,11 @@ const NewBoxMintingForm = ({ onClose, data }) => {
               {formatAmount(data.unitPrice)} {data.paymentCurrency}
             </Typography>
             <SocialComponent />
+            <Box mt={3} />
+            <MintingLimit
+              mintingBoxSetting={mintingBoxSetting}
+              userMintingInformation={userMintingInformation}
+            />
           </Grid>
           <Grid
             item
@@ -300,15 +308,21 @@ const NewBoxMintingForm = ({ onClose, data }) => {
             <PurchaseBox component="form">
               <Typography
                 textAlign="left"
-                mb={1}
                 sx={{
                   textTransform: "capitalize",
                 }}
               >
-                {library.TYPE}:{" "}
-                {data.boxType.split("_").join(" ").toLowerCase()}{" "}
+                {data.boxType.split("_").join(" ").toLowerCase()} {library.BOX}
               </Typography>
-              <Box mt={2} mb={1}>
+              <Typography
+                variant="body2"
+                textAlign="left"
+                mb={1}
+                color="Highlight"
+              >
+                Ref: {ref}
+              </Typography>
+              <Box mt={2} mb={2}>
                 <LinearProgressCustom variant="determinate" value={progress} />
                 <Box
                   display={"flex"}
@@ -317,8 +331,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                   mt={0.5}
                 >
                   <Typography variant="caption" color="#fff">
-                    {formatNumberWithDecimal(data.supply - data.available, 2)}{" "}
-                    {library.BOX}
+                    {formatNumberWithDecimal(data.totalSold, 2)} {library.BOX}
                   </Typography>
                   <Typography variant="caption" color="#fff">
                     {formatNumberWithDecimal(data.supply, 2)} {library.BOX}
@@ -342,27 +355,77 @@ const NewBoxMintingForm = ({ onClose, data }) => {
                     key={index}
                     onClick={() =>
                       _onChangeAmount(
-                        parseInt(data.maxOrder * (item / 100)).toString()
+                        // parseInt(data.maxOrder * (item / 100)).toString()
+                        item.toString()
                       )
                     }
                   >
-                    {parseInt(data.maxOrder * (item / 100))}
+                    {/* {parseInt(data.maxOrder * (item / 100))} */}
+                    {item}
                   </SelectAmountButton>
                 ))}
+                <SelectAmountButton
+                  onClick={() => {
+                    _onChangeAmount(
+                      (
+                        mintingBoxSetting.boxes -
+                        userMintingInformation.boughtBoxes
+                      ).toString()
+                    );
+                  }}
+                >
+                  MAX
+                </SelectAmountButton>
               </Box>
-              <Typography textAlign="left" mt={1}>
+              <Typography textAlign="left" mt={3} variant="body2">
                 {library.TOTAL}:{" "}
                 {formatAmount(data.unitPrice * parseFloat(amount ? amount : 0))}{" "}
                 {data.paymentCurrency}
               </Typography>
               <Box display="flex" justifyContent="space-between">
-                <Typography>
+                <Typography variant="body2">
                   {library.MINIMUM}: {data.minOrder}
                 </Typography>
-                <Typography>
+                <Typography variant="body2">
                   {library.MAXIMUM}: {data.maxOrder}
                 </Typography>
               </Box>
+              <FormGroup sx={{ mt: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={(e) => setChecked(e.target.checked)}
+                    />
+                  }
+                  label={
+                    <Typography variant="caption" textAlign="left">
+                      {library.PRESALE_CHECKBOX_1}{" "}
+                      <Link
+                        target="_blank"
+                        href="https://doc.infinityangel.io/infinity-angel-docs/overview/whitepaper"
+                      >
+                        {library.WHITEPAPER}
+                      </Link>
+                      ,{" "}
+                      <Link
+                        target="_blank"
+                        href="https://doc.infinityangel.io/faqs/privacy-policy"
+                      >
+                        {library.POLICY_AND_CONDITIONS}
+                      </Link>{" "}
+                      {library.AND}{" "}
+                      <Link
+                        target="_blank"
+                        href="https://doc.infinityangel.io/faqs/disclaimer"
+                      >
+                        {library.DISCLAIMER}
+                      </Link>{" "}
+                      {library.PRESALE_CHECKBOX_2}
+                    </Typography>
+                  }
+                />
+              </FormGroup>
               <LoadingButton
                 loading={loading}
                 className="submit custom-font"
@@ -372,6 +435,38 @@ const NewBoxMintingForm = ({ onClose, data }) => {
               >
                 {library[status]}
               </LoadingButton>
+              <Divider sx={{ mt: 2, mb: 2 }} />
+              <Box
+                mt={3}
+                display="flex"
+                justifyContent="space-between"
+                width={300}
+              >
+                <Box
+                  sx={{
+                    justifyContent: "flex-start",
+                    opacity: isApproved ? 1 : 0.5,
+                    display: "flex",
+                  }}
+                >
+                  <CheckCircleIcon />
+                  <Typography ml={1} variant="body2">
+                    {library.APPROVED}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    justifyContent: "flex-start",
+                    opacity: isConfirmed ? 1 : 0.5,
+                    display: "flex",
+                  }}
+                >
+                  <CheckCircleIcon />
+                  <Typography ml={1} variant="body2">
+                    {library.CONFIRMED}
+                  </Typography>
+                </Box>
+              </Box>
             </PurchaseBox>
           </Grid>
           <Grid item xs={12} md={5} className="box-info">
@@ -381,7 +476,7 @@ const NewBoxMintingForm = ({ onClose, data }) => {
             <AvailableTemplate available={available} library={library} />
           </Grid>
           <Grid item xs={12}>
-            <NoticeAndInformation library={library} />
+            <NoticeAndInformation />
           </Grid>
         </Grid>
       )}
@@ -390,26 +485,6 @@ const NewBoxMintingForm = ({ onClose, data }) => {
 };
 
 export default NewBoxMintingForm;
-
-const SocialComponent = () => {
-  return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      sx={{
-        " button": {
-          minWidth: "unset",
-        },
-      }}
-    >
-      {socials.map((s, index) => (
-        <IconButton component={Link} href={s.link} target="_blank" key={index}>
-          {s.icon}
-        </IconButton>
-      ))}
-    </Box>
-  );
-};
 
 const AvailableTemplate = ({ available, library }) => {
   return (
@@ -509,44 +584,6 @@ const DropRate = ({ data }) => {
           </Box>
         ))}
       </DropRateDetail>
-    </>
-  );
-};
-
-const NoticeAndInformation = ({ library }) => {
-  return (
-    <>
-      <Divider sx={{ margin: "1rem 0px" }} />
-      <Box textAlign="left" padding="1rem 2rem">
-        <Typography variant="h6" mt={2} color="primary">
-          NOTICE
-        </Typography>
-        <ul style={{ marginLeft: "1rem", listStyle: "inside" }}>
-          <li>{`${library.MINTING_FORM_NOTICE_1}.`}</li>
-          <li>{`${library.MINTING_FORM_NOTICE_2}.`}</li>
-          <li>{`${library.MINTING_FORM_NOTICE_3}.`}</li>
-        </ul>
-        <Typography variant="h6" mt={2} color="primary">
-          INFORMATION
-        </Typography>
-        <Typography mt={1}>What is Infinity Angel?</Typography>
-        <Typography variant="inherit" mt={1} mb={1}>
-          Infinity Angel is an AA game, with the playing genre is the horizontal
-          screen MOBA focusing on PVP and E-sport in addition to the PVE game
-          mode of the Endless RPG genre. With a diverse costume system of more
-          than 100 sets of each characters and minions, besides the variety of
-          tactics that can be combined from the passive skills of the
-          skin/minion is a highlight of the game.
-        </Typography>
-        <Typography variant="inherit">
-          Any user from individual to business can easily to buy, sell and trade
-          their NFT. In the beautiful 3D Infinity Angel graphics world, players
-          can use their NFT Angels in a variety of ways, from equipping them
-          with powerful weapons or unique outfits in fiery, competitive battles
-          with each other to get NFT items that can be exchanged and traded
-          according to P2E criteria.
-        </Typography>
-      </Box>
     </>
   );
 };

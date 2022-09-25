@@ -13,12 +13,13 @@ export const explorer_url = "https://bscscan.com/tx";
 export const hostname = window.location.hostname.replace("www.", "");
 
 const configs = {
-  localhost: develop,
+  // localhost: develop,
   "marketplace.megdev.co": staging,
   "marketplaceinfinity.feliciastation.com": develop,
 };
 export const config = configs[hostname] ? configs[hostname] : production;
 export const { API, ETHERSCAN_LINK, MAIN_MENUS, BLOCKCHAIN } = config;
+export const PROJECT_LOCATION = "GLOBAL";
 
 export const makeID = (length) => {
   var result = "";

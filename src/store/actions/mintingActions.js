@@ -1,35 +1,56 @@
+import { PROJECT_LOCATION } from "../../settings";
 import {
   ENDPOINT_MINTING_BOX_COMBOS,
+  ENDPOINT_MINTING_BOX_INFORMATION,
   ENDPOINT_MINTING_BOX_PRODUCTS,
   ENDPOINT_PRESALE_GET_TRANSACTION_LIST,
 } from "../../settings/endpoint";
 import { get, post } from "../../utils/api";
 import {
+  GET_MINTING_BOX_INFORMATION,
   GET_MINTING_BOX_LIST,
   GET_MINTING_COMBO_LIST,
   GET_USER_MINTING_BOX,
 } from "../constants";
 
+export const _getMintingBoxInformation = (address) => (dispatch) => {
+  get(`${ENDPOINT_MINTING_BOX_INFORMATION}?address=${address}`, (data) => {
+    dispatch({ type: GET_MINTING_BOX_INFORMATION, payload: data });
+  });
+};
+
 export const _getMintingBoxList = () => (dispatch) => {
   get(ENDPOINT_MINTING_BOX_PRODUCTS, (data) => {
+    const tempData = [];
     data.forEach((element) => {
       const list = [];
       element.items.forEach((item) => {
+        let totalSold = 0;
+        element.items.forEach((elm) => {
+          if (elm.boxType === item.boxType) {
+            totalSold += elm.sold;
+          }
+        });
         const index = list.findIndex((l) => l.boxType === item.boxType);
-        if (index < 0) {
-          list.push({
-            ...item,
-            productByPrice: [item],
-          });
-        } else {
-          list[index].productByPrice.push(item);
+        item.roundNumber = element.roundNumber;
+        item.totalSold = totalSold;
+        if (item.location === PROJECT_LOCATION) {
+          if (index < 0) {
+            list.push({
+              ...item,
+              productByPrice: [item],
+            });
+          } else {
+            list[index].productByPrice.push(item);
+          }
         }
       });
       element.filterItems = list;
+      tempData.push(element);
     });
     dispatch({
       type: GET_MINTING_BOX_LIST,
-      payload: data,
+      payload: tempData,
     });
   });
 };
@@ -39,15 +60,25 @@ export const _getMintingComboList = () => (dispatch) => {
     data.forEach((element) => {
       const list = [];
       element.items.forEach((item) => {
-        if (item.name) {
-          const index = list.findIndex((l) => l.name === item.name);
-          if (index < 0) {
-            list.push({
-              ...item,
-              productByPrice: [item],
-            });
-          } else {
-            list[index].productByPrice.push(item);
+        if (item.comboType) {
+          let totalSold = 0;
+          element.items.forEach((elm) => {
+            if (elm.comoType === item.comoType) {
+              totalSold += elm.sold;
+            }
+          });
+          const index = list.findIndex((l) => l.comboType === item.comboType);
+          item.roundNumber = element.roundNumber;
+          item.totalSold = totalSold;
+          if (item.location === PROJECT_LOCATION) {
+            if (index < 0) {
+              list.push({
+                ...item,
+                productByPrice: [item],
+              });
+            } else {
+              list[index].productByPrice.push(item);
+            }
           }
         }
       });

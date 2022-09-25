@@ -4,12 +4,20 @@ import ErrorPage from "./pages/ErrorPage";
 import Homepage from "./pages/Homepage";
 import Marketplace from "./pages/Marketplace";
 import NFTDetail from "./pages/NFTDetail";
+import PreSaleStatistic from "./pages/PreSaleStatistic";
 import Profile from "./pages/Profile";
 import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
 
 const routes = [
+  {
+    exact: true,
+    path: "/pre-sale/statistic",
+    component: PreSaleStatistic,
+    type: "guest",
+    isActive: true,
+  },
   {
     exact: true,
     path: "/minting-box",

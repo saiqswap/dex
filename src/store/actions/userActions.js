@@ -63,8 +63,8 @@ export const _getNewProfile = () => (dispatch) => {
 };
 
 export const _getOnchainBalance =
-  (walletAddress, metamaskProvider) => async (dispatch) => {
-    const balances = [...SUPPORT_TOKENS];
+  (assets, walletAddress, metamaskProvider) => async (dispatch) => {
+    const balances = [...assets];
     let preSaleTokenBalances = await _getVestingBalance(walletAddress);
     for (let index = 0; index < preSaleTokenBalances.length; index++) {
       const staticDetailData = PRE_SALE_ROUNDS.find(
@@ -97,9 +97,7 @@ export const _getOnchainBalance =
             metamaskProvider
           );
           balance = await contractInstance.balanceOf(walletAddress);
-        } catch (error) {
-          // console.log(error);
-        }
+        } catch (error) {}
       }
       if (e.asset === "ING") {
         let tempBalance = 0;
@@ -126,7 +124,6 @@ export const _getBalance = (walletAddress, metamaskProvider) => (dispatch) => {
         payload: [],
       });
       const balances = data;
-      // let count = 1;
       balances.forEach((e) => {
         (async () => {
           var balance = null;
@@ -150,12 +147,10 @@ export const _getBalance = (walletAddress, metamaskProvider) => (dispatch) => {
           balance = Number(ethers.utils.formatEther(balance));
           e.onChainBalance = balance;
         })().then(() => {
-          // if (count === balances.length) {
           dispatch({
             type: GET_BALANCE,
             payload: balances,
           });
-          // count++;
         });
       });
     })();
@@ -198,6 +193,14 @@ export const _setWalletSignature = (value) => (dispatch) => {
   });
 };
 
+export const _removeWalletSignature = () => (dispatch) => {
+  window.localStorage.removeItem("wallet-signature");
+  dispatch({
+    type: ADD_WALLET_SIGNATURE,
+    payload: null,
+  });
+};
+
 export const _getWalletInformation = () => (dispatch) => {
   const walletName = window.localStorage.getItem("wallet-name")
     ? window.localStorage.getItem("wallet-name")
@@ -205,6 +208,28 @@ export const _getWalletInformation = () => (dispatch) => {
   dispatch({
     type: UPDATE_WALLET_NAME,
     payload: walletName,
+  });
+  const walletSignature = window.localStorage.getItem("wallet-signature")
+    ? window.localStorage.getItem("wallet-signature")
+    : null;
+  dispatch({
+    type: ADD_WALLET_SIGNATURE,
+    payload: walletSignature,
+  });
+};
+
+export const _handleProfileLogout = () => (dispatch) => {
+  dispatch({
+    type: FETCH_USER,
+    payload: null,
+  });
+  dispatch({
+    type: GET_BALANCE,
+    payload: null,
+  });
+  dispatch({
+    type: ADD_MY_ITEMS,
+    payload: null,
   });
 };
 

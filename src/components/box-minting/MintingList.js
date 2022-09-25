@@ -116,41 +116,44 @@ export default function MintingList() {
           <CustomStep orientation="vertical">
             {mintingBoxList.map((round, index) => {
               return (
-                <Step
-                  key={index}
-                  active={true}
-                  className={index === mintingBoxList.length - 1 ? "end" : ""}
-                >
-                  <StepLabel sx={{ marginLeft: "2rem" }}>
-                    <CardHeader
-                      sx={{ padding: 0 }}
-                      title={
-                        <Title
-                          variant="h5"
-                          sx={{
-                            textAlign: "left",
-                            width: "fit-content",
-                            fontWeight: 700,
-                          }}
-                        >
-                          Minting NFT Box Round {round.roundNumber}
-                        </Title>
-                      }
-                    />
-                  </StepLabel>
-                  <StepContent sx={{ width: "100%", mt: 1 }}>
-                    <Grid container spacing={5}>
-                      <Grid item xs={12} md={6}>
-                        <RoundBoxDetail round={round} />
+                round.filterItems.length > 0 && (
+                  <Step
+                    key={index}
+                    active={true}
+                    className={index === mintingBoxList.length - 1 ? "end" : ""}
+                  >
+                    <StepLabel sx={{ marginLeft: "2rem" }}>
+                      <CardHeader
+                        sx={{ padding: 0 }}
+                        title={
+                          <Title
+                            variant="h5"
+                            sx={{
+                              textAlign: "left",
+                              width: "fit-content",
+                              fontWeight: 700,
+                            }}
+                          >
+                            Minting{" "}
+                            {round.roundNumber === 0
+                              ? "OG sale"
+                              : `WL R${round.roundNumber}`}
+                          </Title>
+                        }
+                      />
+                    </StepLabel>
+                    <StepContent sx={{ width: "100%", mt: 1 }}>
+                      <Grid container spacing={5}>
+                        <Grid item xs={12} md={6}>
+                          <RoundBoxDetail round={round} />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <RoundComboDetail roundNumber={index} />
+                        </Grid>
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        {mintingComboList[index] ? (
-                          <RoundComboDetail round={mintingComboList[index]} />
-                        ) : null}
-                      </Grid>
-                    </Grid>
-                  </StepContent>
-                </Step>
+                    </StepContent>
+                  </Step>
+                )
               );
             })}
           </CustomStep>
