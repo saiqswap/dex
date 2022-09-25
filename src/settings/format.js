@@ -169,3 +169,11 @@ export const toUpperCase = (str) => {
   str += "";
   return str.toUpperCase();
 };
+
+export const _formatNameToLink = (string) => {
+  return string
+    .toLowerCase()
+    .replace("'", "")
+    .replace(/\s/g, "_")
+    .replace(/-/g, "_");
+};

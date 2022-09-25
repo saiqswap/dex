@@ -104,9 +104,15 @@ const CustomStep = styled(Stepper)(({ theme }) => ({
     },
   },
 }));
+<<<<<<< HEAD
 export default function MintingList() {
   const { setting, minting } = useSelector((state) => state);
   const { library } = setting;
+=======
+
+export default function MintingList() {
+  const { minting } = useSelector((state) => state);
+>>>>>>> develop
   const { mintingBoxList, mintingComboList } = minting;
 
   return mintingBoxList && mintingComboList ? (
@@ -116,6 +122,7 @@ export default function MintingList() {
           <CustomStep orientation="vertical">
             {mintingBoxList.map((round, index) => {
               return (
+<<<<<<< HEAD
                 <Step
                   key={index}
                   active={true}
@@ -154,6 +161,46 @@ export default function MintingList() {
                     </Grid>
                   </StepContent>
                 </Step>
+=======
+                round.filterItems.length > 0 && (
+                  <Step
+                    key={index}
+                    active={true}
+                    className={index === mintingBoxList.length - 1 ? "end" : ""}
+                  >
+                    <StepLabel sx={{ marginLeft: "2rem" }}>
+                      <CardHeader
+                        sx={{ padding: 0 }}
+                        title={
+                          <Title
+                            variant="h5"
+                            sx={{
+                              textAlign: "left",
+                              width: "fit-content",
+                              fontWeight: 700,
+                            }}
+                          >
+                            Minting{" "}
+                            {round.roundNumber === 0
+                              ? "OG sale"
+                              : `WL R${round.roundNumber}`}
+                          </Title>
+                        }
+                      />
+                    </StepLabel>
+                    <StepContent sx={{ width: "100%", mt: 1 }}>
+                      <Grid container spacing={5}>
+                        <Grid item xs={12} md={6}>
+                          <RoundBoxDetail round={round} />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <RoundComboDetail roundNumber={index} />
+                        </Grid>
+                      </Grid>
+                    </StepContent>
+                  </Step>
+                )
+>>>>>>> develop
               );
             })}
           </CustomStep>

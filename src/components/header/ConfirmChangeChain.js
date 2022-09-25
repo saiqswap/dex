@@ -5,6 +5,7 @@ const style = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  zIndex: 999999,
 };
 const styleBtn = {
   display: "flex",

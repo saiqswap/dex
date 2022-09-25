@@ -1,15 +1,6 @@
 /* eslint-disable no-undef */
-import {
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Hidden,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useCallback } from "react";
-import { useState } from "react";
+import { Box, Divider, Grid, TextField, Typography } from "@mui/material";
+import React, { useCallback, useState } from "react";
 import { GoogleLogin } from "react-google-login";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useDispatch, useSelector } from "react-redux";
@@ -165,148 +156,146 @@ export default function LoginPopup({ open, _handleClose }) {
 
   return (
     <CustomModal open={open} _close={_close} isShowCloseButton={true}>
-      <Hidden mdDown>
-        <Grid container spacing={3} align="left">
-          <Grid item xs={12}>
-            <Box display="flex" pr={2} alignItems="center">
-              <Box
-                p={1}
+      <Grid container spacing={3} align="left">
+        <Grid item xs={12}>
+          <GoogleLogin
+            clientId={GOOGLE_SIGN_IN_CLIENT_KEY}
+            render={(renderProps) => (
+              <CustomButton
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
                 sx={{
-                  borderRadius: 1,
-                  backgroundColor: "#fff",
+                  mb: 3,
+                  mt: 3,
+                  p: "0px!important",
                 }}
+                fullWidth
               >
-                <img
-                  src="/images/google-logo.png"
-                  alt=""
-                  width={40}
-                  style={{
-                    backgroundColor: "#fff",
-                  }}
-                />
-              </Box>
-              <Typography align="left" ml={2}>
-                {library.REGISTER_WITH_GOOGLE}
-              </Typography>
-            </Box>
-            <Divider />
-          </Grid>
-          <Grid item xs={12}>
-            <GoogleLogin
-              clientId={GOOGLE_SIGN_IN_CLIENT_KEY}
-              render={(renderProps) => (
-                <CustomButton
-                  onClick={renderProps.onClick}
-                  disabled={renderProps.disabled}
-                  sx={{
-                    m: "auto",
-                    mb: 3,
-                    minWidth: "200px!important",
-                    maxWidth: 300,
-                  }}
-                >
-                  {library.CONTINUE}
-                </CustomButton>
-              )}
-              buttonText="Login"
-              onSuccess={_handleLoginByGoogle}
-              onFailure={(e) => console.log(e)}
-              cookiePolicy={"single_host_origin"}
-            />
-          </Grid>
-        </Grid>
-      </Hidden>
-      <Hidden mdUp>
-        <Grid container spacing={3} align="left">
-          <Grid item xs={12}>
-            <Box display="flex" pr={2} alignItems="center">
-              <Box
-                p={1}
-                sx={{
-                  borderRadius: 1,
-                  backgroundColor: "#fff",
-                }}
-              >
-                <img
-                  src="/images/google-logo.png"
-                  alt=""
-                  width={40}
-                  style={{
-                    backgroundColor: "#fff",
-                  }}
-                />
-              </Box>
-              <Typography align="left" ml={2}>
-                {library.REGISTER_WITH_EMAIL}
-              </Typography>
-            </Box>
-            <Divider />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label={library.EMAIL}
-              fullWidth
-              variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              id="email"
-              name="email"
-            />
-          </Grid>
-          {showOTP && (
-            <>
-              <Grid item xs={12}>
-                <TextField
-                  label={"OTP"}
-                  fullWidth
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  placeholder="OTP"
-                  onChange={(e) => setOtp(e.target.value)}
-                  value={otp}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Box textAlign="right">
-                  <Typography
-                    variant="caption"
-                    color="primary"
+                <Box display="flex" pr={2} alignItems="center" width="100%">
+                  <Box
+                    p={1}
                     sx={{
-                      cursor: disableResendOtp ? "default" : "pointer",
-                      opacity: disableResendOtp ? 0.6 : 1,
-                    }}
-                    onClick={() => {
-                      if (!disableResendOtp) {
-                        _handleSendOTP();
-                        _handleResendOtp();
-                      }
+                      borderRadius: 1,
+                      backgroundColor: "#fff",
                     }}
                   >
-                    Resend OTP
+                    <img
+                      src="/images/google-logo.png"
+                      alt=""
+                      width={40}
+                      style={{
+                        backgroundColor: "#fff",
+                      }}
+                    />
+                  </Box>
+                  <Typography align="left" ml={2} variant="body2">
+                    {library.REGISTER_WITH_GOOGLE}
                   </Typography>
                 </Box>
-              </Grid>
-            </>
-          )}
-          <Grid item xs={12}>
-            {showOTP ? (
-              <CustomButton disabled={!showOTP} onClick={_handleLoginByOtp}>
-                {library.SUBMIT}
-              </CustomButton>
-            ) : (
-              <CustomButton disabled={!email} onClick={_handleSendOTP}>
-                {library.SEND_OTP}
               </CustomButton>
             )}
-          </Grid>
+            buttonText="Login"
+            onSuccess={_handleLoginByGoogle}
+            onFailure={(e) => console.log(e)}
+            cookiePolicy={"single_host_origin"}
+          />
         </Grid>
-      </Hidden>
+      </Grid>
+      <Grid item xs={12}>
+        <Divider sx={{ mb: 3 }} />
+      </Grid>
+      <Grid container spacing={3} align="left">
+        <Grid item xs={12}>
+          <Typography
+            align="left"
+            variant="body2"
+            sx={{ textTransform: "uppercase" }}
+          >
+            OR {library.REGISTER_WITH_EMAIL}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            label={library.EMAIL}
+            fullWidth
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            id="email"
+            name="email"
+          />
+        </Grid>
+        {showOTP && (
+          <>
+            <Grid item xs={12}>
+              <TextField
+                label={"OTP"}
+                fullWidth
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                placeholder="OTP"
+                onChange={(e) => setOtp(e.target.value)}
+                value={otp}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Box textAlign="right">
+                <Typography
+                  variant="caption"
+                  color="primary"
+                  sx={{
+                    cursor: disableResendOtp ? "default" : "pointer",
+                    opacity: disableResendOtp ? 0.6 : 1,
+                  }}
+                  onClick={() => {
+                    if (!disableResendOtp) {
+                      _handleSendOTP();
+                      _handleResendOtp();
+                    }
+                  }}
+                >
+                  Resend OTP
+                </Typography>
+              </Box>
+            </Grid>
+          </>
+        )}
+        <Grid item xs={12}>
+          {showOTP ? (
+            <CustomButton
+              disabled={!showOTP}
+              onClick={_handleLoginByOtp}
+              sx={{
+                m: "auto",
+                mb: 3,
+                minWidth: "200px!important",
+                maxWidth: 300,
+              }}
+            >
+              {library.SUBMIT}
+            </CustomButton>
+          ) : (
+            <CustomButton
+              disabled={!email}
+              onClick={_handleSendOTP}
+              sx={{
+                m: "auto",
+                mb: 3,
+                minWidth: "200px!important",
+                maxWidth: 300,
+              }}
+            >
+              {library.SEND_OTP}
+            </CustomButton>
+          )}
+        </Grid>
+      </Grid>
     </CustomModal>
   );
 }

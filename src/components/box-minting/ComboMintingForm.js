@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import styled from "@emotion/styled";
 import {
   Close,
@@ -16,20 +17,46 @@ import {
   Link,
   TextField,
   Tooltip,
+=======
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { LoadingButton } from "@mui/lab";
+import {
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Link,
+  TextField,
+>>>>>>> develop
   Typography,
 } from "@mui/material";
 import { parseUnits } from "ethers/lib/utils";
 import moment from "moment";
+<<<<<<< HEAD
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { checkBeforeBuy, getReceipt, purchaseBox } from "../../onchain/onchain";
 import { image_url } from "../../settings";
+=======
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import {
+  checkBeforeBuy,
+  getReceipt,
+  provider,
+  purchaseBox,
+} from "../../onchain/onchain";
+>>>>>>> develop
 import { BoxType, MINTING_COMBOS } from "../../settings/constants";
 import {
   ENDPOINT_MINTING_BOX_COMBO_PAID,
   ENDPOINT_MINTING_BOX_COMBO_SC_INPUT,
 } from "../../settings/endpoint";
+<<<<<<< HEAD
 import { deleteText, formatAmount, formatPrice } from "../../settings/format";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
@@ -101,6 +128,91 @@ const ComboMintingForm = ({ onClose, data }) => {
   const { setting, user } = useSelector((state) => state);
   const { library, config } = setting;
   const { walletAddress } = user;
+=======
+import {
+  deleteText,
+  formatAmount,
+  formatNumberWithDecimal,
+  formatPrice,
+} from "../../settings/format";
+import {
+  _getMintingBoxInformation,
+  _getMintingComboList,
+} from "../../store/actions/mintingActions";
+import { _getOnchainBalance } from "../../store/actions/userActions";
+import { post } from "../../utils/api";
+import GeneralPopup from "../common/GeneralPopup";
+import MintingLimit from "./MintingLimit";
+import {
+  BoxItem,
+  BoxTypeLabel,
+  LinearProgressCustom,
+  PurchaseBox,
+  SelectAmountButton,
+} from "./MintingStyles";
+import { NoticeAndInformation } from "./NoticeAndInformation";
+import { SocialComponent } from "./SocialComponent";
+const selectAmount = [5, 10];
+
+const ComboMintingForm = ({ onClose, data, open }) => {
+  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState("");
+  const { setting, user, minting } = useSelector((state) => state);
+  const { library, config } = setting;
+  const { walletAddress, ref } = user;
+  const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
+  const [checked, setChecked] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const { mintingBoxInformation } = minting;
+  const [userMintingInformation, setUserMintingInformation] = useState(null);
+  const [mintingBoxSetting, setMintingBoxSetting] = useState(null);
+
+  useEffect(() => {
+    if (!open) {
+      setChecked(false);
+      setAmount("");
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (data && mintingBoxInformation) {
+      const userMintingInformation = mintingBoxInformation?.items.find(
+        (e) => e.round === data.roundNumber
+      );
+      if (userMintingInformation) {
+        const tempUserMintingInformation = {
+          boughtBoxes: userMintingInformation.boxes,
+          boughtCombos: userMintingInformation.combos,
+        };
+        setUserMintingInformation(tempUserMintingInformation);
+        const tempMintingBoxSetting = userMintingInformation.inoSetting;
+        setMintingBoxSetting(tempMintingBoxSetting);
+      }
+    }
+  }, [data, mintingBoxInformation]);
+
+  useEffect(() => {
+    if (data) {
+      const availablePercent = parseInt((data.sold / data.supply) * 100);
+      const timer = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress < availablePercent) {
+            return prevProgress + 10;
+          } else {
+            clearInterval(timer);
+            return prevProgress;
+          }
+        });
+      }, 200);
+      return () => {
+        clearInterval(timer);
+      };
+    }
+    return () => setProgress(0);
+  }, [data]);
+>>>>>>> develop
 
   const _onChangeAmount = (value) => {
     value = value.replace(".", "");
@@ -108,6 +220,7 @@ const ComboMintingForm = ({ onClose, data }) => {
   };
 
   const _handleErrorCallback = (error) => {
+<<<<<<< HEAD
     console.log(error.message);
     setLoading(false);
   };
@@ -196,6 +309,124 @@ const ComboMintingForm = ({ onClose, data }) => {
 
   const _getStatusProduct = (product) => {
     const { startTime, endTime, sold, totalSell } = product;
+=======
+    setLoading(false);
+    console.log(error.message);
+  };
+
+  const _handleSubmit = () => {
+    const amountNumber = parseFloat(amount);
+    if (!walletAddress) {
+      toast.error(library.PLEASE_CONNECT_WALLET);
+    } else if (!amountNumber) {
+      toast.error(library.PLEASE_ENTER_AMOUNT);
+    } else if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
+      toast.error(
+        `You can buy with Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
+      );
+    } else if (
+      amountNumber >
+      mintingBoxSetting.combos - userMintingInformation.boughtCombos
+    ) {
+      toast.error(library.PRESALE_PRODUCT_OVER_LIMIT);
+    } else if (!checked) {
+      toast.error(library.PLEASE_READ_AND_ACCEPT);
+    } else {
+      _handlePurchase();
+    }
+  };
+
+  const _handlePurchase = () => {
+    const product = data;
+    const purchaseToken = config.contracts.find(
+      (e) => e.contractAddress === product.paymentContract
+    );
+    setLoading(true);
+    const { unitPrice } = product;
+    const total = unitPrice * parseFloat(amount);
+    const boxScPrice = parseUnits(
+      formatPrice(total, 10),
+      purchaseToken.decimals
+    );
+    checkBeforeBuy(
+      config.purchaseContract,
+      product.paymentContract,
+      boxScPrice,
+      walletAddress,
+      _handleErrorCallback
+    ).then((result) => {
+      if (result) {
+        setIsApproved(true);
+        post(
+          ENDPOINT_MINTING_BOX_COMBO_SC_INPUT,
+          {
+            comboId: data.id,
+            amount: parseFloat(amount),
+            address: walletAddress,
+          },
+          (data) => {
+            if (data) {
+              purchaseBox(
+                data,
+                boxScPrice,
+                product.paymentContract,
+                config,
+                _handleErrorCallback
+              ).then((e) => {
+                getReceipt(e).then((result) => {
+                  if (result) {
+                    setIsConfirmed(true);
+                    post(
+                      `${ENDPOINT_MINTING_BOX_COMBO_PAID}?txHash=${e}${
+                        ref ? `&refId=${ref}` : ""
+                      }`,
+                      {},
+                      () => {
+                        setLoading(false);
+                        toast.success(library.SUCCESS);
+                        setIsApproved(false);
+                        setIsConfirmed(false);
+                        setTimeout(() => {
+                          dispatch(
+                            _getOnchainBalance(
+                              config.contracts,
+                              walletAddress,
+                              provider
+                            )
+                          );
+                          dispatch(_getMintingComboList());
+                          dispatch(_getMintingBoxInformation(walletAddress));
+                        }, 3000);
+                      },
+                      (error) => {
+                        console.log(error);
+                        toast.error(error.code);
+                        toast.error(library.SOMETHING_WRONG);
+                        setLoading(false);
+                        setIsApproved(false);
+                        setIsConfirmed(false);
+                      }
+                    );
+                  }
+                });
+              });
+            } else {
+              toast.error(library.SOMETHING_WRONG);
+              setLoading(false);
+            }
+          },
+          (error) => {
+            toast.error(library[error.code]);
+            setLoading(false);
+          }
+        );
+      }
+    });
+  };
+
+  const _getStatusProduct = (product) => {
+    const { startTime, endTime, totalSold, totalSell } = product;
+>>>>>>> develop
     const now = moment().utc().unix() * 1000;
     const start = startTime;
     const end = endTime;
@@ -206,7 +437,11 @@ const ComboMintingForm = ({ onClose, data }) => {
     if (start - now > 0) {
       status = "COMING_SOON";
     }
+<<<<<<< HEAD
     if (totalSell - sold <= 0) {
+=======
+    if (totalSell - totalSold <= 0) {
+>>>>>>> develop
       status = "SOLD_OUT";
     }
     return status;
@@ -215,21 +450,49 @@ const ComboMintingForm = ({ onClose, data }) => {
   const status = data ? _getStatusProduct(data) : "";
 
   return (
+<<<<<<< HEAD
     <GeneralPopup open={Boolean(data)}>
       <CloseButton size="small" onClick={onClose}>
         <Close fontSize="small" />
       </CloseButton>
+=======
+    <GeneralPopup open={open} onClose={onClose} disabled={loading}>
+>>>>>>> develop
       <Box mt={3} />
       {data && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={5} className="submit-box">
             <div className="box-image">
+<<<<<<< HEAD
               <img src={MINTING_COMBOS[data.name].image} alt="boxImg" />
             </div>
             <Typography className="price">
               {formatAmount(data.unitPrice)} {data.paymentCurrency}
             </Typography>
             <SocialComponent />
+=======
+              <img src={MINTING_COMBOS[data.comboType].image} alt="boxImg" />
+            </div>
+            <Box className="price">
+              <Typography
+                variant="body2"
+                sx={{ textDecoration: "line-through" }}
+              >
+                {formatAmount(data.unitPrice + data.unitPrice * 0.1)}{" "}
+                {data.paymentCurrency}
+              </Typography>
+              <Typography>
+                {formatAmount(data.unitPrice)} {data.paymentCurrency}
+              </Typography>
+            </Box>
+
+            <SocialComponent />
+            <Box mt={3} />
+            <MintingLimit
+              mintingBoxSetting={mintingBoxSetting}
+              userMintingInformation={userMintingInformation}
+            />
+>>>>>>> develop
           </Grid>
           <Grid
             item
@@ -245,13 +508,45 @@ const ComboMintingForm = ({ onClose, data }) => {
             <PurchaseBox component="form">
               <Typography
                 textAlign="left"
+<<<<<<< HEAD
                 mb={1}
+=======
+>>>>>>> develop
                 sx={{
                   textTransform: "capitalize",
                 }}
               >
+<<<<<<< HEAD
                 {data.name.split("_").join(" ").toLowerCase()}{" "}
               </Typography>
+=======
+                {data.comboType.split("_").join(" ").toLowerCase()}{" "}
+              </Typography>
+              <Typography
+                variant="body2"
+                textAlign="left"
+                mb={1}
+                color="Highlight"
+              >
+                Ref: {ref}
+              </Typography>
+              <Box mt={2} mb={2}>
+                <LinearProgressCustom variant="determinate" value={progress} />
+                <Box
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  px={1}
+                  mt={0.5}
+                >
+                  <Typography variant="caption" color="#fff">
+                    {formatNumberWithDecimal(data.totalSold, 2)} {library.BOX}
+                  </Typography>
+                  <Typography variant="caption" color="#fff">
+                    {formatNumberWithDecimal(data.supply, 2)} {library.BOX}
+                  </Typography>
+                </Box>
+              </Box>
+>>>>>>> develop
               <TextField
                 fullWidth
                 label="Amount"
@@ -269,6 +564,7 @@ const ComboMintingForm = ({ onClose, data }) => {
                     key={index}
                     onClick={() =>
                       _onChangeAmount(
+<<<<<<< HEAD
                         parseInt(data.maxOrder * (item / 100)).toString()
                       )
                     }
@@ -278,11 +574,37 @@ const ComboMintingForm = ({ onClose, data }) => {
                 ))}
               </Box>
               <Typography textAlign="left" mt={1}>
+=======
+                        // parseInt(data.maxOrder * (item / 100)).toString()
+                        item.toString()
+                      )
+                    }
+                  >
+                    {/* {parseInt(data.maxOrder * (item / 100))} */}
+                    {item}
+                  </SelectAmountButton>
+                ))}
+                <SelectAmountButton
+                  onClick={() => {
+                    _onChangeAmount(
+                      (
+                        mintingBoxSetting.combos -
+                        userMintingInformation.boughtCombos
+                      ).toString()
+                    );
+                  }}
+                >
+                  MAX
+                </SelectAmountButton>
+              </Box>
+              <Typography textAlign="left" mt={3} variant="body2">
+>>>>>>> develop
                 {library.TOTAL}:{" "}
                 {formatAmount(data.unitPrice * parseFloat(amount ? amount : 0))}{" "}
                 {data.paymentCurrency}
               </Typography>
               <Box display="flex" justifyContent="space-between">
+<<<<<<< HEAD
                 <Typography>
                   {library.MINIMUM}: {data.minOrder}
                 </Typography>
@@ -290,6 +612,51 @@ const ComboMintingForm = ({ onClose, data }) => {
                   {library.MAXIMUM}: {data.maxOrder}
                 </Typography>
               </Box>
+=======
+                <Typography variant="body2">
+                  {library.MINIMUM}: {data.minOrder}
+                </Typography>
+                <Typography variant="body2">
+                  {library.MAXIMUM}: {data.maxOrder}
+                </Typography>
+              </Box>
+              <FormGroup sx={{ mt: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={(e) => setChecked(e.target.checked)}
+                    />
+                  }
+                  label={
+                    <Typography variant="caption" textAlign="left">
+                      {library.PRESALE_CHECKBOX_1}{" "}
+                      <Link
+                        target="_blank"
+                        href="https://doc.infinityangel.io/infinity-angel-docs/overview/whitepaper"
+                      >
+                        {library.WHITEPAPER}
+                      </Link>
+                      ,{" "}
+                      <Link
+                        target="_blank"
+                        href="https://doc.infinityangel.io/faqs/privacy-policy"
+                      >
+                        {library.POLICY_AND_CONDITIONS}
+                      </Link>{" "}
+                      {library.AND}{" "}
+                      <Link
+                        target="_blank"
+                        href="https://doc.infinityangel.io/faqs/disclaimer"
+                      >
+                        {library.DISCLAIMER}
+                      </Link>{" "}
+                      {library.PRESALE_CHECKBOX_2}
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+>>>>>>> develop
               <LoadingButton
                 loading={loading}
                 className="submit custom-font"
@@ -299,6 +666,41 @@ const ComboMintingForm = ({ onClose, data }) => {
               >
                 {library[status]}
               </LoadingButton>
+<<<<<<< HEAD
+=======
+              <Divider sx={{ mt: 2, mb: 2 }} />
+              <Box
+                mt={3}
+                display="flex"
+                justifyContent="space-between"
+                width={300}
+              >
+                <Box
+                  sx={{
+                    justifyContent: "flex-start",
+                    opacity: isApproved ? 1 : 0.5,
+                    display: "flex",
+                  }}
+                >
+                  <CheckCircleIcon />
+                  <Typography ml={1} variant="body2">
+                    {library.APPROVED}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    justifyContent: "flex-start",
+                    opacity: isConfirmed ? 1 : 0.5,
+                    display: "flex",
+                  }}
+                >
+                  <CheckCircleIcon />
+                  <Typography ml={1} variant="body2">
+                    {library.CONFIRMED}
+                  </Typography>
+                </Box>
+              </Box>
+>>>>>>> develop
             </PurchaseBox>
           </Grid>
           <Grid item xs={12}>
@@ -345,6 +747,7 @@ const ComboMintingForm = ({ onClose, data }) => {
               })}
             </Box>
           </Grid>
+<<<<<<< HEAD
           {/* <Grid item xs={12} md={5} className="box-info">
             <DropRate data={data} />
           </Grid>
@@ -353,6 +756,10 @@ const ComboMintingForm = ({ onClose, data }) => {
           </Grid> */}
           <Grid item xs={12}>
             <NoticeAndInformation library={library} />
+=======
+          <Grid item xs={12}>
+            <NoticeAndInformation />
+>>>>>>> develop
           </Grid>
         </Grid>
       )}
@@ -361,6 +768,7 @@ const ComboMintingForm = ({ onClose, data }) => {
 };
 
 export default ComboMintingForm;
+<<<<<<< HEAD
 
 const SocialComponent = () => {
   return (
@@ -521,3 +929,5 @@ const NoticeAndInformation = ({ library }) => {
     </>
   );
 };
+=======
+>>>>>>> develop

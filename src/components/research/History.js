@@ -1,16 +1,22 @@
-import { Container, Modal, Pagination, Backdrop, Box, Grid, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Container,
+  Grid,
+  Modal,
+  Pagination,
+  Typography,
+} from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { formatUSD } from "../../settings/format";
 import { get } from "../../utils/api";
 import Loader from "../common/Loader";
 
-
-
 const History = () => {
   const [history, setHistory] = useState(null);
   const [page, setPage] = useState(1);
-  const [detail, setDetail] = useState(null)
+  const [detail, setDetail] = useState(null);
 
   const menu = [
     { key: "id", label: "ID", format: (e) => `#${e}` },
@@ -31,20 +37,27 @@ const History = () => {
     {
       key: "",
       label: "",
-      format: (e, row) => <span className="link" onClick={() => setDetail(row)}>View Detail</span>
-    }
+      format: (e, row) => (
+        <span className="link" onClick={() => setDetail(row)}>
+          View Detail
+        </span>
+      ),
+    },
   ];
 
   useEffect(() => {
     setHistory(null);
-    get(`/nft/ri?page=${page}&pageSize=10&status=COMPLETED`, data => {
-      setHistory(data);
-    }, (error) => console.error(error)
-    )
+    get(
+      `/nft/ri?page=${page}&pageSize=10&status=COMPLETED`,
+      (data) => {
+        setHistory(data);
+      },
+      (error) => console.error(error)
+    );
   }, [page]);
 
   return (
-    <div>
+    <>
       <Container>
         <table className="custom-table">
           <thead>
@@ -62,7 +75,9 @@ const History = () => {
                 <tr key={index}>
                   {menu.map((item, index) => (
                     <td key={index}>
-                      {item.format ? item.format(row[item.key], row) : row[item.key]}
+                      {item.format
+                        ? item.format(row[item.key], row)
+                        : row[item.key]}
                     </td>
                   ))}
                 </tr>
@@ -99,30 +114,81 @@ const History = () => {
           timeout: 500,
         }}
       >
-        {
-          detail && <Box className="ri-detail-popup">
+        {detail ? (
+          <Box className="ri-detail-popup">
             <Grid container>
-              <Grid item xs={3}><Typography className="label">Angel</Typography></Grid>
-              <Grid item xs={9}><Typography className="value">{detail.angel ? `${detail.angel.name} ${detail.angel.level.replace(/_/g, " ")}` : "- -"}</Typography></Grid>
-              <Grid item xs={3}><Typography className="label">Minion Parts</Typography></Grid>
-              <Grid item xs={9}><Typography className="value">{detail.minion ? `${detail.minion.name} ${detail.minion.level.replace(/_/g, " ")}` : "- -"}</Typography></Grid>
-              <Grid item xs={3}><Typography className="label">Costume</Typography></Grid>
-              <Grid item xs={9}><Typography className="value">{detail.skin ? `${detail.skin.name} ${detail.skin.level.replace(/_/g, " ")}` : "- -"}</Typography></Grid>
-              <Grid item xs={3}><Typography className="label">Received</Typography></Grid>
+              <Grid item xs={3}>
+                <Typography className="label">Angel</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography className="value">
+                  {detail.angel
+                    ? `${detail.angel.name} ${detail.angel.level.replace(
+                        /_/g,
+                        " "
+                      )}`
+                    : "- -"}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className="label">Minion Parts</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography className="value">
+                  {detail.minion
+                    ? `${detail.minion.name} ${detail.minion.level.replace(
+                        /_/g,
+                        " "
+                      )}`
+                    : "- -"}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className="label">Costume</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography className="value">
+                  {detail.skin
+                    ? `${detail.skin.name} ${detail.skin.level.replace(
+                        /_/g,
+                        " "
+                      )}`
+                    : "- -"}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className="label">Received</Typography>
+              </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
                   {`${formatUSD(detail.receivedInc)} ${detail.coin}`}
                 </Typography>
               </Grid>
-              <Grid item xs={3}><Typography className="label">Ri-Time</Typography></Grid>
-              <Grid item xs={9}><Typography className="value">{`${parseInt(detail.time)}m ${parseInt((detail.time % 1) * 60)}s`.replace("0s", "")}</Typography></Grid>
-              <Grid item xs={3}><Typography className="label">Start time</Typography></Grid>
-              <Grid item xs={9}><Typography className="value">{moment(detail.startTime).utc().format("HH:MM:ss YYYY-MM-DD")}</Typography></Grid>
+              <Grid item xs={3}>
+                <Typography className="label">Ri-Time</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography className="value">
+                  {`${parseInt(detail.time)}m ${parseInt(
+                    (detail.time % 1) * 60
+                  )}s`.replace("0s", "")}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className="label">Start time</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography className="value">
+                  {moment(detail.startTime).utc().format("HH:MM:ss YYYY-MM-DD")}
+                </Typography>
+              </Grid>
             </Grid>
           </Box>
-        }
+        ) : (
+          <div />
+        )}
       </Modal>
-    </div>
+    </>
   );
 };
 

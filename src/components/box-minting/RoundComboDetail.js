@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   Box,
   Button,
@@ -142,11 +143,83 @@ export default function RoundBoxDetail({ round }) {
     filterItems[0].productByPrice[0]
   );
   const itemInformation = MINTING_COMBOS[selectedItemByPrice.name];
+=======
+import { Box, Divider, Hidden, Stack, Typography } from "@mui/material";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import Countdown from "react-countdown";
+import { useDispatch, useSelector } from "react-redux";
+import { BoxType, MINTING_COMBOS } from "../../settings/constants";
+import { formatAmount, formatNumberWithDecimal } from "../../settings/format";
+import { _getMintingBoxList } from "../../store/actions/mintingActions";
+import ComboMintingForm from "./ComboMintingForm";
+import {
+  BoxItem,
+  BoxTypeLabel,
+  countDownRenderer,
+  CustomButton,
+  CustomStack,
+  FieldLabel,
+  PriceBox,
+} from "./MintingStyles";
+
+export default function RoundBoxDetail({ roundNumber }) {
+  const { minting } = useSelector((state) => state);
+  const { mintingComboList } = minting;
+  const [filterItems, setFilterItems] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItemByPriceId, setSelectedItemByPriceId] = useState(null);
+  const [selectedItemByPrice, setSelectedItemByPrice] = useState(null);
+  const itemInformation = selectedItemByPrice
+    ? MINTING_COMBOS[selectedItemByPrice.comboType]
+    : null;
+>>>>>>> develop
   const { setting } = useSelector((state) => state);
   const { library } = setting;
   const now = moment().utc().unix() * 1000;
   const dispatch = useDispatch();
+<<<<<<< HEAD
   const [chosenItem, setChosenItem] = useState(false);
+=======
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
+
+  useEffect(() => {
+    if (mintingComboList && mintingComboList[roundNumber]) {
+      const { filterItems } = mintingComboList[roundNumber];
+      setFilterItems(filterItems);
+    }
+  }, [mintingComboList, roundNumber]);
+
+  useEffect(() => {
+    if (filterItems && filterItems[0]) {
+      if (selectedItemId === null) {
+        setSelectedItemId(filterItems[0].id);
+      }
+      if (selectedItemByPriceId === null) {
+        setSelectedItemByPriceId(filterItems[0].productByPrice[0].id);
+      }
+    }
+  }, [filterItems, selectedItemByPriceId, selectedItemId]);
+
+  useEffect(() => {
+    if (filterItems && selectedItemId !== null) {
+      const temp = filterItems.find((item) => item.id === selectedItemId);
+      setSelectedItem(temp);
+    }
+  }, [filterItems, selectedItemId]);
+
+  useEffect(() => {
+    if (selectedItemByPriceId !== null && selectedItem) {
+      const temp = selectedItem.productByPrice.find(
+        (item) => item.id === selectedItemByPriceId
+      );
+      if (temp) {
+        setSelectedItemByPrice(temp);
+      }
+    }
+  }, [selectedItem, selectedItemByPriceId]);
+>>>>>>> develop
 
   const _getStatusProduct = (product) => {
     const { startTime, endTime, sold, totalSell } = product;
@@ -166,7 +239,13 @@ export default function RoundBoxDetail({ round }) {
     return status;
   };
 
+<<<<<<< HEAD
   const status = _getStatusProduct(selectedItemByPrice);
+=======
+  const status = selectedItemByPrice
+    ? _getStatusProduct(selectedItemByPrice)
+    : null;
+>>>>>>> develop
 
   return (
     selectedItemByPrice && (
@@ -186,22 +265,36 @@ export default function RoundBoxDetail({ round }) {
           width="fit-content"
           mb={3}
         >
+<<<<<<< HEAD
           {filterItems.map((item, j) => {
             const information = MINTING_COMBOS[item.name];
+=======
+          {filterItems?.map((item, j) => {
+            const information = MINTING_COMBOS[item.comboType];
+>>>>>>> develop
             return (
               <BoxItem
                 key={j}
                 sx={{
                   border: `1px solid ${
+<<<<<<< HEAD
                     selectedItemByPrice.name === item.name
+=======
+                    selectedItemByPrice.comboType === item.comboType
+>>>>>>> develop
                       ? information.color
                       : "var(--main-color)"
                   }`,
                 }}
                 p={1}
                 onClick={() => {
+<<<<<<< HEAD
                   setSelectedItem(item);
                   setSelectedItemByPrice(item.productByPrice[0]);
+=======
+                  setSelectedItemId(item.id);
+                  setSelectedItemByPriceId(item.productByPrice[0].id);
+>>>>>>> develop
                 }}
               >
                 <img
@@ -220,13 +313,18 @@ export default function RoundBoxDetail({ round }) {
           <BoxTypeLabel
             className={
               "custom-font name " +
+<<<<<<< HEAD
               (selectedItemByPrice.name.length > 12 ? "long-name" : "")
+=======
+              (selectedItemByPrice.comboType.length > 12 ? "long-name" : "")
+>>>>>>> develop
             }
             variant="h6"
             sx={{
               color: itemInformation.color,
             }}
           >
+<<<<<<< HEAD
             {selectedItemByPrice.name.split("_").join(" ").toLowerCase()}{" "}
             {library.BOX}
           </BoxTypeLabel>
@@ -240,6 +338,10 @@ export default function RoundBoxDetail({ round }) {
             color="error"
             sx={{ ml: 1 }}
           />
+=======
+            {MINTING_COMBOS[selectedItemByPrice.comboType].value}
+          </BoxTypeLabel>
+>>>>>>> develop
         </CustomStack>
         <CustomStack>
           <Typography sx={{ width: 120 }}>{library.TOTAL_SELL}:</Typography>
@@ -255,8 +357,12 @@ export default function RoundBoxDetail({ round }) {
               <PriceBox
                 key={index}
                 className={selectedItemByPrice.id === item.id ? "active" : ""}
+<<<<<<< HEAD
                 onClick={() => setSelectedItemByPrice(item)}
                 sx={{ width: 150 }}
+=======
+                onClick={() => setSelectedItemByPriceId(item.id)}
+>>>>>>> develop
               >
                 <Typography
                   variant="caption"
@@ -265,19 +371,36 @@ export default function RoundBoxDetail({ round }) {
                     textDecoration: "line-through",
                   }}
                 >
+<<<<<<< HEAD
                   {formatAmount(item.unitPrice)} {item.paymentCurrency}
                 </Typography>{" "}
                 <Typography variant="caption" color="#fff">
                   {formatAmount(item.unitPrice - item.unitPrice * 0.1)}{" "}
                   {item.paymentCurrency}
+=======
+                  {formatNumberWithDecimal(
+                    item.unitPrice + item.unitPrice * 0.1
+                  )}{" "}
+                  {item.paymentCurrency}
+                </Typography>{" "}
+                <Typography variant="caption" color="#fff">
+                  {formatAmount(item.unitPrice)} {item.paymentCurrency}
+>>>>>>> develop
                 </Typography>
               </PriceBox>
             ))}
           </CustomStack>
         </CustomStack>
+<<<<<<< HEAD
         <CustomStack>
           <FieldLabel>{library.CONDITION}:</FieldLabel>
           <Typography> {round.condition}</Typography>
+=======
+
+        <CustomStack>
+          <FieldLabel>{library.CONDITION}:</FieldLabel>
+          <Typography> {selectedItemByPrice.condition}</Typography>
+>>>>>>> develop
         </CustomStack>
         <CustomStack>
           <FieldLabel>{library.TIME}:</FieldLabel>
@@ -310,12 +433,17 @@ export default function RoundBoxDetail({ round }) {
         <Stack>
           <CustomButton
             className="custom-btn custom-font"
+<<<<<<< HEAD
             onClick={() => setChosenItem(selectedItemByPrice)}
             disabled={
               status === "SOLD_OUT" ||
               status === "END_TIME" ||
               status === "COMING_SOON"
             }
+=======
+            onClick={() => setShowPurchaseForm(true)}
+            disabled={status === "SOLD_OUT" || status === "END_TIME"}
+>>>>>>> develop
           >
             {library[status]}
           </CustomButton>
@@ -357,9 +485,15 @@ export default function RoundBoxDetail({ round }) {
           })}
         </Stack>
         <ComboMintingForm
+<<<<<<< HEAD
           data={chosenItem}
           // template={template}
           onClose={() => setChosenItem(null)}
+=======
+          data={selectedItemByPrice}
+          open={showPurchaseForm}
+          onClose={() => setShowPurchaseForm(false)}
+>>>>>>> develop
         />
       </>
     )

@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { MAIN_MENUS } from "../../settings/constants";
+import { MAIN_MENUS } from "../../settings";
 import { _changeLanguage } from "../../store/actions/settingActions";
 
 const MenuButton = styled(Button)(({ theme }) => ({
@@ -40,7 +40,7 @@ const LanguageItem = styled(Box)({
   },
 });
 
-const Languages = ["en", "kr", "jp", "rus"];
+const Languages = ["en", "jp"];
 
 export default function SubMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -114,7 +114,6 @@ export default function SubMenu() {
                 <Divider />
               </Box>
             </Hidden>
-
             <Typography variant="body2">{library.LANGUAGE}</Typography>
             <Box display="flex" mt={1}>
               {Languages.map((l, index) => (

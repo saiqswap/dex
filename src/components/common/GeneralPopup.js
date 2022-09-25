@@ -1,20 +1,40 @@
-import { Backdrop, Container, Fade, Modal, styled } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import {
+  Backdrop,
+  Box,
+  Container,
+  Fade,
+  IconButton,
+  Modal,
+  styled,
+} from "@mui/material";
 import React, { useEffect } from "react";
 
-const CustomContainer = styled(Container)(() => ({
+const CustomContainer = styled(Box)(({ theme }) => ({
+  overflow: "auto",
+  maxHeight: 600,
+  padding: theme.spacing(4),
+}));
+const CloseButton = styled(IconButton)(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing(1),
+  right: theme.spacing(1),
+  minWidth: "unset!important",
+  marginTop: "0px!important",
+  background: "rgba(255, 255, 255, 0.1)!important",
+  zIndex: 9999,
+}));
+const CustomBox = styled(Box)(({ theme }) => ({
   minWidth: "300px",
   width: "calc(100vw - 30px)",
-  maxWidth: "600px",
+  maxWidth: 900,
   background: "rgba(165, 226, 255, 0.3)",
   zIndex: 999,
   borderRadius: "15px",
   margin: "auto",
-  padding: "20px 0px",
   minHeight: "400px",
   backdropFilter: "blur(60px)",
   border: "1px solid rgba(255, 255, 255, 0.09)",
-  overflow: "auto",
-  maxHeight: 600,
   position: "absolute",
   left: "50%",
   top: "50%",
@@ -26,6 +46,7 @@ export default function GeneralPopup({
   onClose,
   children,
   noFollowClickOutside,
+  disabled
 }) {
   useEffect(() => {
     if (open) {
@@ -49,13 +70,14 @@ export default function GeneralPopup({
       sx={{ zIndex: 9999 }}
     >
       <Fade in={open}>
-        <CustomContainer
-          className="buy-box-confirm"
-          align="center"
-          maxWidth="md"
-        >
-          {children}
-        </CustomContainer>
+        <CustomBox>
+          <CloseButton onClick={onClose} size="small" disabled={disabled}>
+            <Close />
+          </CloseButton>
+          <CustomContainer className="buy-box-confirm" align="center">
+            {children}
+          </CustomContainer>
+        </CustomBox>
       </Fade>
     </Modal>
   );

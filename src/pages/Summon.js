@@ -1,11 +1,11 @@
 import {
-  Button,
   CircularProgress,
   Container,
   Grid,
   Hidden,
   Typography,
 } from "@mui/material";
+import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import SummonEffect from "../components/summon/SummonEffect";
@@ -26,7 +26,7 @@ const Summon = () => {
   const [completed, setCompleted] = useState(true);
   const [mounted, setMounted] = useState(true);
   const [scale, setScale] = useState(1);
-  const [showList, setShowList] = useState(true);
+  const [showList] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const dispatch = useDispatch();
 
@@ -111,71 +111,77 @@ const Summon = () => {
   }
 
   return (
-    <div className="summon">
+    <div
+      className="summon"
+      style={{
+        minHeight: "100vh",
+      }}
+    >
       <Container
         className="summon-page"
         style={{ pointerEvents: !completed ? "none" : "" }}
       >
+        <div className="box-banner"></div>
         <Grid container>
-          <div className="box-banner"></div>
-          <Grid
-            item
-            sm={12}
-            md={5}
-            lg={6}
-            className={`box-list ${showList ? "" : "hide"}`}
-          >
-            <Grid container spacing={3}>
-              {objToArray(BoxType).map((item, index) => (
-                <Grid item xs={6} key={index}>
-                  <div
-                    className={`box-card ${
-                      keySelected === item.value ? "active" : ""
-                    }`}
-                    style={{ borderColor: item.color }}
-                    onClick={() => {
-                      setShowInfo(false);
-                      _handleSelectBox(item.value);
-                    }}
-                  >
-                    <img src={item.card} className="card" alt="" />
-                    <div className="base-light">
-                      <img src={item.light} alt="base-light" width="100%" />
-                    </div>
-                    <div className="base-light delay">
-                      <img src={item.light} alt="base-light" width="100%" />
-                    </div>
-                    <div className="content">
-                      {item ? (
-                        <img
-                          src={item.image}
-                          alt="box img"
-                          className="thumbnail"
-                        />
-                      ) : null}
+          <Hidden mdDown>
+            <Grid
+              item
+              xs={12}
+              md={5}
+              lg={6}
+              className={`box-list ${showList ? "" : "hide"}`}
+            >
+              <Grid container spacing={3}>
+                {objToArray(BoxType).map((item, index) => (
+                  <Grid item xs={12} md={6} lg={6} key={index}>
+                    <div
+                      className={`box-card ${
+                        keySelected === item.value ? "active" : ""
+                      }`}
+                      style={{ borderColor: item.color }}
+                      onClick={() => {
+                        setShowInfo(false);
+                        _handleSelectBox(item.value);
+                      }}
+                    >
+                      <img src={item.card} className="card" alt="" />
+                      <div className="base-light">
+                        <img src={item.light} alt="base-light" width="100%" />
+                      </div>
+                      <div className="base-light delay">
+                        <img src={item.light} alt="base-light" width="100%" />
+                      </div>
+                      <div className="content">
+                        {item ? (
+                          <img
+                            src={item.image}
+                            alt="box img"
+                            className="thumbnail"
+                          />
+                        ) : null}
 
-                      <Typography
-                        variant="h6"
-                        fontWeight={700}
-                        className={
-                          "custom-font name summon " +
-                          (item.value.length > 12 ? "long-name" : "")
-                        }
-                        style={{ color: item.color }}
-                      >
-                        {item.value.split("_").join(" ").toLowerCase()} Box
-                      </Typography>
-                      <Typography variant="body2" className="amount">
-                        Amount:{" "}
-                        <span style={{ marginLeft: 5 }}>
-                          {boxes && boxes[item.value]
-                            ? boxes[item.value].length
-                            : 0}
-                        </span>
-                      </Typography>
+                        <Typography
+                          variant="h6"
+                          fontWeight={700}
+                          className={
+                            "custom-font name summon " +
+                            (item.value.length > 12 ? "long-name" : "")
+                          }
+                          style={{ color: item.color }}
+                        >
+                          {item.value.split("_").join(" ").toLowerCase()} Box
+                        </Typography>
+                        <Typography variant="body2" className="amount">
+                          Amount:{" "}
+                          <span style={{ marginLeft: 5 }}>
+                            {boxes && boxes[item.value]
+                              ? boxes[item.value].length
+                              : 0}
+                          </span>
+                        </Typography>
+                      </div>
                     </div>
-                  </div>
-                  {/* <div
+                    {/* <div
                       key={index}
                       className={
                         "box-item " +
@@ -228,13 +234,14 @@ const Summon = () => {
                       </div>
                       <div className="light-2"></div>
                     </div> */}
-                </Grid>
-              ))}
+                  </Grid>
+                ))}
+              </Grid>
             </Grid>
-          </Grid>
+          </Hidden>
           <Grid
             item
-            sm={12}
+            xs={12}
             md={7}
             lg={6}
             className="summon-content"
@@ -264,6 +271,69 @@ const Summon = () => {
               </div>
             }
           </Grid>
+          <Hidden mdUp>
+            <Grid item xs={12}>
+              <Box
+                mt="150px"
+                sx={{ zIndex: 1 }}
+                display="inline-flex"
+                overflow={"auto"}
+                width="100%"
+              >
+                {objToArray(BoxType).map((item, index) => (
+                  <Box minWidth={170} mr={1} key={index}>
+                    <div
+                      className={`box-card ${
+                        keySelected === item.value ? "active" : ""
+                      }`}
+                      style={{ borderColor: item.color }}
+                      onClick={() => {
+                        setShowInfo(false);
+                        _handleSelectBox(item.value);
+                      }}
+                    >
+                      <img src={item.card} className="card" alt="" />
+                      <div className="base-light">
+                        <img src={item.light} alt="base-light" width="100%" />
+                      </div>
+                      <div className="base-light delay">
+                        <img src={item.light} alt="base-light" width="100%" />
+                      </div>
+                      <div className="content">
+                        {item ? (
+                          <img
+                            src={item.image}
+                            alt="box img"
+                            className="thumbnail"
+                          />
+                        ) : null}
+
+                        <Typography
+                          variant="h6"
+                          fontWeight={700}
+                          className={
+                            "custom-font name summon " +
+                            (item.value.length > 12 ? "long-name" : "")
+                          }
+                          style={{ color: item.color }}
+                        >
+                          {item.value.split("_").join(" ").toLowerCase()} Box
+                        </Typography>
+                        <Typography variant="body2" className="amount">
+                          Amount:{" "}
+                          <span style={{ marginLeft: 5 }}>
+                            {boxes && boxes[item.value]
+                              ? boxes[item.value].length
+                              : 0}
+                          </span>
+                        </Typography>
+                      </div>
+                    </div>
+                  </Box>
+                ))}
+              </Box>
+            </Grid>
+          </Hidden>
         </Grid>
       </Container>
     </div>
