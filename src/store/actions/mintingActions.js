@@ -62,19 +62,19 @@ export const _getMintingComboList = () => (dispatch) => {
     data.forEach((element) => {
       const list = [];
       element.items.forEach((item) => {
-        if (item.comboType) {
-          let totalSold = 0;
-          element.items.forEach((elm) => {
-            if (elm.comoType === item.comoType) {
-              if (elm.location === PROJECT_LOCATION) {
-                totalSold += elm.sold;
+        if (item.location === PROJECT_LOCATION) {
+          if (item.comboType) {
+            let totalSold = 0;
+            element.items.forEach((elm) => {
+              if (elm.comboType === item.comboType) {
+                if (elm.location === PROJECT_LOCATION) {
+                  totalSold += elm.sold;
+                }
               }
-            }
-          });
-          const index = list.findIndex((l) => l.comboType === item.comboType);
-          item.roundNumber = element.roundNumber;
-          item.totalSold = totalSold;
-          if (item.location === PROJECT_LOCATION) {
+            });
+            const index = list.findIndex((l) => l.comboType === item.comboType);
+            item.roundNumber = element.roundNumber;
+            item.totalSold = totalSold;
             if (index < 0) {
               list.push({
                 ...item,
