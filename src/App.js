@@ -72,16 +72,12 @@ function App() {
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
-<<<<<<< HEAD
-    console.log("Infinity Angel Marketplace - Ver 0.0.2");
-=======
     console.log("Infinity Angel Marketplace - Ver 0.0.3");
     const timer = setInterval(() => {
       dispatch(_getMintingBoxList());
       dispatch(_getMintingComboList());
     }, 10000);
     return () => clearInterval(timer);
->>>>>>> develop
   }, [dispatch]);
 
   useEffect(() => {

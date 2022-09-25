@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import { ENDPOINT_PRESALE_GET_TRANSACTION_LIST } from "../../settings/endpoint";
-=======
 import { PROJECT_LOCATION } from "../../settings";
 import {
   ENDPOINT_MINTING_BOX_COMBOS,
@@ -8,7 +5,6 @@ import {
   ENDPOINT_MINTING_BOX_PRODUCTS,
   ENDPOINT_PRESALE_GET_TRANSACTION_LIST,
 } from "../../settings/endpoint";
->>>>>>> develop
 import { get, post } from "../../utils/api";
 import {
   GET_MINTING_BOX_INFORMATION,

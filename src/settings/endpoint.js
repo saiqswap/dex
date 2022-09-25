@@ -80,13 +80,8 @@ export const ENDPOINT_MY_NFT = `/nft/my-nfts`;
 export const ENDPOINT_PRESALE_PRODUCT_SC_INPUT = `/presale/product-sc-input`;
 export const ENDPOINT_PRESALE_TRIGGER_PAID_PRODUCT = `/presale/trigger-paid-product`;
 export const ENDPOINT_PRESALE_GET_TRANSACTION_LIST = `/presale/transaction/get-list`;
-<<<<<<< HEAD
-export const ENDPOINT_MINTING_BOX_COMBO_SC_INPUT = `/presale/combo-sc-input`;
-export const ENDPOINT_MINTING_BOX_COMBO_PAID = `/presale/trigger-paid-combo`;
-=======
 export const ENDPOINT_MINTING_BOX_PRODUCTS = `/presale/products-for-sell`;
 export const ENDPOINT_MINTING_BOX_COMBOS = `/presale/combos-for-sell`;
 export const ENDPOINT_MINTING_BOX_COMBO_SC_INPUT = `/presale/combo-sc-input`;
 export const ENDPOINT_MINTING_BOX_COMBO_PAID = `/presale/trigger-paid-combo`;
 export const ENDPOINT_MINTING_BOX_INFORMATION = `/presale/get-info`;
->>>>>>> develop

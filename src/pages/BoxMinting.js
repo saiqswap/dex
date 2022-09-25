@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import React from "react";
 import MintingList from "../components/box-minting/MintingList";
-import StaticMintingList from "../components/box-minting/StaticMintingList";
 import Title from "../components/box-minting/Title";
 import { CustomButton } from "../components/common/CustomButton";
 
@@ -20,25 +19,6 @@ export default function BoxMinting() {
     >
       <Container maxWidth="lg">
         <Box mt={10} />
-<<<<<<< HEAD
-        <Title variant="h6" sx={{ textAlign: "left" }}>
-          MINTING
-        </Title>
-        <Container maxWidth="sm" sx={{ pl: "0px!important", marginLeft: 0 }}>
-          <Title
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              textAlign: "left",
-              color: "#1588d6",
-            }}
-          >
-            Angel, Minion Parts and Costume Box
-          </Title>
-        </Container>
-        <Title variant="body1">The beginning of a great journey</Title>
-        <StaticMintingList />
-=======
         <Grid
           container
           alignItems="center"
@@ -88,7 +68,6 @@ export default function BoxMinting() {
           </Grid>
         </Grid>
         <MintingList />
->>>>>>> develop
       </Container>
     </div>
   );

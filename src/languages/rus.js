@@ -67,27 +67,15 @@ export const rus = {
   REGISTER_WITH_EMAIL: "Sign-up with email",
   SUBMIT: "Submit",
   SEND_OTP: "Send OTP",
-<<<<<<< HEAD
-  //
-  PRICE: "Price",
-  TIME: "Time",
-=======
   //220920
   TOTAL_SELL: "Total sell",
   PRICE: "Price",
   TIME: "Time",
   CONDITION: "Condition",
->>>>>>> develop
   END_TIME: "End time",
   SOLD_OUT: "Sold out",
   BUY_NOW: "Buy now",
   PRE_SALE: "Pre-sale",
-<<<<<<< HEAD
-  LANGUAGE: "Languages",
-  COMING_SOON: "Upcoming",
-  MINTING_BOX: "Minting Box",
-  MINIMUM: "Minium",
-=======
   MINIMUM: "Minimum",
   TOTAL: "Total",
   //220920
@@ -116,7 +104,6 @@ export const rus = {
   PLEASE_ENTER_AMOUNT: "Please enter amount",
   SUCCESS: "Success",
   //pre-sale
->>>>>>> develop
   INSUFFICIENT_AMOUNT_OUT_ING_PRESALE: "Insufficient amount of ING Presale",
   INSUFFICIENT_BALANCE: "Insufficient balance",
   THE_AMOUNT_OF_ING_IS_TOO_SMALL: "The amount is too small",
@@ -145,11 +132,7 @@ export const rus = {
     "Round 2 Presale will start at 15:00 September 23 ~ 23:00 September 27, 2022 (UTC+9).",
   PRESALE_ROUND_2_VESTING_INFORMATION:
     "Vesting 20%, 3 Month Cliff, Vesting for 15 Month.",
-<<<<<<< HEAD
-  PRESALE_ROUND_2_BENEFIT: "Benefit: Minion Tier 1 (inability to trade)",
-=======
   PRESALE_ROUND_2_BENEFIT: "Benefit: Minions Box Tier 3",
->>>>>>> develop
   PRESALE_ROUND_3_TIME:
     "Round 3 Presale will start at 19:00 September 29 ~ 23:00 October 6, 2022 (UTC+9).",
   PRESALE_ROUND_3_VESTING_INFORMATION:
@@ -179,28 +162,8 @@ export const rus = {
   LOCK_AMOUNT: "Lock amount",
   VIEW_MORE: "View more",
   WITHDRAWAL: "Withdrawal",
-<<<<<<< HEAD
-  ADD: "Add",
-  BALANCE: "Balance",
-  PLEASE_CONNECT_WALLET: "Please connect wallet",
-  SOMETHING_WRONG: "Something wrong. Please try again later.",
-  PRESALE_CHECKBOX_1: "I’ve read and accepted all the",
-  WHITEPAPER: "Whitepaper",
-  POLICY_AND_CONDITIONS: "Policy and Conditions",
-  DISCLAIMER: "Disclaimer",
-  PRESALE_CHECKBOX_2: "of buying Token.",
-  PLEASE_READ_AND_ACCEPT:
-    "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of buying Token",
-  VESTING_SCHEDULE: "Vesting Schedule",
-  TOTAL_SELL: "Total sell",
-  CONDITION: "Condition",
-  BOX: "Box",
-  APPROVED: "Approved",
-  CONFIRMED: "Confirmed",
-=======
   BALANCE: "Balance",
   VESTING_SCHEDULE: "Vesting Schedule",
->>>>>>> develop
   WITHDRAWABLE_AMOUNT: "Withdrawable amount",
   TOTAL_LOCK_AMOUNT: "Total lock amount",
   RELEASE_TIME: "Release time",
@@ -211,10 +174,7 @@ export const rus = {
   DO_YOU_WANT_TO_WITHDRAW: "Do you want to withdraw",
   TOTAL_AMOUNT: "Total amount",
   TOTAL_UNLOCK_AMOUNT: "Total unlock amount",
-<<<<<<< HEAD
-=======
   MINTING_LIMIT: "Minting limit",
   COMBOS: "Combos",
   YOU_OWNED: "You owned",
->>>>>>> develop
 };

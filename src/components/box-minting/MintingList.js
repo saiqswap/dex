@@ -104,15 +104,9 @@ const CustomStep = styled(Stepper)(({ theme }) => ({
     },
   },
 }));
-<<<<<<< HEAD
-export default function MintingList() {
-  const { setting, minting } = useSelector((state) => state);
-  const { library } = setting;
-=======
 
 export default function MintingList() {
   const { minting } = useSelector((state) => state);
->>>>>>> develop
   const { mintingBoxList, mintingComboList } = minting;
 
   return mintingBoxList && mintingComboList ? (
@@ -122,46 +116,6 @@ export default function MintingList() {
           <CustomStep orientation="vertical">
             {mintingBoxList.map((round, index) => {
               return (
-<<<<<<< HEAD
-                <Step
-                  key={index}
-                  active={true}
-                  className={index === mintingBoxList.length - 1 ? "end" : ""}
-                >
-                  <StepLabel sx={{ marginLeft: "2rem" }}>
-                    <CardHeader
-                      sx={{ padding: 0 }}
-                      title={
-                        <Title
-                          variant="h5"
-                          sx={{
-                            textAlign: "left",
-                            width: "fit-content",
-                            fontWeight: 700,
-                          }}
-                        >
-                          Minting Box Round {round.roundNumber}
-                        </Title>
-                      }
-                    />
-                  </StepLabel>
-                  <StepContent sx={{ width: "100%", mt: 1 }}>
-                    <Grid container spacing={5}>
-                      <Grid item xs={12} md={6}>
-                        <RoundBoxDetail round={round} library={library} />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        {mintingComboList[index] ? (
-                          <RoundComboDetail
-                            round={mintingComboList[index]}
-                            library={library}
-                          />
-                        ) : null}
-                      </Grid>
-                    </Grid>
-                  </StepContent>
-                </Step>
-=======
                 round.filterItems.length > 0 && (
                   <Step
                     key={index}
@@ -200,7 +154,6 @@ export default function MintingList() {
                     </StepContent>
                   </Step>
                 )
->>>>>>> develop
               );
             })}
           </CustomStep>

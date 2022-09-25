@@ -100,11 +100,7 @@ export const production = {
   API: `https://marketplace.infinityangel.io/api/v1`,
   CAPTCHA_KEY: `6LdPQqMhAAAAANaFCYo54sl0FTq5_LtbZnX4a9n9`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,
-<<<<<<< HEAD
-  MAIN_MENU: [
-=======
   MAIN_MENUS: [
->>>>>>> develop
     {
       title: "HOME",
       url: ["/"],
@@ -114,13 +110,10 @@ export const production = {
       url: ["/minting-box"],
     },
   ],
-<<<<<<< HEAD
-=======
   ETHERSCAN_LINK: "https://bscscan.com",
   BLOCKCHAIN: {
     ...MAINNET_ABI,
     domain: MAINNET_DOMAIN,
     config: MAINNET_CONFIG,
   },
->>>>>>> develop
 };
