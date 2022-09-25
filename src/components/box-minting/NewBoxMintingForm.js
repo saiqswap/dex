@@ -82,9 +82,6 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
       setChecked(false);
       setAmount("");
     }
-    return () => {
-      setProgress(0);
-    };
   }, [open]);
 
   useEffect(() => {
@@ -122,21 +119,11 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
   useEffect(() => {
     if (data) {
       const availablePercent = parseInt((data.totalSold / data.supply) * 100);
-      const timer = setInterval(() => {
-        setProgress((prevProgress) => {
-          if (prevProgress < availablePercent) {
-            return prevProgress + 10;
-          } else {
-            clearInterval(timer);
-            return prevProgress;
-          }
-        });
-      }, 200);
-      return () => {
-        clearInterval(timer);
-      };
+      setProgress(availablePercent);
     }
-    return () => setProgress(0);
+    return () => {
+      setProgress(0);
+    };
   }, [data]);
 
   const _onChangeAmount = (value) => {
