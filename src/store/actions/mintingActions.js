@@ -46,9 +46,9 @@ export const _getMintingBoxList = () => (dispatch) => {
             list[index].productByPrice.push(item);
           }
         }
-        element.filterItems = list;
-        tempData.push(element);
       });
+      element.filterItems = list;
+      tempData.push(element);
     });
     dispatch({
       type: GET_MINTING_BOX_LIST,
