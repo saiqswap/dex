@@ -81,8 +81,10 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
     if (!open) {
       setChecked(false);
       setAmount("");
-      setProgress(0);
     }
+    return () => {
+      setProgress(0);
+    };
   }, [open]);
 
   useEffect(() => {
