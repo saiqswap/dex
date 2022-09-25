@@ -25,16 +25,18 @@ export const _getMintingBoxList = () => (dispatch) => {
     data.forEach((element) => {
       const list = [];
       element.items.forEach((item) => {
-        let totalSold = 0;
-        element.items.forEach((elm) => {
-          if (elm.boxType === item.boxType) {
-            totalSold += elm.sold;
-          }
-        });
-        const index = list.findIndex((l) => l.boxType === item.boxType);
-        item.roundNumber = element.roundNumber;
-        item.totalSold = totalSold;
         if (item.location === PROJECT_LOCATION) {
+          let totalSold = 0;
+          element.items.forEach((elm) => {
+            if (elm.boxType === item.boxType) {
+              if (elm.location === PROJECT_LOCATION) {
+                totalSold += elm.sold;
+              }
+            }
+          });
+          const index = list.findIndex((l) => l.boxType === item.boxType);
+          item.roundNumber = element.roundNumber;
+          item.totalSold = totalSold;
           if (index < 0) {
             list.push({
               ...item,
@@ -44,9 +46,9 @@ export const _getMintingBoxList = () => (dispatch) => {
             list[index].productByPrice.push(item);
           }
         }
+        element.filterItems = list;
+        tempData.push(element);
       });
-      element.filterItems = list;
-      tempData.push(element);
     });
     dispatch({
       type: GET_MINTING_BOX_LIST,
@@ -64,7 +66,9 @@ export const _getMintingComboList = () => (dispatch) => {
           let totalSold = 0;
           element.items.forEach((elm) => {
             if (elm.comoType === item.comoType) {
-              totalSold += elm.sold;
+              if (elm.location === PROJECT_LOCATION) {
+                totalSold += elm.sold;
+              }
             }
           });
           const index = list.findIndex((l) => l.comboType === item.comboType);
