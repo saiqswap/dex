@@ -72,6 +72,7 @@ const ComboMintingForm = ({ onClose, data, open }) => {
     if (!open) {
       setChecked(false);
       setAmount("");
+      setProgress(0);
     }
   }, [open]);
 
@@ -94,7 +95,7 @@ const ComboMintingForm = ({ onClose, data, open }) => {
 
   useEffect(() => {
     if (data) {
-      const availablePercent = parseInt((data.sold / data.supply) * 100);
+      const availablePercent = parseInt((data.totalSold / data.supply) * 100);
       const timer = setInterval(() => {
         setProgress((prevProgress) => {
           if (prevProgress < availablePercent) {
