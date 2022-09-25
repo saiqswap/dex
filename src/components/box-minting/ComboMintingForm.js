@@ -95,7 +95,6 @@ const ComboMintingForm = ({ onClose, data, open }) => {
   useEffect(() => {
     if (data) {
       const availablePercent = parseInt((data.totalSold / data.supply) * 100);
-      console.log(availablePercent);
       setProgress(availablePercent);
     }
     return () => {
