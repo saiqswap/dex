@@ -1,4 +1,4 @@
-import { Box, Divider, Hidden, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Hidden, Stack, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Countdown from "react-countdown";
@@ -153,6 +153,16 @@ export default function RoundBoxDetail({ roundNumber }) {
           >
             {MINTING_COMBOS[selectedItemByPrice.comboType].value}
           </BoxTypeLabel>
+          <Chip
+            label={
+              <Typography variant="caption" color="#fff" fontWeight={500}>
+                -10%
+              </Typography>
+            }
+            size="small"
+            color="error"
+            sx={{ ml: 1 }}
+          />
         </CustomStack>
         <CustomStack>
           <Typography sx={{ width: 120 }}>{library.TOTAL_SELL}:</Typography>
