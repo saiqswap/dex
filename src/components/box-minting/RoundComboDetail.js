@@ -71,7 +71,7 @@ export default function RoundBoxDetail({ roundNumber }) {
   }, [selectedItem, selectedItemByPriceId]);
 
   const _getStatusProduct = (product) => {
-    const { startTime, endTime, sold, totalSell } = product;
+    const { startTime, endTime, sold, supply } = product;
     const now = moment().utc().unix() * 1000;
     const start = startTime;
     const end = endTime;
@@ -82,7 +82,7 @@ export default function RoundBoxDetail({ roundNumber }) {
     if (start - now > 0) {
       status = "COMING_SOON";
     }
-    if (totalSell - sold <= 0) {
+    if (supply - sold <= 0) {
       status = "SOLD_OUT";
     }
     return status;
