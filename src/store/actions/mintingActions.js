@@ -1,4 +1,5 @@
 import { PROJECT_LOCATION } from "../../settings";
+import { BoxType } from "../../settings/constants";
 import {
   ENDPOINT_MINTING_BOX_COMBOS,
   ENDPOINT_MINTING_BOX_INFORMATION,
@@ -20,41 +21,99 @@ export const _getMintingBoxInformation = (address) => (dispatch) => {
 };
 
 export const _getMintingBoxList = () => (dispatch) => {
-  get(ENDPOINT_MINTING_BOX_PRODUCTS, (data) => {
-    const tempData = [];
-    data.forEach((element) => {
+  get(ENDPOINT_MINTING_BOX_PRODUCTS, (rounds) => {
+    const temp = [];
+    rounds.forEach((round) => {
+      const { items } = round;
+      const locationFilterItems = items.filter(
+        (item) => item.location === PROJECT_LOCATION
+      );
       const list = [];
-      element.items.forEach((item) => {
-        if (item.location === PROJECT_LOCATION) {
-          let totalSold = 0;
-          element.items.forEach((elm) => {
-            if (elm.boxType === item.boxType) {
-              if (elm.location === PROJECT_LOCATION) {
-                totalSold += elm.sold;
-              }
-            }
+      locationFilterItems.forEach((item) => {
+        let totalSold = 0;
+        let totalSupply = 0;
+        const index = list.findIndex((l) => l.boxType === item.boxType);
+        const itemLikeType = locationFilterItems.filter(
+          (i) => i.boxType === item.boxType
+        );
+        itemLikeType.forEach((item) => {
+          totalSold += item.sold;
+          totalSupply += item.supply;
+        });
+        item.totalSold = totalSold;
+        item.totalSupply = totalSupply;
+        item.roundNumber = round.roundNumber;
+        if (index < 0) {
+          const information = BoxType[item.boxType];
+          list.push({
+            boxType: item.boxType,
+            totalSupply,
+            totalSold,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            items: [item],
+            information,
+            roundNumber: round.roundNumber,
           });
-          const index = list.findIndex((l) => l.boxType === item.boxType);
-          item.roundNumber = element.roundNumber;
-          item.totalSold = totalSold;
-          if (index < 0) {
-            list.push({
-              ...item,
-              productByPrice: [item],
-            });
-          } else {
-            list[index].productByPrice.push(item);
-          }
+        } else {
+          list[index].items.push(item);
         }
       });
-      element.filterItems = list;
-      tempData.push(element);
+      const angel = list.find((item) => item.boxType === "ANGEL");
+      const angelTotalSold = angel.items[0].totalSold;
+      const angelTotalSupply = angel.items[0].totalSupply;
+      const angelStartTime = angel.items[0].startTime;
+      const angelEndTime = angel.items[0].endTime;
+      temp.push({
+        roundNumber: round.roundNumber,
+        angelTotalSold,
+        angelTotalSupply,
+        angelStartTime,
+        angelEndTime,
+        boxes: list,
+      });
     });
     dispatch({
       type: GET_MINTING_BOX_LIST,
-      payload: tempData,
+      payload: temp,
     });
+    // console.log(temp);
   });
+  // get(ENDPOINT_MINTING_BOX_PRODUCTS, (data) => {
+  //   const tempData = [];
+  //   data.forEach((element) => {
+  //     const list = [];
+  //     element.items.forEach((item) => {
+  //       if (item.location === PROJECT_LOCATION) {
+  //         let totalSold = 0;
+  //         element.items.forEach((elm) => {
+  //           if (elm.boxType === item.boxType) {
+  //             if (elm.location === PROJECT_LOCATION) {
+  //               totalSold += elm.sold;
+  //             }
+  //           }
+  //         });
+  //         const index = list.findIndex((l) => l.boxType === item.boxType);
+  //         item.roundNumber = element.roundNumber;
+  //         item.totalSold = totalSold;
+  //         if (index < 0) {
+  //           list.push({
+  //             ...item,
+  //             productByPrice: [item],
+  //           });
+  //         } else {
+  //           list[index].productByPrice.push(item);
+  //         }
+  //       }
+  //     });
+  //     element.filterItems = list;
+  //     tempData.push(element);
+  //   });
+  //   dispatch({
+  //     type: GET_MINTING_BOX_LIST,
+  //     payload: tempData,
+  //   });
+  // });
 };
 
 export const _getMintingComboList = () => (dispatch) => {

@@ -7,11 +7,16 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import Countdown from "react-countdown";
 import { useSelector } from "react-redux";
+import { formatNumberWithDecimal } from "../../settings/format";
 import Loader from "../common/Loader";
+import { countDownRenderer, LinearProgressCustom } from "./MintingStyles";
 import RoundBoxDetail from "./RoundBoxDetail";
 import RoundComboDetail from "./RoundComboDetail";
 import Title from "./Title";
@@ -106,8 +111,9 @@ const CustomStep = styled(Stepper)(({ theme }) => ({
 }));
 
 export default function MintingList() {
-  const { minting } = useSelector((state) => state);
+  const { minting, setting } = useSelector((state) => state);
   const { mintingBoxList, mintingComboList } = minting;
+  const { library } = setting;
 
   return mintingBoxList && mintingComboList ? (
     <>
@@ -116,31 +122,38 @@ export default function MintingList() {
           <CustomStep orientation="vertical">
             {mintingBoxList.map((round, index) => {
               return (
-                round.filterItems.length > 0 && (
+                index === 0 && (
                   <Step
                     key={index}
                     active={true}
                     className={index === mintingBoxList.length - 1 ? "end" : ""}
                   >
                     <StepLabel sx={{ marginLeft: "2rem" }}>
-                      <CardHeader
-                        sx={{ padding: 0 }}
-                        title={
-                          <Title
-                            variant="h5"
-                            sx={{
-                              textAlign: "left",
-                              width: "fit-content",
-                              fontWeight: 700,
-                            }}
-                          >
-                            Minting{" "}
-                            {round.roundNumber === 0
-                              ? "OG sale"
-                              : `WL R${round.roundNumber}`}
-                          </Title>
-                        }
-                      />
+                      <Grid container alignItems="center">
+                        <Grid item xs={12} md={6}>
+                          <CardHeader
+                            sx={{ padding: 0 }}
+                            title={
+                              <Title
+                                variant="h5"
+                                sx={{
+                                  textAlign: "left",
+                                  width: "fit-content",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                Minting{" "}
+                                {round.roundNumber === 0
+                                  ? "OG sale"
+                                  : `WL R${round.roundNumber}`}
+                              </Title>
+                            }
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <StaticProgress round={round} />
+                        </Grid>
+                      </Grid>
                     </StepLabel>
                     <StepContent sx={{ width: "100%", mt: 1 }}>
                       <Grid container spacing={5}>
@@ -148,7 +161,7 @@ export default function MintingList() {
                           <RoundBoxDetail round={round} />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                          <RoundComboDetail roundNumber={index} />
+                          {/* <RoundComboDetail roundNumber={index} /> */}
                         </Grid>
                       </Grid>
                     </StepContent>
@@ -164,3 +177,46 @@ export default function MintingList() {
     <Loader />
   );
 }
+
+const StaticProgress = ({ round }) => {
+  const { setting } = useSelector((state) => state);
+  const { library } = setting;
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (round) {
+      const availablePercent = parseInt(
+        (round.angelTotalSold / round.angelTotalSupply) * 100
+      );
+      setProgress(availablePercent);
+    }
+    return () => {
+      setProgress(0);
+    };
+  }, [round]);
+
+  return (
+    <Box>
+      <Box display={"flex"} justifyContent={"space-between"} px={1} mb={0.5}>
+        <Typography variant="caption" color="#fff">
+          {library.SOLD}
+        </Typography>
+        <Typography variant="caption" color="#fff">
+          Angel box
+        </Typography>
+        <Typography variant="caption" color="#fff">
+          {library.TOTAL_SELL}
+        </Typography>
+      </Box>
+      <LinearProgressCustom variant="determinate" value={progress} />
+      <Box display={"flex"} justifyContent={"space-between"} px={1} mt={0.5}>
+        <Typography variant="caption" color="#fff">
+          {formatNumberWithDecimal(round.angelTotalSold, 2)} {library.BOX}
+        </Typography>
+        <Typography variant="caption" color="#fff">
+          {formatNumberWithDecimal(round.angelTotalSupply, 2)} {library.BOX}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
