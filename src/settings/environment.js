@@ -15,32 +15,36 @@ export const develop = {
       title: "HOME",
       url: ["/"],
     },
+    // {
+    //   title: "PRESALE",
+    //   url: ["/pre-sale"],
+    // },
     {
       title: "MINTING",
       url: ["/minting-box"],
     },
-    // {
-    //   title: "MARKETPLACE",
-    //   url: ["/marketplace"],
-    // },
-    // {
-    //   title: "BOXES",
-    //   url: ["/boxes"],
-    // },
-    // {
-    //   title: "SUMMON",
-    //   url: ["/summon"],
-    //   isLogged: true,
-    // },
-    // {
-    //   title: "R - I",
-    //   url: [
-    //     "/research-institute/R-I",
-    //     "/research-institute/slot",
-    //     "/research-institute/history",
-    //   ],
-    //   isLogged: true,
-    // },
+    {
+      title: "MARKETPLACE",
+      url: ["/marketplace"],
+    },
+    {
+      title: "BOXES",
+      url: ["/boxes"],
+    },
+    {
+      title: "SUMMON",
+      url: ["/summon"],
+      isLogged: true,
+    },
+    {
+      title: "R - I",
+      url: [
+        "/research-institute/R-I",
+        "/research-institute/slot",
+        "/research-institute/history",
+      ],
+      isLogged: true,
+    },
   ],
   ETHERSCAN_LINK: "https://testnet.bscscan.com",
   BLOCKCHAIN: {

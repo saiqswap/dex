@@ -180,4 +180,5 @@ export const en = {
   STARTS_IN: "Starts in",
   ENDS_IN: "Ends in",
   SOLD: "Sold",
+  PRESALE: "Pre-sale",
 };

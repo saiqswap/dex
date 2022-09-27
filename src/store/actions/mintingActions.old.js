@@ -51,7 +51,7 @@ export const _getMintingBoxList = () => (dispatch) => {
           list.push({
             ...item,
             information,
-            totalSold: totalSold > item.available ? item.available : totalSold,
+            totalSold,
             totalSupply: item.available,
             items: [tempData],
           });
@@ -80,6 +80,41 @@ export const _getMintingBoxList = () => (dispatch) => {
       payload: temp,
     });
   });
+  // get(ENDPOINT_MINTING_BOX_PRODUCTS, (data) => {
+  //   const tempData = [];
+  //   data.forEach((element) => {
+  //     const list = [];
+  //     element.items.forEach((item) => {
+  //       if (item.location === PROJECT_LOCATION) {
+  //         let totalSold = 0;
+  //         element.items.forEach((elm) => {
+  //           if (elm.boxType === item.boxType) {
+  //             if (elm.location === PROJECT_LOCATION) {
+  //               totalSold += elm.sold;
+  //             }
+  //           }
+  //         });
+  //         const index = list.findIndex((l) => l.boxType === item.boxType);
+  //         item.roundNumber = element.roundNumber;
+  //         item.totalSold = totalSold;
+  //         if (index < 0) {
+  //           list.push({
+  //             ...item,
+  //             productByPrice: [item],
+  //           });
+  //         } else {
+  //           list[index].productByPrice.push(item);
+  //         }
+  //       }
+  //     });
+  //     element.filterItems = list;
+  //     tempData.push(element);
+  //   });
+  //   dispatch({
+  //     type: GET_MINTING_BOX_LIST,
+  //     payload: tempData,
+  //   });
+  // });
 };
 
 export const _getMintingComboList = () => (dispatch) => {
@@ -113,7 +148,7 @@ export const _getMintingComboList = () => (dispatch) => {
           list.push({
             ...item,
             information,
-            totalSold: totalSold > item.available ? item.available : totalSold,
+            totalSold,
             totalSupply: item.available,
             items: [tempData],
           });
@@ -131,6 +166,41 @@ export const _getMintingComboList = () => (dispatch) => {
       payload: temp,
     });
   });
+  // get(ENDPOINT_MINTING_BOX_COMBOS, (data) => {
+  //   data.forEach((element) => {
+  //     const list = [];
+  //     element.items.forEach((item) => {
+  //       if (item.location === PROJECT_LOCATION) {
+  //         if (item.comboType) {
+  //           let totalSold = 0;
+  //           element.items.forEach((elm) => {
+  //             if (elm.comboType === item.comboType) {
+  //               if (elm.location === PROJECT_LOCATION) {
+  //                 totalSold += elm.sold;
+  //               }
+  //             }
+  //           });
+  //           const index = list.findIndex((l) => l.comboType === item.comboType);
+  //           item.roundNumber = element.roundNumber;
+  //           item.totalSold = totalSold;
+  //           if (index < 0) {
+  //             list.push({
+  //               ...item,
+  //               productByPrice: [item],
+  //             });
+  //           } else {
+  //             list[index].productByPrice.push(item);
+  //           }
+  //         }
+  //       }
+  //     });
+  //     element.filterItems = list;
+  //   });
+  //   dispatch({
+  //     type: GET_MINTING_COMBO_LIST,
+  //     payload: data,
+  //   });
+  // });
 };
 
 export const _getUserMintingBoxes = () => (dispatch) => {

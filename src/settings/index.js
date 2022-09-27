@@ -16,10 +16,12 @@ const configs = {
   localhost: develop,
   "marketplace.megdev.co": staging,
   "marketplaceinfinity.feliciastation.com": develop,
+  "jpinfinity.feliciastation.com": develop,
 };
 export const config = configs[hostname] ? configs[hostname] : production;
 export const { API, ETHERSCAN_LINK, MAIN_MENUS, BLOCKCHAIN } = config;
 export const PROJECT_LOCATION = "GLOBAL";
+// export const PROJECT_LOCATION = "JAPAN";
 
 export const makeID = (length) => {
   var result = "";

@@ -59,7 +59,7 @@ function Header() {
   }, [dispatch, walletName]);
 
   useEffect(() => {
-    if (config) {
+    if (config && walletAddress) {
       dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
     }
   }, [config, dispatch, walletAddress]);

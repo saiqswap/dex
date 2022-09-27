@@ -1,4 +1,4 @@
-import { convertOutput } from "../utils/common";
+import { convertOutput, parseEthereumError } from "../utils/common";
 
 const { ethers, BigNumber } = require("ethers");
 const config = require("../presale-config");

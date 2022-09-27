@@ -8,7 +8,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  Link,
   TextField,
   Tooltip,
   Typography,
@@ -24,7 +23,7 @@ import {
   provider,
   purchaseBox,
 } from "../../onchain/onchain";
-import { image_url } from "../../settings";
+import { image_url, PROJECT_LOCATION } from "../../settings";
 import {
   BoxType,
   tierAngelDescription,
@@ -56,12 +55,13 @@ import {
   SelectAmountButton,
 } from "./MintingStyles";
 import { NoticeAndInformation } from "./NoticeAndInformation";
+import PolicyCheck from "./PolicyCheck";
 import { SocialComponent } from "./SocialComponent";
 
 const selectAmount = [10, 20, 30];
 
 const NewBoxMintingForm = ({ onClose, data, open }) => {
-  const [selectedAsset, setSelectedAsset] = useState("BNB");
+  const [selectedAsset, setSelectedAsset] = useState("USDT");
   const [boxInformation, setBoxInformation] = useState(null);
   const [available, setAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -105,7 +105,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
   useEffect(() => {
     if (data && mintingBoxInformation) {
       const userMintingInformation = mintingBoxInformation?.items.find(
-        (e) => e.round === data.roundNumber
+        (e) => e.round === data.roundNumber && e.location === PROJECT_LOCATION
       );
       if (userMintingInformation) {
         const tempUserMintingInformation = {
@@ -163,12 +163,9 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
       toast.error(library.PLEASE_CONNECT_WALLET);
     } else if (!amountNumber) {
       toast.error(library.PLEASE_ENTER_AMOUNT);
-    } else if (
-      amountNumber > boxInformation.maxOrder ||
-      amountNumber < boxInformation.minOrder
-    ) {
+    } else if (amountNumber > data.maxOrder || amountNumber < data.minOrder) {
       toast.error(
-        `You can buy with Minimum is ${boxInformation.minOrder} box, Maximum is ${boxInformation.maxOrder} box`
+        `You can buy with Minimum is ${data.minOrder} box, Maximum is ${data.maxOrder} box`
       );
     } else if (
       amountNumber >
@@ -359,25 +356,27 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                 </Box>
               </Box>
               <CustomStack>
-                {data?.items?.map((item, index) => (
-                  <PriceBox
-                    key={index}
-                    onClick={() => setSelectedAsset(item.paymentCurrency)}
-                    className={
-                      selectedAsset === item.paymentCurrency ? "active" : ""
-                    }
-                  >
-                    <Typography variant="caption" color="#fff">
-                      {item.id} {item.sold} {formatAmount(item.unitPrice)}{" "}
-                      {item.paymentCurrency}
-                    </Typography>
-                  </PriceBox>
-                ))}
+                {data &&
+                  data.items.length > 1 &&
+                  data.items.map((item, index) => (
+                    <PriceBox
+                      key={index}
+                      onClick={() => setSelectedAsset(item.paymentCurrency)}
+                      className={
+                        selectedAsset === item.paymentCurrency ? "active" : ""
+                      }
+                    >
+                      <Typography variant="caption" color="#fff">
+                        {item.sold} {formatAmount(item.unitPrice)}{" "}
+                        {item.paymentCurrency}
+                      </Typography>
+                    </PriceBox>
+                  ))}
               </CustomStack>
               <Box textAlign="right">
                 <Typography variant="caption" color="#fff" opacity="0.8">
                   {library.BALANCE}:{" "}
-                  {formatNumberWithDecimal(onChainBalance?.onChainBalance, 8)}{" "}
+                  {formatNumberWithDecimal(onChainBalance?.onChainBalance, 2)}{" "}
                   {onChainBalance?.symbol}
                 </Typography>
               </Box>
@@ -386,15 +385,13 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                 label="Amount"
                 value={amount}
                 onChange={(e) => _onChangeAmount(e.target.value)}
-                placeholder={` Limited to one-time purchase: ${boxInformation.minOrder} ~ ${boxInformation.maxOrder} ${library.BOX}`}
+                placeholder={` Limited to one-time purchase: ${data.minOrder} ~ ${data.maxOrder} ${library.BOX}`}
               />
               <Box display="flex" mt={1} justifyContent="flex-start">
                 <SelectAmountButton
-                  onClick={() =>
-                    _onChangeAmount(boxInformation.minOrder.toString())
-                  }
+                  onClick={() => _onChangeAmount(data.minOrder.toString())}
                 >
-                  {boxInformation.minOrder}
+                  {data.minOrder}
                 </SelectAmountButton>
                 {selectAmount.map((item, index) => (
                   <SelectAmountButton
@@ -432,32 +429,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                       onChange={(e) => setChecked(e.target.checked)}
                     />
                   }
-                  label={
-                    <Typography variant="caption" textAlign="left">
-                      {library.PRESALE_CHECKBOX_1}{" "}
-                      <Link
-                        target="_blank"
-                        href="https://doc.infinityangel.io/infinity-angel-docs/overview/whitepaper"
-                      >
-                        {library.WHITEPAPER}
-                      </Link>
-                      ,{" "}
-                      <Link
-                        target="_blank"
-                        href="https://doc.infinityangel.io/faqs/privacy-policy"
-                      >
-                        {library.POLICY_AND_CONDITIONS}
-                      </Link>{" "}
-                      {library.AND}{" "}
-                      <Link
-                        target="_blank"
-                        href="https://doc.infinityangel.io/faqs/disclaimer"
-                      >
-                        {library.DISCLAIMER}
-                      </Link>{" "}
-                      {library.PRESALE_CHECKBOX_2}
-                    </Typography>
-                  }
+                  label={<PolicyCheck />}
                 />
               </FormGroup>
               <LoadingButton
