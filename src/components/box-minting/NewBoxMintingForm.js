@@ -257,6 +257,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
             }
           },
           (error) => {
+            toast.error(library.SOMETHING_WRONG);
             toast.error(library[error.code]);
             setLoading(false);
           }

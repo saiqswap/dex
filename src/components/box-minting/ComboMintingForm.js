@@ -242,6 +242,7 @@ const ComboMintingForm = ({ onClose, data, open, status }) => {
             }
           },
           (error) => {
+            toast.error(library.SOMETHING_WRONG);
             toast.error(library[error.code]);
             setLoading(false);
           }

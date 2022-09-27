@@ -13,7 +13,7 @@ export const explorer_url = "https://bscscan.com/tx";
 export const hostname = window.location.hostname.replace("www.", "");
 
 const configs = {
-  localhost: develop,
+  // localhost: develop,
   "marketplace.megdev.co": staging,
   "marketplaceinfinity.feliciastation.com": develop,
   "jpinfinity.feliciastation.com": develop,
