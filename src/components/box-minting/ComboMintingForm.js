@@ -163,7 +163,7 @@ const ComboMintingForm = ({ onClose, data, open, status }) => {
   };
 
   const _handlePurchase = () => {
-    const product = data;
+    const product = boxInformation;
     const purchaseToken = config.contracts.find(
       (e) => e.contractAddress === product.paymentContract
     );
@@ -263,10 +263,12 @@ const ComboMintingForm = ({ onClose, data, open, status }) => {
                 variant="body2"
                 sx={{ textDecoration: "line-through" }}
               >
-                {formatAmount(data.unitPrice / 0.9)} {data.paymentCurrency}
+                {formatAmount(parseInt(boxInformation.unitPrice / 0.9))}{" "}
+                {boxInformation.paymentCurrency}
               </Typography>
               <Typography>
-                {formatAmount(data.unitPrice)} {data.paymentCurrency}
+                {formatAmount(boxInformation.unitPrice)}{" "}
+                {boxInformation.paymentCurrency}
               </Typography>
             </Box>
 

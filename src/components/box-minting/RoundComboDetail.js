@@ -157,7 +157,7 @@ export default function RoundComboDetail({ roundNumber, angelBoxInformation }) {
                   textDecoration: "line-through",
                 }}
               >
-                {formatNumberWithDecimal(item.unitPrice / 0.9)}{" "}
+                {formatNumberWithDecimal(parseInt(item.unitPrice / 0.9))}{" "}
                 {item.paymentCurrency}
               </Typography>{" "}
               <Typography variant="caption" color="#fff">
