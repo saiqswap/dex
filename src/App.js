@@ -27,6 +27,7 @@ import {
   _getMintingBoxList,
   _getMintingComboList,
 } from "./store/actions/mintingActions";
+import { _getPreSaleRoundList } from "./store/actions/preSaleActions";
 import {
   _changeLanguage,
   _getConfig,
@@ -72,11 +73,12 @@ function App() {
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
-    console.log("Infinity Angel Marketplace - Ver 0.0.3");
+    dispatch(_getPreSaleRoundList());
     const timer = setInterval(() => {
       dispatch(_getMintingBoxList());
       dispatch(_getMintingComboList());
     }, 10000);
+    console.log("Infinity Angel Marketplace - Ver 0.0.3");
     return () => clearInterval(timer);
   }, [dispatch]);
 

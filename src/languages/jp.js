@@ -177,4 +177,8 @@ export const jp = {
   MINTING_LIMIT: "Minting limit",
   COMBOS: "Combos",
   YOU_OWNED: "You owned",
+  STARTS_IN: "Starts in",
+  ENDS_IN: "Ends in",
+  SOLD: "Sold",
+  PRESALE: "Pre-sale",
 };

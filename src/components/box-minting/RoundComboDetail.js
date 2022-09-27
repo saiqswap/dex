@@ -1,80 +1,60 @@
-import { Box, Chip, Divider, Hidden, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import Countdown from "react-countdown";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BoxType, MINTING_COMBOS } from "../../settings/constants";
 import { formatAmount, formatNumberWithDecimal } from "../../settings/format";
-import { _getMintingBoxList } from "../../store/actions/mintingActions";
 import ComboMintingForm from "./ComboMintingForm";
 import {
   BoxItem,
   BoxTypeLabel,
-  countDownRenderer,
   CustomButton,
   CustomStack,
   FieldLabel,
   PriceBox,
 } from "./MintingStyles";
 
-export default function RoundBoxDetail({ roundNumber }) {
-  const { minting } = useSelector((state) => state);
-  const { mintingComboList } = minting;
-  const [filterItems, setFilterItems] = useState(null);
-  const [selectedItemId, setSelectedItemId] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedItemByPriceId, setSelectedItemByPriceId] = useState(null);
-  const [selectedItemByPrice, setSelectedItemByPrice] = useState(null);
-  const itemInformation = selectedItemByPrice
-    ? MINTING_COMBOS[selectedItemByPrice.comboType]
-    : null;
-  const { setting } = useSelector((state) => state);
+export default function RoundComboDetail({ roundNumber, angelBoxInformation }) {
+  const [round, setRound] = useState(null);
+  const [boxes, setBoxes] = useState(null);
+  const [selectedBoxType, setSelectedBoxType] = useState("COMBO_1");
+  const [selectedBox, setSelectedBox] = useState(null);
+  const { setting, minting } = useSelector((state) => state);
   const { library } = setting;
-  const now = moment().utc().unix() * 1000;
-  const dispatch = useDispatch();
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
+  const { mintingComboList } = minting;
 
   useEffect(() => {
-    if (mintingComboList && mintingComboList[roundNumber]) {
-      const { filterItems } = mintingComboList[roundNumber];
-      setFilterItems(filterItems);
+    if (mintingComboList) {
+      const temp = mintingComboList.find(
+        (item) => item.roundNumber === roundNumber
+      );
+      if (temp) {
+        setRound(temp);
+      }
     }
   }, [mintingComboList, roundNumber]);
 
   useEffect(() => {
-    if (filterItems && filterItems[0]) {
-      if (selectedItemId === null) {
-        setSelectedItemId(filterItems[0].id);
-      }
-      if (selectedItemByPriceId === null) {
-        setSelectedItemByPriceId(filterItems[0].productByPrice[0].id);
-      }
+    if (round) {
+      const { combos } = round;
+      setBoxes(combos);
     }
-  }, [filterItems, selectedItemByPriceId, selectedItemId]);
+  }, [round]);
 
   useEffect(() => {
-    if (filterItems && selectedItemId !== null) {
-      const temp = filterItems.find((item) => item.id === selectedItemId);
-      setSelectedItem(temp);
+    if (boxes) {
+      const tempBox = boxes.find((box) => box.comboType === selectedBoxType);
+      setSelectedBox(tempBox);
     }
-  }, [filterItems, selectedItemId]);
-
-  useEffect(() => {
-    if (selectedItemByPriceId !== null && selectedItem) {
-      const temp = selectedItem.productByPrice.find(
-        (item) => item.id === selectedItemByPriceId
-      );
-      if (temp) {
-        setSelectedItemByPrice(temp);
-      }
-    }
-  }, [selectedItem, selectedItemByPriceId]);
+  }, [boxes, selectedBoxType]);
 
   const _getStatusProduct = (product) => {
-    const { startTime, endTime, sold, supply } = product;
+    const { angelStartTime, angelEndTime, angelTotalSold, angelTotalSupply } =
+      product;
     const now = moment().utc().unix() * 1000;
-    const start = startTime;
-    const end = endTime;
+    const start = angelStartTime;
+    const end = angelEndTime;
     let status = "BUY_NOW";
     if (now - end > 0) {
       status = "END_TIME";
@@ -82,169 +62,119 @@ export default function RoundBoxDetail({ roundNumber }) {
     if (start - now > 0) {
       status = "COMING_SOON";
     }
-    if (supply - sold <= 0) {
+    if (angelTotalSupply - angelTotalSold <= 0) {
       status = "SOLD_OUT";
     }
     return status;
   };
 
-  const status = selectedItemByPrice
-    ? _getStatusProduct(selectedItemByPrice)
+  const status = angelBoxInformation
+    ? _getStatusProduct(angelBoxInformation)
     : null;
 
-  return (
-    selectedItemByPrice && (
-      <>
-        <Hidden mdUp>
-          <Divider
-            sx={{
-              borderWidth: 2,
-              mb: 3,
-            }}
-          />
-        </Hidden>
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={2}
-          width="fit-content"
-          mb={3}
-        >
-          {filterItems?.map((item, j) => {
-            const information = MINTING_COMBOS[item.comboType];
-            return (
-              <BoxItem
-                key={j}
-                sx={{
-                  border: `1px solid ${
-                    selectedItemByPrice.comboType === item.comboType
-                      ? information.color
-                      : "var(--main-color)"
-                  }`,
-                }}
-                p={1}
-                onClick={() => {
-                  setSelectedItemId(item.id);
-                  setSelectedItemByPriceId(item.productByPrice[0].id);
-                }}
-              >
-                <img
-                  src={information.image}
-                  alt="box img"
-                  className="thumbnail"
-                  style={{
-                    transform: "scale(1.5)",
-                  }}
-                />
-              </BoxItem>
-            );
-          })}
-        </Stack>
-        <CustomStack>
-          <BoxTypeLabel
-            className={
-              "custom-font name " +
-              (selectedItemByPrice.comboType.length > 12 ? "long-name" : "")
-            }
-            variant="h6"
-            sx={{
-              color: itemInformation.color,
-            }}
-          >
-            {MINTING_COMBOS[selectedItemByPrice.comboType].value}
-          </BoxTypeLabel>
-          <Chip
-            label={
-              <Typography variant="caption" color="#fff" fontWeight={500}>
-                -10%
-              </Typography>
-            }
-            size="small"
-            color="error"
-            sx={{ ml: 1 }}
-          />
-        </CustomStack>
-        <CustomStack>
-          <Typography sx={{ width: 120 }}>{library.TOTAL_SELL}:</Typography>
-          <Typography>
-            {formatAmount(selectedItemByPrice.supply)} {library.BOX}
-          </Typography>
-        </CustomStack>
-        {/* price list */}
-        <CustomStack>
-          <FieldLabel>{library.PRICE}:</FieldLabel>
-          <CustomStack>
-            {selectedItem?.productByPrice.map((item, index) => (
-              <PriceBox
-                key={index}
-                className={selectedItemByPrice.id === item.id ? "active" : ""}
-                onClick={() => setSelectedItemByPriceId(item.id)}
-              >
-                <Typography
-                  variant="caption"
-                  color="#fff"
-                  sx={{
-                    textDecoration: "line-through",
-                  }}
-                >
-                  {formatNumberWithDecimal(
-                    item.unitPrice + item.unitPrice * 0.1
-                  )}{" "}
-                  {item.paymentCurrency}
-                </Typography>{" "}
-                <Typography variant="caption" color="#fff">
-                  {formatAmount(item.unitPrice)} {item.paymentCurrency}
-                </Typography>
-              </PriceBox>
-            ))}
-          </CustomStack>
-        </CustomStack>
+  return round && boxes && selectedBox ? (
+    <>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1}
+        width="fit-content"
+        mb={3}
+      >
+        {boxes.map((item, j) => {
+          const information = MINTING_COMBOS[item.comboType];
+          return (
+            <BoxItem
+              key={j}
+              sx={{
+                border: `1px solid ${
+                  selectedBoxType === item.comboType
+                    ? information.color
+                    : "var(--main-color)"
+                }`,
+              }}
+              p={1}
+              onClick={() => {
+                setSelectedBoxType(item.comboType);
+              }}
+            >
+              <img
+                src={information.image}
+                alt="box img"
+                className="thumbnail"
+              />
+            </BoxItem>
+          );
+        })}
+      </Stack>
 
-        <CustomStack>
-          <FieldLabel>{library.CONDITION}:</FieldLabel>
-          <Typography> {selectedItemByPrice.condition}</Typography>
-        </CustomStack>
-        <CustomStack>
-          <FieldLabel>{library.TIME}:</FieldLabel>
-          <Typography sx={{ color: "#fff" }}>
-            {`${moment(selectedItemByPrice.startTime).format(
-              "YYYY-MM-DD HH:mm"
-            )} to ${moment(selectedItemByPrice.endTime).format(
-              "YYYY-MM-DD HH:mm"
-            )}`}
-          </Typography>
-        </CustomStack>
-        <Box
+      <CustomStack>
+        <BoxTypeLabel
+          className={
+            "custom-font name " +
+            (selectedBox?.comboType.length > 12 ? "long-name" : "")
+          }
+          variant="h6"
           sx={{
-            transform: "scale(0.7)",
-            width: "fit-content",
-            marginLeft: "-2.5rem",
+            color: selectedBox?.information?.color,
           }}
         >
-          {status === "COMING_SOON" && (
-            <Countdown
-              date={Date.now() + (selectedItemByPrice.startTime - now)}
-              renderer={(props) => countDownRenderer(props)}
-              onComplete={() => dispatch(_getMintingBoxList())}
-            />
-          )}
-        </Box>
+          {selectedBox?.comboType.split("_").join(" ").toLowerCase()}{" "}
+          {library.BOX}
+        </BoxTypeLabel>
+        <Chip
+          label={
+            <Typography variant="caption" color="#fff" fontWeight={500}>
+              -10%
+            </Typography>
+          }
+          size="small"
+          color="error"
+          sx={{ ml: 1 }}
+        />
+      </CustomStack>
+      <CustomStack>
+        <Typography sx={{ width: 120 }}>{library.TOTAL_SELL}:</Typography>
+        <Typography>
+          {formatAmount(selectedBox?.totalSupply)} {library.BOX}
+        </Typography>
+      </CustomStack>
+      <CustomStack>
+        <Typography sx={{ width: 120 }}>{library.SOLD}:</Typography>
+        <Typography>
+          {formatAmount(selectedBox?.totalSold)} {library.BOX}
+        </Typography>
+      </CustomStack>
+      <CustomStack>
+        <FieldLabel>{library.PRICE}:</FieldLabel>
         <CustomStack>
-          <Typography>&nbsp;</Typography>
+          {selectedBox?.items?.map((item, index) => (
+            <PriceBox key={index}>
+              <Typography
+                variant="caption"
+                color="#fff"
+                sx={{
+                  textDecoration: "line-through",
+                }}
+              >
+                {formatNumberWithDecimal(item.unitPrice / 0.9)}{" "}
+                {item.paymentCurrency}
+              </Typography>{" "}
+              <Typography variant="caption" color="#fff">
+                {formatAmount(item.unitPrice)} {item.paymentCurrency}
+              </Typography>
+            </PriceBox>
+          ))}
         </CustomStack>
-        <Stack>
-          <CustomButton
-            className="custom-btn custom-font"
-            onClick={() => setShowPurchaseForm(true)}
-            disabled={status === "SOLD_OUT" || status === "END_TIME"}
-          >
-            {library[status]}
-          </CustomButton>
-        </Stack>
+      </CustomStack>
+      <CustomStack>
+        <FieldLabel>{library.CONDITION}:</FieldLabel>
+        <Typography> {round.condition}</Typography>
+      </CustomStack>
+      <Box height={100} mb={4}>
         <Divider sx={{ mt: 2, mb: 2 }} />
-
         <Stack direction="row" alignItems="flex-start" spacing={1} mt={1}>
-          {selectedItemByPrice.products.map(({ product }, index) => {
+          {selectedBox?.products.map(({ product }, index) => {
             const information = BoxType[product.boxType];
             return (
               <Box key={index} textAlign="left" width={"33%"}>
@@ -277,12 +207,22 @@ export default function RoundBoxDetail({ roundNumber }) {
             );
           })}
         </Stack>
-        <ComboMintingForm
-          data={selectedItemByPrice}
-          open={showPurchaseForm}
-          onClose={() => setShowPurchaseForm(false)}
-        />
-      </>
-    )
-  );
+      </Box>
+      <Stack>
+        <CustomButton
+          className="custom-btn custom-font"
+          onClick={() => setShowPurchaseForm(true)}
+          disabled={status === "SOLD_OUT" || status === "END_TIME"}
+        >
+          {library[status]}
+        </CustomButton>
+      </Stack>
+      <ComboMintingForm
+        data={selectedBox}
+        open={showPurchaseForm}
+        onClose={() => setShowPurchaseForm(false)}
+        status={status}
+      />
+    </>
+  ) : null;
 }

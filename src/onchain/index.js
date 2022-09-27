@@ -6,6 +6,7 @@ import { EscrowVesting } from "./blockchain/Escrow_Vesting";
 import { provider, signer } from "./onchain";
 import presaleConfig from "./presale-config";
 import { getReceiptFromTxHash, parseEthereumError } from "./utils/common";
+const { ERC20_ABI } = BLOCKCHAIN;
 
 const ESCROW_VESTING = new EscrowVesting(
   presaleConfig.PROVIDER,
@@ -56,7 +57,7 @@ export const _checkBeforePurchase = async (
 
     const contractInstance = new ethers.Contract(
       tokenERC20Address,
-      BLOCKCHAIN.ERC20_ABI,
+      ERC20_ABI,
       provider
     );
 
@@ -80,7 +81,7 @@ export const _checkBeforePurchase = async (
     ) {
       const contractWithSigner = new ethers.Contract(
         tokenERC20Address,
-        BLOCKCHAIN.ERC20_ABI,
+        ERC20_ABI,
         signer
       );
 

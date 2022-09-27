@@ -8,7 +8,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  Link,
   TextField,
   Tooltip,
   Typography,
@@ -24,7 +23,7 @@ import {
   provider,
   purchaseBox,
 } from "../../onchain/onchain";
-import { image_url } from "../../settings";
+import { image_url, PROJECT_LOCATION } from "../../settings";
 import {
   BoxType,
   tierAngelDescription,
@@ -41,33 +40,35 @@ import {
   formatNumberWithDecimal,
   formatPrice,
 } from "../../settings/format";
-import {
-  _getMintingBoxInformation,
-  _getMintingBoxList,
-} from "../../store/actions/mintingActions";
+import { _getMintingBoxInformation } from "../../store/actions/mintingActions";
 import { _getOnchainBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import GeneralPopup from "../common/GeneralPopup";
 import MintingLimit from "./MintingLimit";
 import {
+  CustomStack,
   DropRateDetail,
   LinearProgressCustom,
+  PriceBox,
   PurchaseBox,
   SelectAmountButton,
 } from "./MintingStyles";
 import { NoticeAndInformation } from "./NoticeAndInformation";
+import PolicyCheck from "./PolicyCheck";
 import { SocialComponent } from "./SocialComponent";
 
 const selectAmount = [10, 20, 30];
 
 const NewBoxMintingForm = ({ onClose, data, open }) => {
+  const [selectedAsset, setSelectedAsset] = useState("USDT");
+  const [boxInformation, setBoxInformation] = useState(null);
   const [available, setAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const { setting, user, minting } = useSelector((state) => state);
   const { library, config, templates } = setting;
-  const { walletAddress, ref } = user;
+  const { walletAddress, ref, onChainBalances } = user;
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
@@ -76,6 +77,23 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
   const { mintingBoxInformation } = minting;
   const [userMintingInformation, setUserMintingInformation] = useState(null);
   const [mintingBoxSetting, setMintingBoxSetting] = useState(null);
+  const [onChainBalance, setOnchainBalance] = useState(0);
+
+  useEffect(() => {
+    if (data) {
+      const temp = data.items.find(
+        (item) => item.paymentCurrency === selectedAsset
+      );
+      setBoxInformation(temp);
+    }
+  }, [data, selectedAsset]);
+
+  useEffect(() => {
+    if (onChainBalances) {
+      const temp = onChainBalances.find((b) => b.symbol === selectedAsset);
+      setOnchainBalance(temp);
+    }
+  }, [onChainBalances, selectedAsset]);
 
   useEffect(() => {
     if (!open) {
@@ -87,7 +105,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
   useEffect(() => {
     if (data && mintingBoxInformation) {
       const userMintingInformation = mintingBoxInformation?.items.find(
-        (e) => e.round === data.roundNumber
+        (e) => e.round === data.roundNumber && e.location === PROJECT_LOCATION
       );
       if (userMintingInformation) {
         const tempUserMintingInformation = {
@@ -116,9 +134,12 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
     }
   }, [data, templates]);
 
+  //set percent progress
   useEffect(() => {
     if (data) {
-      const availablePercent = parseInt((data.totalSold / data.supply) * 100);
+      const availablePercent = parseInt(
+        (data.totalSold / data.totalSupply) * 100
+      );
       setProgress(availablePercent);
     }
     return () => {
@@ -159,7 +180,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
   };
 
   const _handlePurchase = () => {
-    const product = data;
+    const product = boxInformation;
     const purchaseToken = config.contracts.find(
       (e) => e.contractAddress === product.paymentContract
     );
@@ -181,7 +202,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
         post(
           ENDPOINT_PRESALE_PRODUCT_SC_INPUT,
           {
-            productId: data.id,
+            productId: product.id,
             amount: parseFloat(amount),
             address: walletAddress,
           },
@@ -207,15 +228,14 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                         toast.success(library.SUCCESS);
                         setIsApproved(false);
                         setIsConfirmed(false);
+                        dispatch(
+                          _getOnchainBalance(
+                            config.contracts,
+                            walletAddress,
+                            provider
+                          )
+                        );
                         setTimeout(() => {
-                          dispatch(
-                            _getOnchainBalance(
-                              config.contracts,
-                              walletAddress,
-                              provider
-                            )
-                          );
-                          dispatch(_getMintingBoxList());
                           dispatch(_getMintingBoxInformation(walletAddress));
                         }, 3000);
                       },
@@ -267,15 +287,15 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
 
   return (
     <GeneralPopup open={open} onClose={onClose} disabled={loading}>
-      <Box mt={3} />
-      {data && (
+      {boxInformation && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={5} className="submit-box">
             <div className="box-image">
               <img src={BoxType[data.boxType].image} alt="boxImg" />
             </div>
             <Typography className="price">
-              {formatAmount(data.unitPrice)} {data.paymentCurrency}
+              {formatAmount(boxInformation.unitPrice)}{" "}
+              {boxInformation.paymentCurrency}
             </Typography>
             <SocialComponent />
             <Box mt={3} />
@@ -292,27 +312,34 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
               zIndex: 999,
             }}
           >
-            <Typography className="custom-font" textAlign={"left"}>
-              {library.BUY_BOX}
-            </Typography>
             <PurchaseBox component="form">
-              <Typography
-                textAlign="left"
-                sx={{
-                  textTransform: "capitalize",
-                }}
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                {data.boxType.split("_").join(" ").toLowerCase()} {library.BOX}
-              </Typography>
-              <Typography
-                variant="body2"
-                textAlign="left"
-                mb={1}
-                color="Highlight"
-              >
-                Ref: {ref}
-              </Typography>
-              <Box mt={2} mb={2}>
+                <Typography
+                  textAlign="left"
+                  sx={{
+                    textTransform: "capitalize",
+                    color: data?.information?.color,
+                  }}
+                >
+                  {data.boxType.split("_").join(" ").toLowerCase()}{" "}
+                  {library.BOX}
+                </Typography>
+                {ref && (
+                  <Typography
+                    variant="body2"
+                    textAlign="left"
+                    mb={1}
+                    color="Highlight"
+                  >
+                    Ref: {ref}
+                  </Typography>
+                )}
+              </Box>
+              <Box mt={1} mb={2}>
                 <LinearProgressCustom variant="determinate" value={progress} />
                 <Box
                   display={"flex"}
@@ -324,15 +351,41 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                     {formatNumberWithDecimal(data.totalSold, 2)} {library.BOX}
                   </Typography>
                   <Typography variant="caption" color="#fff">
-                    {formatNumberWithDecimal(data.supply, 2)} {library.BOX}
+                    {formatNumberWithDecimal(data.totalSupply, 2)} {library.BOX}
                   </Typography>
                 </Box>
+              </Box>
+              <CustomStack>
+                {data &&
+                  data.items.length > 1 &&
+                  data.items.map((item, index) => (
+                    <PriceBox
+                      key={index}
+                      onClick={() => setSelectedAsset(item.paymentCurrency)}
+                      className={
+                        selectedAsset === item.paymentCurrency ? "active" : ""
+                      }
+                    >
+                      <Typography variant="caption" color="#fff">
+                        {item.sold} {formatAmount(item.unitPrice)}{" "}
+                        {item.paymentCurrency}
+                      </Typography>
+                    </PriceBox>
+                  ))}
+              </CustomStack>
+              <Box textAlign="right">
+                <Typography variant="caption" color="#fff" opacity="0.8">
+                  {library.BALANCE}:{" "}
+                  {formatNumberWithDecimal(onChainBalance?.onChainBalance, 2)}{" "}
+                  {onChainBalance?.symbol}
+                </Typography>
               </Box>
               <TextField
                 fullWidth
                 label="Amount"
                 value={amount}
                 onChange={(e) => _onChangeAmount(e.target.value)}
+                placeholder={` Limited to one-time purchase: ${data.minOrder} ~ ${data.maxOrder} ${library.BOX}`}
               />
               <Box display="flex" mt={1} justifyContent="flex-start">
                 <SelectAmountButton
@@ -343,14 +396,8 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                 {selectAmount.map((item, index) => (
                   <SelectAmountButton
                     key={index}
-                    onClick={() =>
-                      _onChangeAmount(
-                        // parseInt(data.maxOrder * (item / 100)).toString()
-                        item.toString()
-                      )
-                    }
+                    onClick={() => _onChangeAmount(item.toString())}
                   >
-                    {/* {parseInt(data.maxOrder * (item / 100))} */}
                     {item}
                   </SelectAmountButton>
                 ))}
@@ -369,17 +416,11 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
               </Box>
               <Typography textAlign="left" mt={3} variant="body2">
                 {library.TOTAL}:{" "}
-                {formatAmount(data.unitPrice * parseFloat(amount ? amount : 0))}{" "}
-                {data.paymentCurrency}
+                {formatAmount(
+                  boxInformation.unitPrice * parseFloat(amount ? amount : 0)
+                )}{" "}
+                {boxInformation.paymentCurrency}
               </Typography>
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="body2">
-                  {library.MINIMUM}: {data.minOrder}
-                </Typography>
-                <Typography variant="body2">
-                  {library.MAXIMUM}: {data.maxOrder}
-                </Typography>
-              </Box>
               <FormGroup sx={{ mt: 2 }}>
                 <FormControlLabel
                   control={
@@ -388,32 +429,7 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
                       onChange={(e) => setChecked(e.target.checked)}
                     />
                   }
-                  label={
-                    <Typography variant="caption" textAlign="left">
-                      {library.PRESALE_CHECKBOX_1}{" "}
-                      <Link
-                        target="_blank"
-                        href="https://doc.infinityangel.io/infinity-angel-docs/overview/whitepaper"
-                      >
-                        {library.WHITEPAPER}
-                      </Link>
-                      ,{" "}
-                      <Link
-                        target="_blank"
-                        href="https://doc.infinityangel.io/faqs/privacy-policy"
-                      >
-                        {library.POLICY_AND_CONDITIONS}
-                      </Link>{" "}
-                      {library.AND}{" "}
-                      <Link
-                        target="_blank"
-                        href="https://doc.infinityangel.io/faqs/disclaimer"
-                      >
-                        {library.DISCLAIMER}
-                      </Link>{" "}
-                      {library.PRESALE_CHECKBOX_2}
-                    </Typography>
-                  }
+                  label={<PolicyCheck />}
                 />
               </FormGroup>
               <LoadingButton
@@ -425,6 +441,14 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
               >
                 {library[status]}
               </LoadingButton>
+              {loading && (
+                <Box textAlign="left">
+                  <Typography variant="caption" color="error" textAlign="left">
+                    Notice: Please do not reload this page to avoid risk in the
+                    transaction process
+                  </Typography>
+                </Box>
+              )}
               <Divider sx={{ mt: 2, mb: 2 }} />
               <Box
                 mt={3}

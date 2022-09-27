@@ -1,3 +1,4 @@
+const config = require("../presale-config");
 const Promise = require("bluebird");
 const { utils } = require("ethers");
 const _ = require("lodash");
@@ -156,7 +157,7 @@ export const parseEthereumError = (exception) => {
     } else {
       errorMessage = `[Smartcontract check] ${exception.reason}`;
     }
-  } else if (Object.keys(exception).length === 0) {
+  } else if (Object.keys(exception).length == 0) {
     errorMessage = `[Self check] ${errorMessage}`;
   } else {
     errorMessage = "Unknown error";

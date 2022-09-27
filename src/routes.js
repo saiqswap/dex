@@ -4,6 +4,8 @@ import ErrorPage from "./pages/ErrorPage";
 import Homepage from "./pages/Homepage";
 import Marketplace from "./pages/Marketplace";
 import NFTDetail from "./pages/NFTDetail";
+import PresalePage from "./pages/PresalePage";
+import PreSaleRound from "./pages/PreSaleRound";
 import PreSaleStatistic from "./pages/PreSaleStatistic";
 import Profile from "./pages/Profile";
 import ReferralLink from "./pages/ReferralLink";
@@ -11,6 +13,27 @@ import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
 
 const routes = [
+  // {
+  //   exact: true,
+  //   path: "/pre-sale/statistic",
+  //   component: PreSaleStatistic,
+  //   type: "guest",
+  //   isActive: true,
+  // },
+  // {
+  //   exact: true,
+  //   path: "/pre-sale/:round",
+  //   component: PreSaleRound,
+  //   type: "guest",
+  //   isActive: true,
+  // },
+  // {
+  //   exact: true,
+  //   path: "/pre-sale",
+  //   component: PresalePage,
+  //   type: "guest",
+  //   isActive: true,
+  // },
   {
     exact: true,
     path: "/minting-box",
@@ -19,44 +42,44 @@ const routes = [
     isActive: true,
     title: "Box Minting",
   },
-  //   {
-  //     exact: true,
-  //     path: "/marketplace",
-  //     component: Marketplace,
-  //     type: "guest",
-  //     isActive: true,
-  //   },
-  //   {
-  //     exact: false,
-  //     path: "/nft/:id",
-  //     component: NFTDetail,
-  //     type: "guest",
-  //     isActive: true,
-  //   },
-  //   {
-  //     exact: false,
-  //     path: "/summon",
-  //     component: Summon,
-  //     type: "guest",
-  //     isActive: true,
-  //     title: "Summon",
-  //   },
-  //   {
-  //     exact: false,
-  //     path: "/research-institute/:comp",
-  //     component: ResearchInstitute,
-  //     type: "guest",
-  //     isActive: true,
-  //     title: "Research Institute",
-  //   },
-  //   {
-  //     exact: false,
-  //     path: "/boxes",
-  //     component: BoxesPage,
-  //     type: "guest",
-  //     isActive: true,
-  //     title: "Buy Box",
-  //   },
+  // {
+  //   exact: true,
+  //   path: "/marketplace",
+  //   component: Marketplace,
+  //   type: "guest",
+  //   isActive: true,
+  // },
+  // {
+  //   exact: false,
+  //   path: "/nft/:id",
+  //   component: NFTDetail,
+  //   type: "guest",
+  //   isActive: true,
+  // },
+  // {
+  //   exact: false,
+  //   path: "/summon",
+  //   component: Summon,
+  //   type: "guest",
+  //   isActive: true,
+  //   title: "Summon",
+  // },
+  // {
+  //   exact: false,
+  //   path: "/research-institute/:comp",
+  //   component: ResearchInstitute,
+  //   type: "guest",
+  //   isActive: true,
+  //   title: "Research Institute",
+  // },
+  // {
+  //   exact: false,
+  //   path: "/boxes",
+  //   component: BoxesPage,
+  //   type: "guest",
+  //   isActive: true,
+  //   title: "Buy Box",
+  // },
   {
     exact: false,
     path: "/profile/:comp",

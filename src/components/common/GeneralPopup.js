@@ -46,7 +46,7 @@ export default function GeneralPopup({
   onClose,
   children,
   noFollowClickOutside,
-  disabled
+  disabled,
 }) {
   useEffect(() => {
     if (open) {
