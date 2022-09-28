@@ -1,5 +1,6 @@
 import { ContentCopyRounded } from "@mui/icons-material";
 import {
+  Box,
   Container,
   Divider,
   IconButton,
@@ -13,6 +14,7 @@ import { toast } from "react-toastify";
 import { formatAmount } from "../../settings/format";
 import { post } from "../../utils/api";
 import CopyBox from "../common/CopyBox";
+import { CustomButton } from "../common/CustomButton";
 import Loader from "../common/Loader";
 
 const menu = {
@@ -74,7 +76,11 @@ const MyAccount = () => {
       </Typography>
       <Divider className="mt-20" />
       <p className="mt-20 opacity-05">{library.EMAIL}</p>
-      <p className="email">{information.email}</p>
+      <Box display="flex" alignItems="center">
+        <p className="email">{information.email}</p>
+        <CustomButton>Edit</CustomButton>
+      </Box>
+
       <p className="mt-20 opacity-05">{library.REFERRAL_LINK}</p>
       <p className="referral">
         <CopyBox

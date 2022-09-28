@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-node_modules
-package-lock.json
-=======
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -29,4 +25,3 @@ yarn-error.log*
 _secret.md
 _note.md
 _deploy.md
->>>>>>> develop
