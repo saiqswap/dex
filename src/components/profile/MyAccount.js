@@ -16,6 +16,8 @@ import { post } from "../../utils/api";
 import CopyBox from "../common/CopyBox";
 import { CustomButton } from "../common/CustomButton";
 import Loader from "../common/Loader";
+import GenerateSignature from "./GenerateSignature";
+import UpdateEmail from "./UpdateEmail";
 
 const menu = {
   // title: "NFT History",
@@ -76,9 +78,8 @@ const MyAccount = () => {
       </Typography>
       <Divider className="mt-20" />
       <p className="mt-20 opacity-05">{library.EMAIL}</p>
-      <Box display="flex" alignItems="center">
-        <p className="email">{information.email}</p>
-        <CustomButton>Edit</CustomButton>
+      <Box display="flex" alignItems="center" className="email">
+        {information.email} <UpdateEmail />
       </Box>
 
       <p className="mt-20 opacity-05">{library.REFERRAL_LINK}</p>
@@ -103,6 +104,7 @@ const MyAccount = () => {
           </IconButton>
         </CopyBox>
       </p>
+      <GenerateSignature />
       <Typography
         variant="h5"
         className="custom-font"

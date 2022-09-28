@@ -181,4 +181,8 @@ export const en = {
   ENDS_IN: "Ends in",
   SOLD: "Sold",
   PRESALE: "Pre-sale",
+  //220928
+  PLEASE_ENTER_EMAIL: "Please enter your email",
+  INVALID_EMAIL: "Email is invalid",
+  LOGIN_HASH: "Login hash",
 };

@@ -85,3 +85,6 @@ export const ENDPOINT_MINTING_BOX_COMBOS = `/presale/combos-for-sell`;
 export const ENDPOINT_MINTING_BOX_COMBO_SC_INPUT = `/presale/combo-sc-input`;
 export const ENDPOINT_MINTING_BOX_COMBO_PAID = `/presale/trigger-paid-combo`;
 export const ENDPOINT_MINTING_BOX_INFORMATION = `/presale/get-info`;
+
+//user
+export const ENDPOINT_USER_UPDATE_EMAIL = "/user/email";
