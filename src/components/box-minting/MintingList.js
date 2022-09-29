@@ -2,6 +2,7 @@ import { Box, CardHeader, Grid, Hidden, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { useSelector } from "react-redux";
+import { INFORMATION_ROUNDS } from "../../settings/constants";
 import Loader from "../common/Loader";
 import RoundBoxDetail from "./RoundBoxDetail";
 import RoundComboDetail from "./RoundComboDetail";
@@ -57,6 +58,9 @@ export default function MintingList() {
     <>
       <CustomContainer>
         {mintingBoxList.map((round, index) => {
+          const information = INFORMATION_ROUNDS.find(
+            (item) => item.roundNumber === round.roundNumber
+          );
           return (
             <CustomBox key={index}>
               <Box mb={3}>
@@ -99,10 +103,7 @@ export default function MintingList() {
                               fontWeight: 700,
                             }}
                           >
-                            Minting{" "}
-                            {round.roundNumber === 0
-                              ? "OG sale"
-                              : `WL R${round.roundNumber}`}
+                            {information?.roundTitle}
                           </Title>
                         }
                       />

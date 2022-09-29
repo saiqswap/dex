@@ -9,6 +9,20 @@ export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
 export const PRE_SALE_TOKEN = "ING";
+export const INFORMATION_ROUNDS = [
+  {
+    roundNumber: 0,
+    roundTitle: "Minting OG sale",
+  },
+  {
+    roundNumber: 1,
+    roundTitle: "Minting WL R1",
+  },
+  {
+    roundNumber: 2,
+    roundTitle: "Minting Public Round",
+  },
+];
 export const SUPPORT_TOKENS = [
   {
     contractAddress: ADDRESS_0,
