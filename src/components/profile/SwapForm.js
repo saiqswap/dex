@@ -1,6 +1,6 @@
+import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -11,16 +11,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useEffect } from "react";
 import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
-import { CustomButton, CustomLoadingButton } from "../common/CustomButton";
-import CustomModal from "../common/CustomModal";
-import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
-import SouthIcon from "@mui/icons-material/South";
 import PolicyCheck from "../box-minting/PolicyCheck";
-import CustomizedProgressBars from "../common/Customprogress";
-import Loader from "../common/Loader";
+import { CustomButton } from "../common/CustomButton";
 import CustomLoader from "../common/CustomLoader";
+import CustomModal from "../common/CustomModal";
 
 const CustomStepper = styled(Stepper)(({ theme }) => ({
   color: "red",
@@ -43,6 +40,15 @@ export default function SwapForm({ showSwap, _close }) {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [checked, setChecked] = useState(false);
+  const { user } = useSelector((state) => state);
+  const { balances } = user;
+  // const [availableAmount setAvailableAmount] = useSelector(0);
+
+  useEffect(() => {
+    if (balances) {
+      console.log(balances);
+    }
+  }, [balances]);
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -156,9 +162,7 @@ export default function SwapForm({ showSwap, _close }) {
             </Fragment>
           ) : (
             <Fragment>
-              <Box my={5} height={200}>
-                {steps[activeStep].component}
-              </Box>
+              <Box my={5}>{steps[activeStep].component}</Box>
               <Box sx={{ display: "flex", flexDirection: "row" }}>
                 <CustomButton
                   color="inherit"
