@@ -185,4 +185,7 @@ export const en = {
   PLEASE_ENTER_EMAIL: "Please enter your email",
   INVALID_EMAIL: "Email is invalid",
   LOGIN_HASH: "Login hash",
+  SEND_AMOUNT: "Send amount",
+  ESTIMATED_RECEIVED: "Estimated received",
+  FEES: "Fees",
 };

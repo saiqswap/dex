@@ -1,10 +1,27 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import MintingList from "../components/box-minting/MintingList";
 import Title from "../components/box-minting/Title";
 import { CustomButton } from "../components/common/CustomButton";
+import {
+  _getMintingBoxList,
+  _getMintingComboList,
+} from "../store/actions/mintingActions";
 
 export default function BoxMinting() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(_getMintingBoxList());
+    dispatch(_getMintingComboList());
+    const timer = setInterval(() => {
+      dispatch(_getMintingBoxList());
+      dispatch(_getMintingComboList());
+    }, 10000);
+    return () => clearInterval(timer);
+  });
+
   return (
     <div
       style={{

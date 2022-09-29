@@ -116,44 +116,19 @@ export const _getOnchainBalance =
     });
   };
 
-export const _getBalance = (walletAddress, metamaskProvider) => (dispatch) => {
+export const _getBalance = () => (dispatch) => {
   get(ENDPOINT_GET_BALANCE, (data) => {
-    (async () => {
+    // dispatch({
+    //   type: GET_BALANCE,
+    //   payload: [],
+    // });
+    const balances = data;
+    balances.forEach((e) => {
       dispatch({
         type: GET_BALANCE,
-        payload: [],
+        payload: balances,
       });
-      const balances = data;
-      balances.forEach((e) => {
-        (async () => {
-          var balance = null;
-          if (e.contractAddress === ADDRESS_0 && prefix) {
-            balance = await prefix.request({
-              method: "eth_getBalance",
-              params: [walletAddress, "latest"],
-            });
-          } else {
-            try {
-              const contractInstance = new ethers.Contract(
-                e.contractAddress,
-                ERC20_ABI,
-                metamaskProvider
-              );
-              balance = await contractInstance.balanceOf(walletAddress);
-            } catch (error) {
-              console.log(error);
-            }
-          }
-          balance = Number(ethers.utils.formatEther(balance));
-          e.onChainBalance = balance;
-        })().then(() => {
-          dispatch({
-            type: GET_BALANCE,
-            payload: balances,
-          });
-        });
-      });
-    })();
+    });
   });
 };
 

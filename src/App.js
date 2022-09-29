@@ -68,18 +68,11 @@ function App() {
   useEffect(() => {
     document.getElementsByTagName("html")[0].setAttribute("dark", true);
     dispatch(_getConfig());
-    dispatch(_getMintingBoxList());
-    dispatch(_getMintingComboList());
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
     dispatch(_getPreSaleRoundList());
-    const timer = setInterval(() => {
-      dispatch(_getMintingBoxList());
-      dispatch(_getMintingComboList());
-    }, 10000);
     console.log("Infinity Angel Marketplace - Ver 0.0.3");
-    return () => clearInterval(timer);
   }, [dispatch]);
 
   useEffect(() => {

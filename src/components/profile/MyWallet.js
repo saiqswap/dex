@@ -7,6 +7,7 @@ import {
   InputAdornment,
   Modal,
   OutlinedInput,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -17,6 +18,9 @@ import { formatAmount, formatUSD } from "../../settings/format";
 import { _getBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
+import { CustomLoadingButton } from "../common/CustomButton";
+import CustomModal from "../common/CustomModal";
+import SwapForm from "./SwapForm";
 
 const wallets = [
   {
@@ -33,9 +37,9 @@ const wallets = [
 
 const inGame = [
   {
-    label: "InfinityAngel Gold",
-    symbol: "/images/coins/GOLD.png",
-    key: "GOLD",
+    label: "InfinityAngel Gem (ING)",
+    symbol: "/images/coins/ING.png",
+    key: "ING",
   },
   {
     label: "InfinityAngel INC",
@@ -44,14 +48,15 @@ const inGame = [
     key: "INC",
   },
   {
+    label: "InfinityAngel Gold",
+    symbol: "/images/coins/GOLD.png",
+    key: "GOLD",
+  },
+
+  {
     label: "METH",
     symbol: "/images/coins/METH.png",
     key: "METH",
-  },
-  {
-    label: "InfinityAngel Gem (ING)",
-    symbol: "/images/coins/ING.png",
-    key: "ING",
   },
 ];
 
@@ -66,9 +71,11 @@ const MyWallet = () => {
   const [confirmClaim, setConfirmClaim] = useState(false);
   const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [showSwap, setShowSwap] = useState(false);
 
   useEffect(() => {
     if (balances) {
+      console.log(balances);
       const INC = balances.find((item) => item.asset === "INC");
       const ING = balances.find((item) => item.asset === "ING");
       setFunds({
@@ -110,74 +117,14 @@ const MyWallet = () => {
     );
   };
 
+  console.log(funds);
+
   return (
     <div className="my-wallet">
       {funds && (
         <Container maxWidth="xl">
           <div>
-            <Typography variant="h5" className="custom-font">
-              {library.WALLET}
-            </Typography>
-            <Divider
-              sx={{
-                mt: 3,
-                mb: 3,
-              }}
-            />
-            <Grid container>
-              <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6} lg={4}>
-                    <div className="wallet-items">
-                      <p className="custom-font">Other Currencies</p>
-                      {otherFunds.map((item, index) => (
-                        <Box mb={1} key={index}>
-                          <p>
-                            {formatAmount(item.onChainBalance)} {item.asset}
-                          </p>
-                          <small>-/- USD</small>
-                        </Box>
-                      ))}
-                    </div>
-                  </Grid>
-                  {wallets.map((item, index) => (
-                    <Grid item xs={12} md={6} lg={4} key={index}>
-                      <div className="wallet-items">
-                        <p className="custom-font">{item.label}</p>
-                        <Box
-                          mb={5}
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="space-between"
-                        >
-                          <div>
-                            <p>
-                              {formatUSD(
-                                funds[item.key]
-                                  ? funds[item.key].onChainBalance
-                                  : 0
-                              )}
-                            </p>
-                            <small>-/- USD</small>
-                          </div>
-                          <img src={item.symbol} alt="symbol" width="60px" />
-                        </Box>
-                        {/* <Button className="custom-btn custom-font">
-                          Deposit
-                        </Button> */}
-                      </div>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Grid>
-            </Grid>
-          </div>
-          <div style={{ marginTop: 30 }}>
-            <Typography variant="h5" className="custom-font">
-              {library.IN_GAME_CURRENCIES}
-            </Typography>
-            <Divider className="mt-20" />
-            <Grid container spacing={2} style={{ marginTop: 10 }}>
+            <Grid container spacing={2}>
               {inGame.map((item, index) => (
                 <Grid item xs={12} md={6} lg={4} key={index}>
                   <div className="wallet-items">
@@ -198,7 +145,15 @@ const MyWallet = () => {
                       </div>
                       <img src={item.symbol} alt="symbol" width="60px" />
                     </Box>
-                    {funds[item.key] && funds[item.key].amount > 1 && (
+                    {item.key === "INC" && funds[item.key].amount > 1 && (
+                      <Button
+                        className="custom-btn custom-font"
+                        onClick={() => setShowSwap(true)}
+                      >
+                        Swap
+                      </Button>
+                    )}
+                    {item.key === "ING" && funds[item.key].amount > 1 && (
                       <Button
                         className="custom-btn custom-font"
                         onClick={() => setConfirmClaim(item)}
@@ -206,6 +161,14 @@ const MyWallet = () => {
                         Claim
                       </Button>
                     )}
+                    {/* {funds[item.key] && funds[item.key].amount > 1 && (
+                      <Button
+                        className="custom-btn custom-font"
+                        onClick={() => setConfirmClaim(item)}
+                      >
+                        Claim
+                      </Button>
+                    )} */}
                   </div>
                 </Grid>
               ))}
@@ -213,7 +176,8 @@ const MyWallet = () => {
           </div>
         </Container>
       )}
-      <Modal
+      <SwapForm showSwap={showSwap} _close={() => setShowSwap(false)} />
+      {/* <Modal
         open={confirmClaim}
         onClose={() => handleCancelConfirm()}
         aria-labelledby="modal-modal-title"
@@ -301,7 +265,7 @@ const MyWallet = () => {
         ) : (
           <div />
         )}
-      </Modal>
+      </Modal> */}
     </div>
   );
 };
