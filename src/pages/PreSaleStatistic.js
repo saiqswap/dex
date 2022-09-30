@@ -1,22 +1,18 @@
 import { TabContext, TabPanel } from "@mui/lab";
 import {
   Box,
-  Grid,
-  styled,
-  Typography,
-  Tabs,
-  Tab,
-  Modal,
   Divider,
-  Button,
+  Grid,
+  Modal,
+  styled,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { Container } from "@mui/system";
 import moment from "moment";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import BackgroundComponent from "../components/common/BackgroundComponent";
 import { CustomButton } from "../components/common/CustomButton";
@@ -25,7 +21,7 @@ import { _claimToken } from "../onchain";
 import { provider } from "../onchain/onchain";
 import { PRE_SALE_ROUNDS, PRE_SALE_TOKEN } from "../settings/constants";
 import { formatNumberWithDecimal } from "../settings/format";
-import { _getBalance } from "../store/actions/userActions";
+import { _getOnchainBalance } from "../store/actions/userActions";
 
 const CustomBox = styled(Box)({
   borderRadius: "7px",
@@ -112,7 +108,7 @@ function ordinal_suffix_of(i) {
 
 const VestingDetail = ({ data, index }) => {
   const { setting, user } = useSelector((state) => state);
-  const { library } = setting;
+  const { library, config } = setting;
   const { walletAddress } = user;
   const dispatch = useDispatch();
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -152,7 +148,7 @@ const VestingDetail = ({ data, index }) => {
   };
 
   const _syncData = () => {
-    dispatch(_getBalance(walletAddress, provider));
+    dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
   };
 
   return (

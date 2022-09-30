@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 import { formatAmount } from "../../settings/format";
 import { post } from "../../utils/api";
 import CopyBox from "../common/CopyBox";
-import { CustomButton } from "../common/CustomButton";
 import Loader from "../common/Loader";
 import GenerateSignature from "./GenerateSignature";
 import UpdateEmail from "./UpdateEmail";

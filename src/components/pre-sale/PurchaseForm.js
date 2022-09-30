@@ -32,10 +32,10 @@ import {
   formatPrice,
 } from "../../settings/format";
 import { _getPreSaleRoundList } from "../../store/actions/preSaleActions";
-import { _getBalance } from "../../store/actions/userActions";
 import { CustomButton, CustomLoadingButton } from "../common/CustomButton";
 import CustomSmallModal from "../common/CustomSmallModal";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { _getOnchainBalance } from "../../store/actions/userActions";
 
 const USDT_TOKEN = "USDT";
 
@@ -120,7 +120,7 @@ function formatSpecialAmount(string) {
 
 export default function PurchaseForm({ data }) {
   const { setting, user } = useSelector((state) => state);
-  const { library } = setting;
+  const { library, config } = setting;
   const { walletAddress, balances, partnerRef } = user;
   const [from, setFrom] = useState("BNB");
   const [progress, setProgress] = useState(0);
@@ -223,7 +223,7 @@ export default function PurchaseForm({ data }) {
 
   const _handleSync = () => {
     dispatch(_getPreSaleRoundList());
-    dispatch(_getBalance(walletAddress, provider));
+    dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
     setIsDisableSync(true);
     setTimeout(() => {
       setIsDisableSync(false);

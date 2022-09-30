@@ -23,10 +23,6 @@ import {
   DEFAULT_PROJECT_TITLE,
   GOOGLE_SIGN_IN_CLIENT_KEY,
 } from "./settings/constants";
-import {
-  _getMintingBoxList,
-  _getMintingComboList,
-} from "./store/actions/mintingActions";
 import { _getPreSaleRoundList } from "./store/actions/preSaleActions";
 import {
   _changeLanguage,

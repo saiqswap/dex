@@ -1,40 +1,14 @@
-import { LoadingButton } from "@mui/lab";
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  InputAdornment,
-  Modal,
-  OutlinedInput,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Container, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { formatAmount, formatUSD } from "../../settings/format";
-import { _getBalance } from "../../store/actions/userActions";
+import { provider } from "../../onchain/onchain";
+import { formatUSD } from "../../settings/format";
+import { _getOnchainBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
-import { CustomLoadingButton } from "../common/CustomButton";
-import CustomModal from "../common/CustomModal";
 import SwapForm from "./SwapForm";
-
-const wallets = [
-  {
-    label: "InfinityAngel Coin (INC)",
-    symbol: "/images/coins/INC.png",
-    key: "INC",
-  },
-  {
-    label: "InfinityAngel Gem (ING)",
-    symbol: "/images/coins/ING.png",
-    key: "ING",
-  },
-];
-
 const inGame = [
   {
     label: "InfinityAngel Gem (ING)",
@@ -63,11 +37,10 @@ const inGame = [
 const MyWallet = () => {
   const { user, setting } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const { config, library } = setting;
+  const { config } = setting;
   const { contracts } = config ? config : { contracts: [] };
-  const { balances, walletAddress, metamaskProvider } = user;
+  const { balances, walletAddress } = user;
   const [funds, setFunds] = useState(null);
-  const [otherFunds, setOtherFunds] = useState([]);
   const [confirmClaim, setConfirmClaim] = useState(false);
   const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -82,9 +55,6 @@ const MyWallet = () => {
         INC: INC,
         ING: ING,
       });
-      setOtherFunds(
-        balances.filter((e) => e.asset !== "INC" && e.asset !== "ING")
-      );
     }
   }, [balances]);
 
@@ -106,7 +76,7 @@ const MyWallet = () => {
       null,
       () => {
         toast.success("Claim success...!");
-        dispatch(_getBalance(walletAddress, metamaskProvider));
+        dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
         setLoading(false);
         setConfirmClaim(null);
       },

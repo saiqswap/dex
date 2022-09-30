@@ -20,7 +20,6 @@ import {
   _setWalletAddress,
   _setWalletName,
   _handleLogout,
-  _getBalance,
   _getMyItems,
   _handleProfileLogout,
 } from "../store/actions/userActions";
@@ -151,7 +150,6 @@ function Header() {
         (data) => {
           setAccessToken(data.accessToken);
           dispatch(_getNewProfile());
-          dispatch(_getBalance(walletAddress, provider));
           dispatch(_getMyItems());
         },
         (error) => {

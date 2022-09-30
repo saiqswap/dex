@@ -11,8 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import PolicyCheck from "../box-minting/PolicyCheck";
 import { CustomButton } from "../common/CustomButton";

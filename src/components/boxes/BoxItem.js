@@ -1,10 +1,8 @@
-import { Close } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
   CircularProgress,
   Grid,
-  IconButton,
   styled,
   Tooltip,
   Typography,
@@ -157,22 +155,7 @@ const ConfirmPopup = ({
   }, [type, template]);
 
   return (
-    <GeneralPopup open={open}>
-      <IconButton
-        sx={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-        }}
-        style={{
-          minWidth: "fit-content",
-          marginTop: 0,
-        }}
-        size="small"
-        onClick={onClose}
-      >
-        <Close fontSize="small" />
-      </IconButton>
+    <GeneralPopup open={open} onClose={onClose} disabled={loading}>
       <Box mt={3} />
       <Grid container>
         <Grid item xs={12} md={5} className="submit-box">
