@@ -13,6 +13,7 @@ import {
   GET_TEMPLATES,
   CHANGE_LANGUAGE,
   UPDATE_LOADING_STATUS,
+  ReduxConstant,
 } from "../constants";
 
 const initialState = {
@@ -32,12 +33,15 @@ const initialState = {
   config: null,
   templates: null,
   loading: true,
+  applicationConfig: null,
 };
 
 export const SettingReducer = (state = initialState, action) => {
   const { type, payload } = action;
   const { pageYOffset } = state;
   switch (type) {
+    case ReduxConstant.GET_APPLICATION_CONFIG:
+      return { ...state, applicationConfig: payload };
     case UPDATE_LOADING_STATUS:
       return { ...state, loading: payload };
     case CHANGE_LANGUAGE:

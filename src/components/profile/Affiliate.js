@@ -1,6 +1,7 @@
 import { Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatAmount } from "../../settings/format";
 import { post } from "../../utils/api";
 import Loader from "../common/Loader";
@@ -36,7 +37,7 @@ export default function Affiliate() {
       filters: {},
     };
     post(
-      "/affiliate/my-commission-history",
+      EndpointConstant.MY_COMMISSION_HISTORY,
       param,
       (data) => {
         setData(data);

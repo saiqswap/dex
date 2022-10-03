@@ -2,6 +2,7 @@ import { en } from "../../languages/en";
 import { jp } from "../../languages/jp";
 import { kr } from "../../languages/kr";
 import { rus } from "../../languages/rus";
+import { EndpointConstant } from "../../settings/endpoint";
 import { get, post } from "../../utils/api";
 import {
   ADD_CONFIG,
@@ -10,11 +11,21 @@ import {
   CHANGE_VERSION,
   CHANGE_VOLUME_STATUS,
   GET_TEMPLATES,
+  ReduxConstant,
   SIDEBAR_PROFILE_STATUS,
   TOGGLE_RANKING_FORM,
   UPDATE_LEFT_MENU_STATUS,
   UPDATE_LOADING_STATUS,
 } from "../constants";
+
+export const _getApplicationConfig = () => (dispatch) => {
+  get(EndpointConstant.APPLICATION_CONFIG, (data) =>
+    dispatch({
+      type: ReduxConstant.GET_APPLICATION_CONFIG,
+      payload: data.configuration,
+    })
+  );
+};
 
 export const _handleLeftMenu = (toggle) => (dispatch) => {
   if (toggle) {

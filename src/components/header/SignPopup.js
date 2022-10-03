@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { prefix } from "../../onchain/onchain";
-import { LOGIN_MESSAGE } from "../../settings/constants";
 import { _setWalletSignature } from "../../store/actions/userActions";
 import CustomModal from "../common/CustomModal";
 
@@ -64,10 +63,13 @@ export default function SignPopup({ open, _onClose }) {
   const { user, setting } = useSelector((state) => state);
   const { walletAddress } = user;
   const dispatch = useDispatch();
-  const { library } = setting;
+  const { library, applicationConfig } = setting;
 
   const _checkSignature = async () => {
-    const data = `0x${Buffer.from(LOGIN_MESSAGE, "utf8").toString("hex")}`;
+    const data = `0x${Buffer.from(
+      applicationConfig.ARR_SIGN_MESSAGE.HUMAN,
+      "utf8"
+    ).toString("hex")}`;
     prefix
       .request({
         method: "personal_sign",

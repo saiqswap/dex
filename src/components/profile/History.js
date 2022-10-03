@@ -12,6 +12,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { explorer_url } from "../../settings";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatAddress, formatAmount, formatUSD } from "../../settings/format";
 import { post } from "../../utils/api";
 import Loader from "../common/Loader";
@@ -203,7 +204,7 @@ const HistoryTable = ({ menu }) => {
         types: menu.type,
       };
       post(
-        "/nft-transaction/list",
+        EndpointConstant.NFT_TRANSACTION_LIST,
         params,
         (data) => {
           setHistory(data);
@@ -217,7 +218,7 @@ const HistoryTable = ({ menu }) => {
         pageSize: 10,
       };
       post(
-        "/nft/my-box-history",
+        EndpointConstant.NFT_MY_BOX_HISTORY,
         params,
         (data) => {
           setHistory(data);

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   prefix,
   provider,
@@ -10,6 +11,8 @@ import {
   _checkLogin,
 } from "../onchain/onchain";
 import { BLOCKCHAIN, MAIN_MENUS } from "../settings";
+import { ENDPOINT_USER_LOGIN_WITH_SIGNATURE } from "../settings/endpoint";
+import { ErrorCode } from "../settings/errorCode";
 import { _getMintingBoxInformation } from "../store/actions/mintingActions";
 import {
   _addPartnerRef,
@@ -22,6 +25,7 @@ import {
   _handleLogout,
   _getMyItems,
   _handleProfileLogout,
+  _removeWalletSignature,
 } from "../store/actions/userActions";
 import { post } from "../utils/api";
 import { isLoggedIn, logout, setAccessToken } from "../utils/auth";
@@ -39,7 +43,7 @@ function Header() {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const location = useLocation();
   const [pathname, setPathname] = useState("");
-  const { library, config } = setting;
+  const { library, config, applicationConfig } = setting;
   const [accountNotFound, setAccountNotFound] = useState(false);
   const [showSignPopup, setShowSignPopup] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -122,14 +126,14 @@ function Header() {
 
   useEffect(() => {
     if (executeRecaptcha) {
-      if (walletSignature) {
+      if (walletSignature && applicationConfig) {
         _loginBySignature(walletSignature);
       } else {
         setLoading(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [executeRecaptcha, walletSignature]);
+  }, [applicationConfig, executeRecaptcha, walletSignature]);
 
   useEffect(() => {
     if (information) {
@@ -140,10 +144,10 @@ function Header() {
   const _loginBySignature = async (signature) => {
     getReCaptcha((reCaptcha) => {
       post(
-        `/user/login-by-signature`,
+        ENDPOINT_USER_LOGIN_WITH_SIGNATURE,
         {
           signature,
-          message: "This is sign message",
+          message: applicationConfig.ARR_SIGN_MESSAGE.HUMAN,
           address: walletAddress,
           reCaptcha,
         },
@@ -154,9 +158,12 @@ function Header() {
         },
         (error) => {
           setLoading(false);
-          if (error.code === "ACCOUNT_NOTFOUND") {
+          if (error.code === ErrorCode.ACCOUNT_NOTFOUND) {
             setAccountNotFound(true);
+          } else {
+            toast.error(error.msg);
           }
+          dispatch(_removeWalletSignature());
         }
       );
     });

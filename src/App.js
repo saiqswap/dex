@@ -26,6 +26,7 @@ import {
 import { _getPreSaleRoundList } from "./store/actions/preSaleActions";
 import {
   _changeLanguage,
+  _getApplicationConfig,
   _getConfig,
   _getTemplates,
 } from "./store/actions/settingActions";
@@ -67,7 +68,8 @@ function App() {
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
-    dispatch(_getPreSaleRoundList());
+    // dispatch(_getPreSaleRoundList());
+    dispatch(_getApplicationConfig());
     console.log("Infinity Angel Marketplace - Ver 0.0.3");
   }, [dispatch]);
 

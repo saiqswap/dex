@@ -11,7 +11,6 @@ export const ENDPOINT_GET_DEPOSIT = `/fund/get-deposit`;
 export const ENDPOINT_GET_WITHDRAW = `/fund/get-withdraw`;
 export const ENDPOINT_GET_VALIDATE_ADDRESS = `/fund/validate-address`;
 export const ENDPOINT_POST_WITHDRAW_TRANSFER = `/fund/withdraw`;
-
 export const ENDPOINT_GET_LOGIN_ACTIVITY = `/user-service/login-activity`;
 export const ENDPOINT_ACTIVE_USER = `/user-service/user/active`;
 export const ENDPOINT_DELETE_DISABLE_ACCOUNT = `/user-service/user/disable`;
@@ -27,7 +26,6 @@ export const ENDPOINT_GET_DEPOSIT_HISTORY = `/fund-service/deposit/list`;
 export const ENDPOINT_GET_SWAP_PRODUCT_LIST = `/swap-service/product`;
 export const ENDPOINT_GET_FUND_LOGS = `/fund-service/fund/log`;
 export const ENDPOINT_GET_REFERRAL_STATISTIC = `/user-service/referral/statistic`;
-
 export const ENDPOINT_GET_PACKAGE = `/home/package`;
 export const ENDPOINT_GET_BALANCE = `/fund/balance`;
 export const ENDPOINT_GET_POST_LOT = `/lot`;
@@ -88,3 +86,18 @@ export const ENDPOINT_MINTING_BOX_INFORMATION = `/presale/get-info`;
 
 //user
 export const ENDPOINT_USER_UPDATE_EMAIL = "/user/email";
+export const ENDPOINT_USER_LOGIN_WITH_SIGNATURE = "/user/login-by-signature";
+
+export const EndpointConstant = {
+  APPLICATION_CONFIG: "/config/application",
+  MY_COMMISSION_HISTORY: "/affiliate/my-commission-history",
+  FUND_WITHDRAW: "/fund/withdraw",
+  MARKET_LISTING: "/market/listing",
+  MARKET_DELIST: "/market/delist",
+  MARKET_ORDER_SC_INPUT: "/market/order-sc-input",
+  MARKET_TRIGGER_PAIR_NFT: "/market/trigger-paid-nft",
+  NFT_MY_BOX_HISTORY: "/nft/my-box-history",
+  NFT_TRANSACTION_LIST: "/nft-transaction/list",
+  NFT_MINT: "/nft/mint",
+  NFT_GET_BY_ID: "/nft/get-by-id",
+};

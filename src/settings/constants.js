@@ -3,7 +3,6 @@ import { config } from ".";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
 export const DEFAULT_PROJECT_TITLE = `NFT Marketplace - Create and sell digital collectibles secured with blockchain`;
-export const LOGIN_MESSAGE = "This is sign message";
 export const RI_SLOT_LIMIT = 6;
 export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;

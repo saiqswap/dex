@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { provider } from "../../onchain/onchain";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
 import { _getOnchainBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
@@ -72,7 +73,9 @@ const MyWallet = () => {
   const handleClaim = () => {
     setLoading(true);
     post(
-      `/fund/withdraw?asset=${confirmClaim.key}&amount=${parseNumber(amount)}`,
+      `${EndpointConstant.FUND_WITHDRAW}?asset=${
+        confirmClaim.key
+      }&amount=${parseNumber(amount)}`,
       null,
       () => {
         toast.success("Claim success...!");

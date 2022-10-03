@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatAmount } from "../../settings/format";
 import { post } from "../../utils/api";
 import CopyBox from "../common/CopyBox";
@@ -52,11 +53,10 @@ const MyAccount = () => {
       filters: {},
     };
     post(
-      "/affiliate/my-commission-history",
+      EndpointConstant.MY_COMMISSION_HISTORY,
       param,
       (data) => {
         setData(data);
-        console.log(data.items);
       },
       (err) => {
         toast.error(err);

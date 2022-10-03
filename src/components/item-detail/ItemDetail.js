@@ -24,6 +24,7 @@ import {
   purchaseECR721,
 } from "../../onchain/onchain";
 import { config, image_url } from "../../settings";
+import { EndpointConstant } from "../../settings/endpoint";
 import {
   formatAddress,
   formatAmount,
@@ -403,12 +404,14 @@ const MintComponent = ({ data, _handleReload }) => {
     setLoading(true);
     setShowMintingPopup(false);
     post(
-      `/nft/mint?tokenId=${data.tokenId.toString()}`,
+      `${EndpointConstant.NFT_MINT}?tokenId=${data.tokenId.toString()}`,
       null,
       () => {
         var temp = setInterval(() => {
           get(
-            `/nft/get-by-id?tokenId=${data.tokenId.toString()}`,
+            `${
+              EndpointConstant.NFT_GET_BY_ID
+            }?tokenId=${data.tokenId.toString()}`,
             (res) => {
               if (res.mintTxHash) {
                 _handleReload();
@@ -474,7 +477,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
 
   const _handleListing = (signature) => {
     post(
-      "/market/listing",
+      EndpointConstant.MARKET_LISTING,
       {
         signature,
         data: {
@@ -619,7 +622,7 @@ const DelistComponent = ({ data, _handleReload }) => {
     setLoading(true);
     setShowDelistPopup(false);
     _delete(
-      `/market/delist?tokenId=${data.tokenId}`,
+      `${EndpointConstant.MARKET_DELIST}?tokenId=${data.tokenId}`,
       null,
       () => {
         toast.success(`NFT ${data.tokenId} is delist.`);
@@ -695,7 +698,7 @@ const BuyComponent = ({ data, _handleReload }) => {
       ).then((result) => {
         if (result) {
           get(
-            `/market/order-sc-input?tokenId=${nftToken.tokenId}`,
+            `${EndpointConstant.MARKET_ORDER_SC_INPUT}?tokenId=${nftToken.tokenId}`,
             (data) => {
               purchaseECR721(
                 data,
@@ -710,7 +713,7 @@ const BuyComponent = ({ data, _handleReload }) => {
                     _handleReload();
                     toast.success("Success...!");
                     post(
-                      `/market/trigger-paid-nft?txHash=${e}`,
+                      `${EndpointConstant.MARKET_TRIGGER_PAIR_NFT}?txHash=${e}`,
                       {},
                       () => {},
                       () => {}
