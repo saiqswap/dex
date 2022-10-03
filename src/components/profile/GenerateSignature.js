@@ -11,7 +11,7 @@ import { CustomButton } from "../common/CustomButton";
 
 export default function GenerateSignature() {
   const { user, setting } = useSelector((state) => state);
-  const { walletAddress } = user;
+  const { walletAddress, information } = user;
   const { library, applicationConfig } = setting;
   const [loginSignatureForBot, setLoginSignatureForBot] = useState("");
 
@@ -36,24 +36,28 @@ export default function GenerateSignature() {
   };
 
   return (
-    <Box>
-      <Typography mb={2} sx={{ opacity: 0.5 }}>
-        {library.LOGIN_HASH}
-      </Typography>
-      {loginSignatureForBot ? (
-        <CopyBox content={`${loginSignatureForBot}`}>
-          <CustomButton>
-            <small style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: 16 }}>
-              {formatAddress(loginSignatureForBot, 18)}
-            </small>
-            <ContentCopyRounded
-              sx={{ fontSize: 14, ml: 2, fill: "rgba(255, 255, 255, 0.6)" }}
-            />
-          </CustomButton>
-        </CopyBox>
-      ) : (
-        <CustomButton onClick={_getSignature}>Generate</CustomButton>
-      )}
-    </Box>
+    information.useLoginToken && (
+      <Box>
+        <Typography mb={2} sx={{ opacity: 0.5 }}>
+          {library.LOGIN_HASH}
+        </Typography>
+        {loginSignatureForBot ? (
+          <CopyBox content={`${loginSignatureForBot}`}>
+            <CustomButton>
+              <small
+                style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: 16 }}
+              >
+                {formatAddress(loginSignatureForBot, 18)}
+              </small>
+              <ContentCopyRounded
+                sx={{ fontSize: 14, ml: 2, fill: "rgba(255, 255, 255, 0.6)" }}
+              />
+            </CustomButton>
+          </CopyBox>
+        ) : (
+          <CustomButton onClick={_getSignature}>Generate</CustomButton>
+        )}
+      </Box>
+    )
   );
 }
