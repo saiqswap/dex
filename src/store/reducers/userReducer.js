@@ -7,6 +7,7 @@ import {
   GET_BALANCE,
   GET_ONCHAIN_BALANCE,
   GET_PRE_SALE_BALANCE,
+  ReduxConstant,
   UPDATE_PARTNER_REF,
   UPDATE_REF,
   UPDATE_WALLET_NAME,
@@ -25,11 +26,14 @@ const initialState = {
   partnerRef: null,
   preSaleTokenBalances: null,
   onChainBalances: null,
+  lockBalances: null,
 };
 
 export const UserReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case ReduxConstant.GET_USER_LOCK_BALANCE:
+      return { ...state, lockBalances: payload };
     case GET_ONCHAIN_BALANCE:
       return { ...state, onChainBalances: payload };
     case GET_PRE_SALE_BALANCE:

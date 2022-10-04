@@ -102,4 +102,5 @@ export const EndpointConstant = {
   NFT_GET_BY_ID: "/nft/get-by-id",
   FUND_VERIFY_SWAP: "/fund/verify-swap",
   FUND_SWAP: "/fund/swap",
+  FUND_LOCK_AMOUNT: "/fund/balancedeb",
 };

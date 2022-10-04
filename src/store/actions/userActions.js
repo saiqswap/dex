@@ -4,6 +4,7 @@ import { ERC20_ABI } from "../../onchain/abi-bytecode";
 import { prefix } from "../../onchain/onchain";
 import { ADDRESS_0, PRE_SALE_ROUNDS } from "../../settings/constants";
 import {
+  EndpointConstant,
   ENDPOINT_GET_BALANCE,
   ENDPOINT_GET_PROFILE,
   ENDPOINT_MY_NFT,
@@ -18,6 +19,7 @@ import {
   GET_BALANCE,
   GET_ONCHAIN_BALANCE,
   GET_PRE_SALE_BALANCE,
+  ReduxConstant,
   UPDATE_PARTNER_REF,
   UPDATE_REF,
   UPDATE_WALLET_NAME,
@@ -55,6 +57,15 @@ export const _getNewProfile = () => (dispatch) => {
       console.log(error);
       logout();
     }
+  );
+};
+
+export const _getLockBalances = () => (dispatch) => {
+  get(EndpointConstant.FUND_LOCK_AMOUNT, (data) =>
+    dispatch({
+      type: ReduxConstant.GET_USER_LOCK_BALANCE,
+      payload: data,
+    })
   );
 };
 
@@ -106,7 +117,6 @@ export const _getOnchainBalance =
       balance = balance ? Number(ethers.utils.formatEther(balance)) : 0;
       e.onChainBalance = balance;
     }
-    console.log(balances);
     dispatch({
       type: GET_ONCHAIN_BALANCE,
       payload: balances,

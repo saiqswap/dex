@@ -8,11 +8,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { EndpointConstant } from "../../settings/endpoint";
 import { formatAmount } from "../../settings/format";
+import { _getLockBalances } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import CopyBox from "../common/CopyBox";
 import Loader from "../common/Loader";
