@@ -3,7 +3,11 @@ import { _getVestingBalance } from "../../onchain";
 import { ERC20_ABI } from "../../onchain/abi-bytecode";
 import { prefix } from "../../onchain/onchain";
 import { ADDRESS_0, PRE_SALE_ROUNDS } from "../../settings/constants";
-import { ENDPOINT_GET_PROFILE, ENDPOINT_MY_NFT } from "../../settings/endpoint";
+import {
+  ENDPOINT_GET_BALANCE,
+  ENDPOINT_GET_PROFILE,
+  ENDPOINT_MY_NFT,
+} from "../../settings/endpoint";
 import { get } from "../../utils/api";
 import { logout } from "../../utils/auth";
 import {
@@ -102,27 +106,24 @@ export const _getOnchainBalance =
       balance = balance ? Number(ethers.utils.formatEther(balance)) : 0;
       e.onChainBalance = balance;
     }
+    console.log(balances);
     dispatch({
       type: GET_ONCHAIN_BALANCE,
       payload: balances,
     });
   };
 
-// export const _getBalance = () => (dispatch) => {
-//   get(ENDPOINT_GET_BALANCE, (data) => {
-//     // dispatch({
-//     //   type: GET_BALANCE,
-//     //   payload: [],
-//     // });
-//     const balances = data;
-//     balances.forEach((e) => {
-//       dispatch({
-//         type: GET_BALANCE,
-//         payload: balances,
-//       });
-//     });
-//   });
-// };
+export const _getBalance = () => (dispatch) => {
+  get(ENDPOINT_GET_BALANCE, (data) => {
+    const balances = data;
+    balances.forEach((e) => {
+      dispatch({
+        type: GET_BALANCE,
+        payload: balances,
+      });
+    });
+  });
+};
 
 export const _getMyItems = (successCallback) => (dispatch) => {
   get(ENDPOINT_MY_NFT, (data) => {

@@ -100,4 +100,6 @@ export const EndpointConstant = {
   NFT_TRANSACTION_LIST: "/nft-transaction/list",
   NFT_MINT: "/nft/mint",
   NFT_GET_BY_ID: "/nft/get-by-id",
+  FUND_VERIFY_SWAP: "/fund/verify-swap",
+  FUND_SWAP: "/fund/swap",
 };

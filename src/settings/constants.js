@@ -8,6 +8,10 @@ export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
 export const PRE_SALE_TOKEN = "ING";
+export const CoinList = {
+  ING: "ING",
+  INC: "INC",
+};
 export const SUPPORT_TOKENS = [
   {
     contractAddress: ADDRESS_0,

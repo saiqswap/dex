@@ -188,4 +188,6 @@ export const en = {
   SEND_AMOUNT: "Send amount",
   ESTIMATED_RECEIVED: "Estimated received",
   FEES: "Fees",
+  PLEASE_READ_AND_ACCEPT_FOR_SWAP:
+    "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of Swap",
 };

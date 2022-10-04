@@ -8,15 +8,21 @@ import {
   StepLabel,
   Stepper,
   styled,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { CoinList } from "../../settings/constants";
+import { EndpointConstant } from "../../settings/endpoint";
+import { formatNumberWithDecimal } from "../../settings/format";
+import { _getBalance } from "../../store/actions/userActions";
+import { post } from "../../utils/api";
 import PolicyCheck from "../box-minting/PolicyCheck";
-import { CustomButton } from "../common/CustomButton";
+import { CustomButton, CustomLoadingButton } from "../common/CustomButton";
 import CustomLoader from "../common/CustomLoader";
 import CustomModal from "../common/CustomModal";
+import CustomNumberInput from "../common/CustomNumberInput";
 
 const CustomStepper = styled(Stepper)(({ theme }) => ({
   color: "red",
@@ -35,60 +41,111 @@ export default function SwapForm({ showSwap, _close }) {
   const { setting } = useSelector((state) => state);
   const { library } = setting;
   const [fromAmount, setFromAmount] = useState("0");
-  const [toAmount, setToAmount] = useState("0");
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [checked, setChecked] = useState(false);
   const { user } = useSelector((state) => state);
   const { balances } = user;
-  // const [availableAmount setAvailableAmount] = useSelector(0);
+  const [availableAmount, setAvailableAmount] = useState(0);
+  const [verifySwap, setVerifySwap] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  const _onChangeAmount = (value) => {
+    setFromAmount(value);
+  };
 
   useEffect(() => {
     if (balances) {
-      console.log(balances);
+      const INCBalance = balances.find((b) => b.asset === "INC").amount;
+      setAvailableAmount(INCBalance);
     }
   }, [balances]);
-
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
 
   const isStepSkipped = (step) => {
     return skipped.has(step);
   };
 
-  const handleNext = () => {
+  const _handleNext = () => {
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
     }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
 
+  const _checkVerifySwap = (_callback) => {
+    const fFromAmount = parseFloat(fromAmount);
+    if (!fFromAmount) {
+      toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
+    } else if (fFromAmount > availableAmount) {
+      toast.error(library.INSUFFICIENT_BALANCE);
+    } else {
+      setLoading(true);
+      post(
+        EndpointConstant.FUND_VERIFY_SWAP,
+        {
+          asset: "INC",
+          quoteAsset: "ING",
+          amount: fromAmount,
+        },
+        (data) => {
+          setVerifySwap(data);
+          _callback();
+          setLoading(false);
+        },
+        (error) => {
+          console.error(error);
+          setLoading(false);
+        }
+      );
+    }
+  };
+
+  const _handleSwap = (_callback) => {
+    if (checked) {
+      setLoading(true);
+      _handleNext();
+      post(
+        EndpointConstant.FUND_SWAP,
+        {
+          asset: "INC",
+          quoteAsset: "ING",
+          amount: fromAmount,
+        },
+        (data) => {
+          setTimeout(() => {
+            _close();
+            setLoading(false);
+            setTimeout(() => {
+              setFromAmount("0");
+              setActiveStep(0);
+            }, 500);
+          }, 3000);
+          setVerifySwap(data);
+          dispatch(_getBalance());
+        },
+        (error) => console.error(error)
+      );
+    } else {
+      toast.error(library.PLEASE_READ_AND_ACCEPT_FOR_SWAP);
+    }
+  };
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    if (activeStep === 0) {
+      _checkVerifySwap(_handleNext);
+    } else if (activeStep === 1) {
+      _handleSwap(_handleNext);
+    } else {
+    }
+  };
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
   };
 
   const steps = [
@@ -97,8 +154,8 @@ export default function SwapForm({ showSwap, _close }) {
       component: (
         <Information
           fromAmount={fromAmount}
-          toAmount={toAmount}
-          _handleChangeFromAmount={(e) => setFromAmount(e.target.value)}
+          availableAmount={availableAmount}
+          _handleChangeFromAmount={_onChangeAmount}
         />
       ),
     },
@@ -106,8 +163,9 @@ export default function SwapForm({ showSwap, _close }) {
       label: "Confirm",
       component: (
         <ConfirmComponent
+          verifySwap={verifySwap}
           fromAmount={fromAmount}
-          toAmount={toAmount}
+          // toAmount={verifySwap.amount}
           checked={checked}
           _handleChecked={(e) => setChecked(e.target.checked)}
         />
@@ -129,12 +187,9 @@ export default function SwapForm({ showSwap, _close }) {
   ];
 
   return (
-    <CustomModal open={showSwap} _close={_close} isShowCloseButton={true}>
+    <CustomModal open={showSwap} _close={_close} isShowCloseButton={!loading}>
       <Box sx={{ width: "100%" }} py={4} px={2} textAlign="left">
-        {/* <Typography variant="h6" mb={3}>
-          Swap INC to ING
-        </Typography> */}
-        <Box component="form" sx={{ textAlign: "left" }}>
+        <Box component="form" sx={{ textAlign: "left" }} onSubmit={handleNext}>
           <CustomStepper activeStep={activeStep}>
             {steps.map((step, index) => {
               const stepProps = {};
@@ -149,75 +204,67 @@ export default function SwapForm({ showSwap, _close }) {
               );
             })}
           </CustomStepper>
-          {activeStep === steps.length ? (
-            <Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <CustomButton onClick={handleReset}>Reset</CustomButton>
-              </Box>
-            </Fragment>
-          ) : (
-            <Fragment>
-              <Box my={5}>{steps[activeStep].component}</Box>
-              <Box sx={{ display: "flex", flexDirection: "row" }}>
-                <CustomButton
-                  color="inherit"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1, width: "50%" }}
-                >
-                  Back
-                </CustomButton>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <CustomButton
-                  onClick={handleNext}
-                  sx={{
-                    width: "50%",
-                  }}
-                >
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </CustomButton>
-              </Box>
-            </Fragment>
-          )}
+          <Fragment>
+            <Box my={5}>{steps[activeStep].component}</Box>
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <CustomButton
+                color="inherit"
+                disabled={activeStep === 0 || loading}
+                onClick={handleBack}
+                sx={{ mr: 1, width: "50%" }}
+              >
+                Back
+              </CustomButton>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <CustomLoadingButton
+                onClick={handleNext}
+                sx={{
+                  width: "50%",
+                }}
+                loading={loading}
+              >
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              </CustomLoadingButton>
+            </Box>
+          </Fragment>
         </Box>
       </Box>
     </CustomModal>
   );
 }
 
-const Information = ({ fromAmount, toAmount, _handleChangeFromAmount }) => {
+const Information = ({
+  fromAmount,
+  availableAmount,
+  _handleChangeFromAmount,
+}) => {
   const { setting } = useSelector((state) => state);
   const { library } = setting;
   return (
     <>
-      <TextField
-        label="INC amount"
-        fullWidth
-        onChange={_handleChangeFromAmount}
-        value={fromAmount}
-        InputProps={{
-          endAdornment: <img src="/images/coins/INC.png" width="50px" />,
-        }}
-      />
-      {/* <Box textAlign="center" my={2}>
-        <SouthIcon />
+      <Box textAlign="right">
+        <Typography
+          variant="caption"
+          onClick={() => _handleChangeFromAmount(availableAmount)}
+          sx={{
+            cursor: "pointer",
+          }}
+        >
+          {library.BALANCE}: {formatNumberWithDecimal(availableAmount, 2)}{" "}
+          {CoinList.INC}
+        </Typography>
       </Box>
-      <TextField
-        label="You will receive"
-        fullWidth
-        //   onChange={(e) => setFromAmount(e.target.value)}
-        value={toAmount}
+      <CustomNumberInput
         InputProps={{
-          endAdornment: <img src="/images/coins/ING.png" width="50px" />,
+          endAdornment: (
+            <img src="/images/coins/INC.png" width="50px" alt="ing-logo" />
+          ),
         }}
+        fullWidth
+        label="INC amount"
+        onChange={(e) => _handleChangeFromAmount(e.target.value)}
+        value={fromAmount}
       />
-      <Box textAlign="right" mt={2}>
-        <Typography>Fee: 0 INC</Typography>
-      </Box> */}
     </>
   );
 };
@@ -227,6 +274,7 @@ const ConfirmComponent = ({
   toAmount,
   checked,
   _handleChecked,
+  verifySwap,
 }) => {
   const { setting } = useSelector((state) => state);
   const { library } = setting;
@@ -265,11 +313,15 @@ const ConfirmComponent = ({
       </Box>
       <Box display="fex" justifyContent="space-between">
         <Typography>{library.FEES}</Typography>
-        <Typography>{0} INC</Typography>
+        <Typography>
+          {verifySwap.fee} {verifySwap.asset}
+        </Typography>
       </Box>
       <Box display="fex" justifyContent="space-between">
         <Typography>{library.ESTIMATED_RECEIVED}</Typography>
-        <Typography>{fromAmount} INC</Typography>
+        <Typography>
+          {verifySwap.amount} {verifySwap.quoteAsset}
+        </Typography>
       </Box>
       <FormGroup sx={{ mt: 2 }}>
         <FormControlLabel

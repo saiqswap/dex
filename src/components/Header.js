@@ -26,6 +26,7 @@ import {
   _getMyItems,
   _handleProfileLogout,
   _removeWalletSignature,
+  _getBalance,
 } from "../store/actions/userActions";
 import { post } from "../utils/api";
 import { isLoggedIn, logout, setAccessToken } from "../utils/auth";
@@ -155,6 +156,7 @@ function Header() {
           setAccessToken(data.accessToken);
           dispatch(_getNewProfile());
           dispatch(_getMyItems());
+          dispatch(_getBalance());
         },
         (error) => {
           setLoading(false);
