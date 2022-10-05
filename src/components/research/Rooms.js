@@ -25,9 +25,12 @@ import {
 } from "../../onchain/onchain";
 import { image_url } from "../../settings";
 import { RI_SLOT_LIMIT } from "../../settings/constants";
-import { ENDPOINT_GET_PROFILE } from "../../settings/endpoint";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
-import { _getOnchainBalance } from "../../store/actions/userActions";
+import {
+  _getNewProfile,
+  _getOnchainBalance,
+} from "../../store/actions/userActions";
 import { get, post } from "../../utils/api";
 
 const BoxItem = styled(Box)({
@@ -78,32 +81,23 @@ const Rooms = () => {
   }, [information, JSON.stringify(items)]);
 
   useEffect(() => {
-    get(
-      "/nft/ri?page=1&pageSize=10&status=IN_RESEARCHING",
-      (data) => {
-        if (mounted) {
-          setItems(data.items.reverse());
-          setReload(false);
-        }
-      },
-      () => toast.error("error")
-    );
+    if (information) {
+      get(
+        `${EndpointConstant.NFT_RI}?page=1&pageSize=10&status=IN_RESEARCHING`,
+        (data) => {
+          if (mounted) {
+            setItems(data.items.reverse());
+            setReload(false);
+          }
+        },
+        () => toast.error("error")
+      );
+    }
     return () => setMounted(false);
-  }, [mounted, reload]);
+  }, [information, mounted, reload]);
 
   const errorCallback = () => {
     setLoading(false);
-  };
-
-  const handleFetchLimitSlot = (oldNumber, successCallback) => {
-    var getInterval = setInterval(() => {
-      get(ENDPOINT_GET_PROFILE, (result) => {
-        if (result.limitRiSlot !== oldNumber) {
-          successCallback();
-          clearInterval(getInterval);
-        }
-      });
-    }, 2000);
   };
 
   const handlePurchaseSlot = (index) => {
@@ -125,7 +119,7 @@ const Rooms = () => {
       errorCallback
     ).then((result) => {
       if (result) {
-        get(`/market/ri-slot-sc-input`, (data) => {
+        get(EndpointConstant.MARKET_RI_SLOT_SC_INPUT, (data) => {
           purchaseSlot(
             data,
             price,
@@ -136,13 +130,14 @@ const Rooms = () => {
             getReceipt(e, metamaskProvider).then((result) => {
               if (result) {
                 post(
-                  `/market/trigger-paid-ri-slot?txHash=${e}`,
+                  `${EndpointConstant.MARKET_RI_TRIGGER_PAID_RI_SLOT}?txHash=${e}`,
                   {},
                   () => {
-                    handleFetchLimitSlot(information.limitRiSlot, () => {
+                    setTimeout(() => {
                       setLoading(false);
                       setOpen(false);
                       toast.success("Success...!");
+                      dispatch(_getNewProfile());
                       dispatch(
                         _getOnchainBalance(
                           config.contracts,
@@ -150,7 +145,7 @@ const Rooms = () => {
                           provider
                         )
                       );
-                    });
+                    }, 3000);
                   },
                   (error) => {
                     console.log(error);

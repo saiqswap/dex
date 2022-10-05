@@ -15,9 +15,11 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { image_url } from "../../settings";
+import { EndpointConstant } from "../../settings/endpoint";
 import { get, post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import Loader from "../common/Loader";
@@ -61,20 +63,15 @@ const NewRI = () => {
   const [mount, setMount] = useState(true);
   let params = { angel: angel, costume: skin, minion_parts: minion };
   const nowTime = moment().unix() * 1000;
+  const { user } = useSelector((state) => state);
+  const { myItems } = user;
+
   // let timeout;
   useEffect(() => {
-    setStatusGetData(true);
-    get(
-      "/nft/my-nfts",
-      (result) => {
-        setData(result);
-        setStatusGetData(false);
-      },
-      () => {
-        setStatusGetData(false);
-      }
-    );
-  }, [reload]);
+    if (myItems) {
+      setData(myItems);
+    }
+  }, [myItems]);
 
   useEffect(() => {
     if (openPopup) {
@@ -98,7 +95,7 @@ const NewRI = () => {
     Object.keys(body).forEach((k) => body[k] === null && delete body[k]);
 
     post(
-      "/nft/ri",
+      EndpointConstant.NFT_RI,
       body,
       () => {
         // toast.success("Great! You joined Research");
@@ -157,7 +154,7 @@ const NewRI = () => {
         e.type.toLowerCase() === type && e.status.toLowerCase() !== "listing"
       );
     });
-
+    filteredData.sort((a, b) => a.level.localeCompare(b.level));
     if (filteredData) {
       setSelected({
         type: type,
