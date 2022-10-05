@@ -8,6 +8,7 @@ import {
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import SummonEffect from "../components/summon/SummonEffect";
 import { BoxType } from "../settings/constants";
 import { EndpointConstant } from "../settings/endpoint";
@@ -30,8 +31,9 @@ const Summon = () => {
   const [showList] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state);
+  const { user, setting } = useSelector((state) => state);
   const { information } = user;
+  const { library } = setting;
 
   useEffect(() => {
     if (information) {
@@ -81,6 +83,8 @@ const Summon = () => {
           setCompleted(true);
         },
         (error) => {
+          setOpening(false);
+          toast.error(library.SOMETHING_WRONG);
           setCompleted(true);
         }
       );
@@ -182,59 +186,6 @@ const Summon = () => {
                         </Typography>
                       </div>
                     </div>
-                    {/* <div
-                      key={index}
-                      className={
-                        "box-item " +
-                        (keySelected === item.value ? "active" : "")
-                      }
-                      onClick={() => _handleSelectBox(item.value)}
-                    >
-                      <div
-                        className="content"
-                        style={{ "--color": item.color }}
-                      >
-                        <img
-                          src={item.card}
-                          className="card"
-                          alt="images card"
-                        />
-                        <img src={item.image} className="img-box" alt="" />
-                        <div className="base-light">
-                          <img
-                            src={item.light}
-                            alt="base-light"
-                            width="100%"
-                          />
-                        </div>
-                        <div className="base-light delay">
-                          <img
-                            src={item.light}
-                            alt="base-light"
-                            width="100%"
-                          />
-                        </div>
-                        <div className="info">
-                          <Typography
-                            variant="body2"
-                            className="custom-font box-name"
-                            style={{ color: item.color }}
-                          >
-                            {item.value.split("_").join(" ").toLowerCase()} Box
-                          </Typography>
-                          <Typography variant="body2" className="available">
-                            <span>Avl:</span>
-                            <span>
-                              x
-                              {boxes && boxes[item.value]
-                                ? boxes[item.value].length
-                                : 0}
-                            </span>
-                          </Typography>
-                        </div>
-                      </div>
-                      <div className="light-2"></div>
-                    </div> */}
                   </Grid>
                 ))}
               </Grid>
@@ -263,6 +214,7 @@ const Summon = () => {
                 onClick={() => {
                   _handleOpenBox();
                 }}
+                disabled={opening}
               >
                 {!opening ? (
                   "Summon"
