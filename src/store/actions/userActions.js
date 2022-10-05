@@ -156,25 +156,22 @@ export const _getPresaleVesting = (walletAddress) => async (dispatch) => {
       ...staticDetailData,
     };
   }
-  // const vestingDetail = preSaleTokenBalances?.filter(
-  //   (e) => e.totalLockAmount > 0
-  // );
-  const vestingDetail = preSaleTokenBalances;
+  const vestingDetail = preSaleTokenBalances?.filter(
+    (e) => e.totalLockAmount > 0
+  );
   //special vesting
   let specialOnchainVestingBalance = await SpecialPresale._getVestingBalance(
     walletAddress
   );
-  // let specialOnchainVestingBalance = [];
-  // console.log(Array.isArray(specialOnchainVestingBalance));
   let specialVestingBalance = [];
   if (Array.isArray(specialOnchainVestingBalance)) {
     specialVestingBalance = specialOnchainVestingBalance;
   } else {
     specialVestingBalance.push(specialOnchainVestingBalance);
   }
-  // specialVestingBalance = specialVestingBalance?.filter(
-  //   (e) => e.totalLockAmount > 0
-  // );
+  specialVestingBalance = specialVestingBalance?.filter(
+    (e) => e.totalLockAmount > 0
+  );
   for (const iterator of specialVestingBalance) {
     iterator.isSpecialRound = true;
     iterator.information = await SpecialPresale._getVestingInfo(
