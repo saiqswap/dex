@@ -39,14 +39,14 @@ export const develop = {
       title: "MINTING",
       url: ["/minting-box"],
     },
-    {
-      title: "MARKETPLACE",
-      url: ["/marketplace"],
-    },
-    {
-      title: "BOXES",
-      url: ["/boxes"],
-    },
+    // {
+    //   title: "MARKETPLACE",
+    //   url: ["/marketplace"],
+    // },
+    // {
+    //   title: "BOXES",
+    //   url: ["/boxes"],
+    // },
     {
       title: "SUMMON",
       url: ["/summon"],

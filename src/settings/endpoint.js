@@ -100,6 +100,8 @@ export const EndpointConstant = {
   NFT_TRANSACTION_LIST: "/nft-transaction/list",
   NFT_MINT: "/nft/mint",
   NFT_GET_BY_ID: "/nft/get-by-id",
+  NFT_MY_BOXES: "/nft/my-boxes",
+  NFT_OPEN_BOX: "/nft/open-box",
   FUND_VERIFY_SWAP: "/fund/verify-swap",
   FUND_SWAP: "/fund/swap",
   FUND_LOCK_AMOUNT: "/fund/balancedeb",

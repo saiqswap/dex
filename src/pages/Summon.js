@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SummonEffect from "../components/summon/SummonEffect";
 import { BoxType } from "../settings/constants";
+import { EndpointConstant } from "../settings/endpoint";
 import { _getMyItems } from "../store/actions/userActions";
 import "../styles/summon-page.scss";
 import { get, post } from "../utils/api";
@@ -34,7 +35,7 @@ const Summon = () => {
 
   useEffect(() => {
     if (information) {
-      get(`/nft/my-boxes`, (data) => {
+      get(EndpointConstant.NFT_MY_BOXES, (data) => {
         if (mounted) {
           var result = data.reduce(function (r, a) {
             r[a.type] = r[a.type] || [];
@@ -61,10 +62,9 @@ const Summon = () => {
       setOpening(true);
       setCompleted(false);
       post(
-        `/nft/open-box?boxTokenId=${box.tokenId}`,
+        `${EndpointConstant.NFT_OPEN_BOX}?boxTokenId=${box.tokenId}`,
         {},
         (data) => {
-          // get(`/nft/my-boxes`, (data) => setBoxes(data));
           setItem(data);
           setBoxesSelected(
             boxesSelected.filter((item) => item.tokenId !== box.tokenId)
@@ -78,9 +78,7 @@ const Summon = () => {
           setOpening(false);
           setShowInfo(true);
           dispatch(_getMyItems());
-          setTimeout(() => {
-            setCompleted(true);
-          }, 7000);
+          setCompleted(true);
         },
         (error) => {
           setCompleted(true);
@@ -90,7 +88,6 @@ const Summon = () => {
   };
 
   const _handleSelectBox = (key) => {
-    console.log(keySelected);
     setKeySelected(null);
     setTimeout(() => {
       setBoxesSelected(boxes && boxes[key] ? boxes[key] : []);
