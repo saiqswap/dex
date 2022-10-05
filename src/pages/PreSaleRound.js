@@ -22,6 +22,7 @@ import Title from "../components/box-minting/Title";
 import AddPartnerRef from "../components/common/AddPartnerRef";
 import BackgroundComponent from "../components/common/BackgroundComponent";
 import Loader from "../components/common/Loader";
+import ListingAds from "../components/pre-sale/ListingAds";
 import PurchaseForm from "../components/pre-sale/PurchaseForm";
 import { _getPreSaleRoundList } from "../store/actions/preSaleActions";
 const CountdownStack = ({ children }) => (
@@ -123,6 +124,15 @@ export default function PreSaleRound() {
   const { library } = setting;
   const history = useHistory();
   const { preSaleRoundList } = preSale;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(_getPreSaleRoundList());
+    const timer = setInterval(() => {
+      dispatch(_getPreSaleRoundList());
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [dispatch]);
 
   useEffect(() => {
     if (preSaleRoundList) {
@@ -317,9 +327,6 @@ const Info = ({ data }) => {
         <Typography>{library.BACK}</Typography>
       </BackButton>
       <Box mb={2}>
-        <Title variant="h6" sx={{ textAlign: "left" }}>
-          {library.INFINITY_ANGEL_GEM}
-        </Title>
         <Title
           variant="h4"
           sx={{
@@ -332,17 +339,24 @@ const Info = ({ data }) => {
       </Box>
       <SocialComponent />
       <INGInfo />
-      <Title variant="h5" sx={{ textAlign: "left", mt: 2 }}>
-        {countdownTitle}
-      </Title>
-      <Box
-        sx={{
-          transform: "scale(0.7)",
-          marginLeft: "-18%",
-        }}
-      >
-        {countdownComponent}
-      </Box>
+      <Grid container alignItems="center" spacing={2}>
+        <Grid item xs={12} lg={6}>
+          <Title variant="h5" sx={{ textAlign: "left", mt: 2 }}>
+            {countdownTitle}
+          </Title>
+          <Box
+            sx={{
+              transform: "scale(0.7)",
+              marginLeft: "-18%",
+            }}
+          >
+            {countdownComponent}
+          </Box>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          {data.key === 3 ? <ListingAds /> : null}
+        </Grid>
+      </Grid>
       <Notice data={data} />
     </Grid>
   );

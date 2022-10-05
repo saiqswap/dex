@@ -60,9 +60,9 @@ const routes = [
     exact: false,
     path: "/summon",
     component: Summon,
-    type: "guest",
     isActive: true,
     title: "Summon",
+    type: "private",
   },
   {
     exact: false,

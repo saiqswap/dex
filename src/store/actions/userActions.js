@@ -2,7 +2,12 @@ import { ethers } from "ethers";
 import { _getVestingBalance } from "../../onchain";
 import { ERC20_ABI } from "../../onchain/abi-bytecode";
 import { prefix } from "../../onchain/onchain";
-import { ADDRESS_0, PRE_SALE_ROUNDS } from "../../settings/constants";
+import { SpecialPresale } from "../../onchain/special-presale";
+import {
+  ADDRESS_0,
+  PRE_SALE_ROUNDS,
+  StatusList,
+} from "../../settings/constants";
 import {
   EndpointConstant,
   ENDPOINT_GET_BALANCE,
@@ -135,6 +140,55 @@ export const _getBalance = () => (dispatch) => {
   });
 };
 
+export const _getPresaleVesting = (walletAddress) => async (dispatch) => {
+  dispatch({
+    type: GET_PRE_SALE_BALANCE,
+    payload: null,
+  });
+  //get vesting information
+  let preSaleTokenBalances = await _getVestingBalance(walletAddress);
+  for (let index = 0; index < preSaleTokenBalances.length; index++) {
+    const staticDetailData = PRE_SALE_ROUNDS.find(
+      (round) => round.roundId === preSaleTokenBalances[index].vestingId
+    );
+    preSaleTokenBalances[index] = {
+      ...preSaleTokenBalances[index],
+      ...staticDetailData,
+    };
+  }
+  // const vestingDetail = preSaleTokenBalances?.filter(
+  //   (e) => e.totalLockAmount > 0
+  // );
+  const vestingDetail = preSaleTokenBalances;
+  //special vesting
+  let specialOnchainVestingBalance = await SpecialPresale._getVestingBalance(
+    walletAddress
+  );
+  // let specialOnchainVestingBalance = [];
+  // console.log(Array.isArray(specialOnchainVestingBalance));
+  let specialVestingBalance = [];
+  if (Array.isArray(specialOnchainVestingBalance)) {
+    specialVestingBalance = specialOnchainVestingBalance;
+  } else {
+    specialVestingBalance.push(specialOnchainVestingBalance);
+  }
+  // specialVestingBalance = specialVestingBalance?.filter(
+  //   (e) => e.totalLockAmount > 0
+  // );
+  for (const iterator of specialVestingBalance) {
+    iterator.isSpecialRound = true;
+    iterator.information = await SpecialPresale._getVestingInfo(
+      iterator.vestingId
+    );
+  }
+  // console.log(specialVestingBalance);
+  //special vesting
+  dispatch({
+    type: GET_PRE_SALE_BALANCE,
+    payload: [...vestingDetail, ...specialVestingBalance],
+  });
+};
+
 export const _getMyItems = (successCallback) => (dispatch) => {
   get(ENDPOINT_MY_NFT, (data) => {
     if (successCallback) {
@@ -189,7 +243,7 @@ export const _getWalletInformation = () => (dispatch) => {
   });
   const walletSignature = window.localStorage.getItem("wallet-signature")
     ? window.localStorage.getItem("wallet-signature")
-    : null;
+    : StatusList.UNKNOWN;
   dispatch({
     type: ADD_WALLET_SIGNATURE,
     payload: walletSignature,

@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SummonEffect from "../components/summon/SummonEffect";
 import { BoxType } from "../settings/constants";
 import { _getMyItems } from "../store/actions/userActions";
@@ -29,20 +29,24 @@ const Summon = () => {
   const [showList] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state);
+  const { information } = user;
 
   useEffect(() => {
-    get(`/nft/my-boxes`, (data) => {
-      if (mounted) {
-        var result = data.reduce(function (r, a) {
-          r[a.type] = r[a.type] || [];
-          r[a.type].push(a);
-          return r;
-        }, Object.create(null));
-        setBoxes(result);
-      }
-    });
+    if (information) {
+      get(`/nft/my-boxes`, (data) => {
+        if (mounted) {
+          var result = data.reduce(function (r, a) {
+            r[a.type] = r[a.type] || [];
+            r[a.type].push(a);
+            return r;
+          }, Object.create(null));
+          setBoxes(result);
+        }
+      });
+    }
     return () => setMounted(false);
-  }, [mounted]);
+  }, [information, mounted]);
 
   const handleOpenBox = () => {
     setOpenBox(false);

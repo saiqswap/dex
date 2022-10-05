@@ -11,6 +11,7 @@ import {
   _checkLogin,
 } from "../onchain/onchain";
 import { BLOCKCHAIN, MAIN_MENUS } from "../settings";
+import { StatusList } from "../settings/constants";
 import { ENDPOINT_USER_LOGIN_WITH_SIGNATURE } from "../settings/endpoint";
 import { ErrorCode } from "../settings/errorCode";
 import { _getMintingBoxInformation } from "../store/actions/mintingActions";
@@ -127,14 +128,22 @@ function Header() {
 
   useEffect(() => {
     if (executeRecaptcha) {
-      if (walletSignature && applicationConfig) {
+      if (
+        walletSignature &&
+        walletSignature !== StatusList.UNKNOWN &&
+        applicationConfig
+      ) {
         _loginBySignature(walletSignature);
-      } else {
-        setLoading(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applicationConfig, executeRecaptcha, walletSignature]);
+
+  useEffect(() => {
+    if (walletSignature === StatusList.UNKNOWN) {
+      setLoading(false);
+    }
+  }, [walletSignature]);
 
   useEffect(() => {
     if (information) {
@@ -144,6 +153,7 @@ function Header() {
 
   const _loginBySignature = async (signature) => {
     getReCaptcha((reCaptcha) => {
+      setLoading(true);
       post(
         ENDPOINT_USER_LOGIN_WITH_SIGNATURE,
         {

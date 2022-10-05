@@ -5,46 +5,83 @@ export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
 export const DEFAULT_PROJECT_TITLE = `NFT Marketplace - Create and sell digital collectibles secured with blockchain`;
 export const RI_SLOT_LIMIT = 6;
 export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
+export const BIT_BULL_ADDRESS_0 = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 export const CAPTCHA_KEY = config.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
 export const PRE_SALE_TOKEN = "ING";
-export const CoinList = {
-  ING: "ING",
-  INC: "INC",
-};
-export const SUPPORT_TOKENS = [
+export const TESTNET_SUPPORT_TOKENS = [
   {
     contractAddress: ADDRESS_0,
+    paymentContract: BIT_BULL_ADDRESS_0,
+    asset: "BNB",
+  },
+  {
+    contractAddress: "0xaB45dE984925d49CC189Ed734Ec628091D1C7918", //testnet
+    asset: "USDT",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/USDT.png",
+  },
+  {
+    contractAddress: `0x18a74a76dfb3a2c1373c227705980c1748b3b70e`, //testnet
+    asset: "ING",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/ING.png",
+  },
+  {
+    contractAddress: `0x5Cc31aDC4F86fb73C4a15799eB222A98fd469219`,
+    asset: "BUSD",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/BUSD.png",
+  },
+  {
+    contractAddress: "0x927Ae32c40F40d24a2ea272629025d15104aE608", //testnet
+    asset: "INC",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/INC.png",
+  },
+];
+export const MAINNET_SUPPORT_TOKENS = [
+  {
+    contractAddress: ADDRESS_0,
+    paymentContract: BIT_BULL_ADDRESS_0,
     asset: "BNB",
   },
   {
     contractAddress: `0x55d398326f99059fF775485246999027B3197955`,
-    // contractAddress: "0x291Eb0647c520D01a7f9A694B83b4160bEF351DD", //testnet
     asset: "USDT",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/USDT.png",
   },
   {
     contractAddress: `0xAe7c682Ba26AD6835B6150FfB35F22Db9987f509`,
-    // contractAddress: `0x61817932552a742De092f9196a20b1eF2a484Ccb`, //testnet
     asset: "ING",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/ING.png",
   },
-  // {
-  //   contractAddress: `0x5Cc31aDC4F86fb73C4a15799eB222A98fd469219`,
-  //   asset: "BUSD",
-  //   decimals: 18,
-  //   image: "https://marketplace.megdev.co/images/coins/BUSD.png",
-  // },
+  {
+    contractAddress: `0x5Cc31aDC4F86fb73C4a15799eB222A98fd469219`,
+    asset: "BUSD",
+    decimals: 18,
+    image: "https://marketplace.megdev.co/images/coins/BUSD.png",
+  },
   {
     contractAddress: `0x1d996E6A143F8581690f4CFCE44345c29ABB0c8c`,
-    // contractAddress: "0x927Ae32c40F40d24a2ea272629025d15104aE608", //testnet
     asset: "INC",
     decimals: 18,
     image: "https://marketplace.megdev.co/images/coins/INC.png",
   },
 ];
+export const SUPPORT_TOKENS =
+  config.ENVIRONMENT === "PRODUCTION" || config.ENVIRONMENT === "SPECIAL"
+    ? MAINNET_SUPPORT_TOKENS
+    : TESTNET_SUPPORT_TOKENS;
+export const CoinList = {
+  ING: "ING",
+  INC: "INC",
+};
+export const StatusList = {
+  UNKNOWN: "UNKNOWN",
+};
 export const PRE_SALE_ROUNDS = [
   {
     key: 0,

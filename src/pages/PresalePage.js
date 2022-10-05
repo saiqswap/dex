@@ -1,15 +1,26 @@
 import { Box, Container, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import Title from "../components/box-minting/Title";
 import BackgroundComponent from "../components/common/BackgroundComponent";
 import { PRE_SALE_TOKEN } from "../settings/constants";
 import AddPartnerRef from "../components/common/AddPartnerRef";
 import PreSaleList from "../components/pre-sale/PreSaleList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { _getPreSaleRoundList } from "../store/actions/preSaleActions";
 
 export default function PresalePage() {
   const { setting } = useSelector((state) => state);
   const { library } = setting;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(_getPreSaleRoundList());
+    const timer = setInterval(() => {
+      dispatch(_getPreSaleRoundList());
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [dispatch]);
 
   return (
     <BackgroundComponent>

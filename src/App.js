@@ -3,8 +3,10 @@ import { createTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import "animate.css";
 import { gapi } from "gapi-script";
+import { useState } from "react";
 import { useEffect } from "react";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import {
   BrowserRouter as Router,
@@ -22,6 +24,7 @@ import {
   CAPTCHA_KEY,
   DEFAULT_PROJECT_TITLE,
   GOOGLE_SIGN_IN_CLIENT_KEY,
+  StatusList,
 } from "./settings/constants";
 import { _getPreSaleRoundList } from "./store/actions/preSaleActions";
 import {
@@ -68,7 +71,6 @@ function App() {
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
-    // dispatch(_getPreSaleRoundList());
     dispatch(_getApplicationConfig());
     console.log("Infinity Angel Marketplace - Ver 0.0.3");
   }, [dispatch]);
@@ -138,7 +140,23 @@ function ModalSwitch() {
 
 const AuthRoute = (props) => {
   const { type, title, isActive } = props;
-  const loggedIn = isLoggedIn();
+  const { user } = useSelector((state) => state);
+  const { walletSignature, information } = user;
+  const [loggedIn, setLoggedIn] = useState(true);
+
+  useEffect(() => {
+    const _checkLoggedIn = () => {
+      if (information) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+    };
+    const timer = setTimeout(() => {
+      _checkLoggedIn();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [information, walletSignature]);
 
   useEffect(() => {
     if (title) {
@@ -156,7 +174,7 @@ const AuthRoute = (props) => {
     return <Redirect to="/" />;
   }
   if (type === "private" && !loggedIn) {
-    return <Redirect to="/login" />;
+    return <Redirect to="/" />;
   }
   return (
     <>

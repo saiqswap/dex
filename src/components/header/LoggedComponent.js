@@ -8,6 +8,8 @@ import { _addToken } from "../../onchain/onchain";
 import { formatAddress, formatNumberWithDecimal } from "../../settings/format";
 import { _getWalletLogout } from "../../store/actions/userActions";
 import CopyComponent from "../common/CopyComponent";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { useHistory } from "react-router-dom";
 
 const WalletOption = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -49,6 +51,7 @@ const LoggedComponent = () => {
   const { onChainBalances, walletAddress } = user;
   const dispatch = useDispatch();
   const { library } = setting;
+  const history = useHistory();
 
   const _handleLogout = () => {
     dispatch(_getWalletLogout());
@@ -140,15 +143,14 @@ const LoggedComponent = () => {
         </Box>
       </Box>
       <Box pl={3} pr={3} pb={3}>
-        {/* <MenuItem
+        <MenuItem
           onClick={() => {
             history.push("/pre-sale/statistic");
-            _onClose();
           }}
         >
           <AccessTimeIcon />
           <Box ml={2}> {library.VESTING_SCHEDULE}</Box>
-        </MenuItem> */}
+        </MenuItem>
         <MenuItem onClick={_handleLogout}>
           <ExitToAppOutlinedIcon /> <Box ml={2}>{library.LOGOUT}</Box>
         </MenuItem>
