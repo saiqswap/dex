@@ -6,6 +6,7 @@ import { TESTNET_CONFIG, TESTNET_DOMAIN } from "../onchain/testnet-config";
 
 //develop environment
 export const develop = {
+  ENVIRONMENT: "DEVELOP",
   API: `https://apiinfinity.feliciastation.com/api/v1`,
   // API: `https://marketplace_api.megdev.co/api/v1`,
   // API: `https://marketplace.infinityangel.io/api/v1`,
@@ -71,6 +72,7 @@ export const develop = {
 
 //staging environment
 export const staging = {
+  ENVIRONMENT: "STAGING",
   API: `https://marketplace_api.megdev.co/api/v1`,
   CAPTCHA_KEY: `6LfFLgIeAAAAAAclTDxmyP3juN4Wj-TeNI_7jl30`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,
@@ -147,6 +149,7 @@ export const special = {
 
 //production environment
 export const production = {
+  ENVIRONMENT: "PRODUCTION",
   API: `https://marketplace.infinityangel.io/api/v1`,
   CAPTCHA_KEY: `6LdPQqMhAAAAANaFCYo54sl0FTq5_LtbZnX4a9n9`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,

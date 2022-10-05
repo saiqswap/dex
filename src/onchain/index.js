@@ -1,14 +1,14 @@
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
-import { config } from "../settings";
+import { AppConfig } from "../settings";
 import { BIT_BULL_ADDRESS_0, PRE_SALE_ROUNDS } from "../settings/constants";
 import { EscrowVesting } from "./blockchain/Escrow_Vesting";
 import { provider, signer } from "./onchain";
 import { getReceiptFromTxHash, parseEthereumError } from "./utils/common";
 
 const ESCROW_VESTING = new EscrowVesting(
-  config.DEFAULT_PROVIDER,
-  config.ESCROW_VESTING_CONTRACT_ADDRESS
+  AppConfig.DEFAULT_PROVIDER,
+  AppConfig.ESCROW_VESTING_CONTRACT_ADDRESS
 );
 
 export const _getPreSaleRounds = async (_callback) => {
@@ -45,7 +45,7 @@ export const _checkBeforePurchase = async (
 
     const contractInstance = new ethers.Contract(
       tokenERC20Address,
-      config.BLOCKCHAIN.ERC20_ABI,
+      AppConfig.BLOCKCHAIN.ERC20_ABI,
       provider
     );
 
@@ -69,7 +69,7 @@ export const _checkBeforePurchase = async (
     ) {
       const contractWithSigner = new ethers.Contract(
         tokenERC20Address,
-        config.BLOCKCHAIN.ERC20_ABI,
+        AppConfig.BLOCKCHAIN.ERC20_ABI,
         signer
       );
 

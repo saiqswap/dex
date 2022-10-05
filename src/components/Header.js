@@ -10,7 +10,7 @@ import {
   _changeChain,
   _checkLogin,
 } from "../onchain/onchain";
-import { BLOCKCHAIN, MAIN_MENUS } from "../settings";
+import { AppConfig } from "../settings";
 import { StatusList } from "../settings/constants";
 import { ENDPOINT_USER_LOGIN_WITH_SIGNATURE } from "../settings/endpoint";
 import { ErrorCode } from "../settings/errorCode";
@@ -71,7 +71,9 @@ function Header() {
 
   useEffect(() => {
     if (walletAddress) {
-      if (Number(prefix.networkVersion) !== BLOCKCHAIN.domain.chainId) {
+      if (
+        Number(prefix.networkVersion) !== AppConfig.BLOCKCHAIN.domain.chainId
+      ) {
         setShowModalConfirm(true);
       }
       prefix.on("accountsChanged", (address) => {
@@ -85,7 +87,7 @@ function Header() {
         }
       });
       prefix.on("chainChanged", (newNetwork) => {
-        if (Number(newNetwork) !== BLOCKCHAIN.domain.chainId) {
+        if (Number(newNetwork) !== AppConfig.BLOCKCHAIN.domain.chainId) {
           setShowModalConfirm(true);
         }
       });
@@ -199,7 +201,7 @@ function Header() {
                 justifyContent="center"
                 style={{ height: 80 }}
               >
-                {MAIN_MENUS.map(
+                {AppConfig.MAIN_MENUS.map(
                   (item, index) =>
                     (!item.isLogged || (item.isLogged && information)) && (
                       <Link

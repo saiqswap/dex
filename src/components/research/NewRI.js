@@ -220,6 +220,8 @@ const NewRI = () => {
     ? (angel.properties.riTime * riTimeBonusPercent) / 100
     : 0;
 
+  // console.log(moment().utc().format(""));
+
   return (
     <div className="new-ri">
       {success && (

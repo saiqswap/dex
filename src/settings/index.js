@@ -12,14 +12,30 @@ export const explorer_url = "https://bscscan.com/tx";
 
 export const hostname = window.location.hostname.replace("www.", "");
 
-const configs = {
-  localhost: develop,
-  "marketplace.megdev.co": staging,
-  "marketplaceinfinity.feliciastation.com": develop,
-  "jpinfinity.feliciastation.com": develop,
-};
-export const config = configs[hostname] ? configs[hostname] : production;
-export const { API, ETHERSCAN_LINK, MAIN_MENUS, BLOCKCHAIN } = config;
+export let AppConfig = production;
+if (
+  [
+    "localhost",
+    "marketplaceinfinity.feliciastation.com",
+    "marketplaceinfinity.feliciastation.com",
+  ].includes(hostname)
+) {
+  AppConfig = develop;
+} else if (["marketplace.megdev.co"].includes(hostname)) {
+  AppConfig = staging;
+} else {
+  AppConfig = production;
+}
+export const { API } = AppConfig;
+
+// const configs = {
+//   localhost: develop,
+//   "marketplace.megdev.co": staging,
+//   "marketplaceinfinity.feliciastation.com": develop,
+//   "jpinfinity.feliciastation.com": develop,
+// };
+// export const config = configs[hostname] ? configs[hostname] : production;
+// export const { API, ETHERSCAN_LINK, MAIN_MENUS, BLOCKCHAIN } = config;
 export const PROJECT_LOCATION = "GLOBAL";
 // export const PROJECT_LOCATION = "JAPAN";
 

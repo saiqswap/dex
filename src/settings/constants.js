@@ -1,8 +1,8 @@
-import { config } from ".";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import WidgetsIcon from "@mui/icons-material/Widgets";
+import { AppConfig } from ".";
 
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
@@ -10,8 +10,8 @@ export const DEFAULT_PROJECT_TITLE = `NFT Marketplace - Create and sell digital 
 export const RI_SLOT_LIMIT = 6;
 export const ADDRESS_0 = "0x0000000000000000000000000000000000000000";
 export const BIT_BULL_ADDRESS_0 = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-export const CAPTCHA_KEY = config.CAPTCHA_KEY;
-export const GOOGLE_SIGN_IN_CLIENT_KEY = config.GOOGLE_SIGN_IN_CLIENT_KEY;
+export const CAPTCHA_KEY = AppConfig.CAPTCHA_KEY;
+export const GOOGLE_SIGN_IN_CLIENT_KEY = AppConfig.GOOGLE_SIGN_IN_CLIENT_KEY;
 export const PRE_SALE_TOKEN = "ING";
 export const TESTNET_SUPPORT_TOKENS = [
   {
@@ -76,7 +76,7 @@ export const MAINNET_SUPPORT_TOKENS = [
   },
 ];
 export const SUPPORT_TOKENS =
-  config.ENVIRONMENT === "PRODUCTION" || config.ENVIRONMENT === "SPECIAL"
+  AppConfig.ENVIRONMENT === "PRODUCTION" || AppConfig.ENVIRONMENT === "SPECIAL"
     ? MAINNET_SUPPORT_TOKENS
     : TESTNET_SUPPORT_TOKENS;
 export const CoinList = {

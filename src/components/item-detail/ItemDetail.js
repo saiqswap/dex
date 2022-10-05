@@ -23,7 +23,7 @@ import {
   prefix,
   purchaseECR721,
 } from "../../onchain/onchain";
-import { config, image_url } from "../../settings";
+import { AppConfig, image_url } from "../../settings";
 import { EndpointConstant } from "../../settings/endpoint";
 import {
   formatAddress,
@@ -521,7 +521,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
           paymentContract: paymentInfo.contractAddress,
           foundationFeePercent: reducerConfig.foundationFeePercent,
         };
-        var listingParams = config.BLOCKCHAIN.config.LISTING_PARAMS(message);
+        var listingParams = AppConfig.BLOCKCHAIN.config.LISTING_PARAMS(message);
         listingParams.domain.verifyingContract =
           setting.config.marketplaceContract;
 

@@ -1,4 +1,4 @@
-import { ETHERSCAN_LINK } from ".";
+import { AppConfig } from ".";
 
 export const deleteText = (str) => {
   str += "";
@@ -98,7 +98,7 @@ export function HTMLConverter(str) {
 }
 
 export function _linkToBlockChain(str) {
-  return `${ETHERSCAN_LINK}${str}`;
+  return `${AppConfig.ETHERSCAN_LINK}${str}`;
 }
 
 export function formatBigNumber(str) {
