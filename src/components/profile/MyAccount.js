@@ -81,7 +81,6 @@ const MyAccount = () => {
       <Box display="flex" alignItems="center" className="email">
         {information.email} <UpdateEmail />
       </Box>
-
       <p className="mt-20 opacity-05">{library.REFERRAL_LINK}</p>
       <p className="referral">
         <CopyBox

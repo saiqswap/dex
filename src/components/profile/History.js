@@ -230,36 +230,45 @@ const HistoryTable = ({ menu }) => {
 
   return (
     <>
-      <table className="custom-table">
-        <thead>
-          <tr>
-            {menu.columns.map((col, index) => (
-              <th className="custom-font" key={index}>
-                {library[col.label]}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {history &&
-            history.items.map((row) => (
-              <tr key={row.id}>
-                {menu.columns.map((col) => (
-                  <td key={row}>
-                    {col.format ? col.format(row[col.key], row) : row[col.key]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          {history && history.itemCount === 0 && (
+      <Box
+        sx={{
+          width: "100%",
+          overflow: "auto",
+        }}
+      >
+        <table className="custom-table">
+          <thead>
             <tr>
-              <td className="blank" colSpan={menu.columns.length}>
-                {library.NO_RECORDS_FOUND}
-              </td>
+              {menu.columns.map((col, index) => (
+                <th className="custom-font" key={index}>
+                  {library[col.label]}
+                </th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {history &&
+              history.items.map((row) => (
+                <tr key={row.id}>
+                  {menu.columns.map((col) => (
+                    <td key={row}>
+                      {col.format
+                        ? col.format(row[col.key], row)
+                        : row[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            {history && history.itemCount === 0 && (
+              <tr>
+                <td className="blank" colSpan={menu.columns.length}>
+                  {library.NO_RECORDS_FOUND}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </Box>
       {history ? (
         <Pagination
           count={history.pageCount}

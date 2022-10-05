@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { MAIN_MENUS } from "../../settings";
+import { PROFILE_MENUS } from "../../settings/constants";
 import {
   _handleLogout,
   _removeWalletSignature,
@@ -81,10 +82,10 @@ export default function LoggedProfile({ loading, _handleSignClick }) {
         >
           <Box>
             <Hidden mdUp>
-              {MAIN_MENUS.map(
+              {PROFILE_MENUS.map(
                 (item, index) =>
                   (!item.isLogged || (item.isLogged && information)) && (
-                    <Link to={item.url[0]} key={index}>
+                    <Link to={item.url} key={index}>
                       <Typography
                         variant="body1"
                         className="custom-font"
@@ -94,7 +95,7 @@ export default function LoggedProfile({ loading, _handleSignClick }) {
                           pb: 1,
                         }}
                       >
-                        {library[item.title]}
+                        {library[item.label]}
                       </Typography>
                     </Link>
                   )

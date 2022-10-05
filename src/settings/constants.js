@@ -1,4 +1,8 @@
 import { config } from ".";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import WidgetsIcon from "@mui/icons-material/Widgets";
 
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
@@ -400,4 +404,31 @@ export const tierCostumeDescription = [
   "- Tier 3: 6 % increase earn $INC at R - I.",
   "- Tier 4: 8% increase earn $INC at R - I.",
   "- Tier 5: 10% increase earn $INC at R - I.",
+];
+
+export const PROFILE_MENUS = [
+  {
+    icon: <AccountBoxIcon />,
+    url: "/profile/account",
+    label: "ACCOUNT",
+    key: "account",
+  },
+  {
+    icon: <WidgetsIcon />,
+    url: "/profile/my-items?type=ANGEL",
+    label: "MY_ITEMS",
+    key: "my-items",
+  },
+  {
+    icon: <HistoryEduIcon />,
+    url: "/profile/history",
+    label: "HISTORY",
+    key: "history",
+  },
+  {
+    icon: <AccountBalanceWalletIcon />,
+    url: "/profile/wallet",
+    label: "WALLET",
+    key: "wallet",
+  },
 ];
