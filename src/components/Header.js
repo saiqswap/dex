@@ -184,8 +184,8 @@ function Header() {
             setAccountNotFound(true);
           } else {
             toast.error(error.msg);
+            dispatch(_removeWalletSignature());
           }
-          dispatch(_removeWalletSignature());
         }
       );
     });

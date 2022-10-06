@@ -11,6 +11,7 @@ import {
   SCOPES_KEY,
 } from "../../settings/constants";
 import {
+  EndpointConstant,
   ENDPOINT_LOGIN_WITH_GOOGLE,
   ENDPOINT_POST_USER_LOGIN,
   ENDPOINT_POST_USER_REGISTER_OTP,
@@ -38,10 +39,10 @@ export default function LoginPopup({ open, _handleClose }) {
 
   const _updateAddress = () => {
     put(
-      `/user/address`,
+      EndpointConstant.USER_UPDATE_ADDRESS,
       {
         signature: walletSignature,
-        message: applicationConfig.ARR_SIGN_MESSAGE.TEMP,
+        message: applicationConfig.ARR_SIGN_MESSAGE.HUMAN,
         address: walletAddress,
       },
       (data) => {

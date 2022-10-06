@@ -109,4 +109,5 @@ export const EndpointConstant = {
   FUND_VERIFY_SWAP: "/fund/verify-swap",
   FUND_SWAP: "/fund/swap",
   FUND_LOCK_AMOUNT: "/fund/balancedeb",
+  USER_UPDATE_ADDRESS: "/user/address",
 };

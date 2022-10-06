@@ -27,7 +27,6 @@ if (
 } else {
   AppConfig = production;
 }
-console.log(AppConfig);
 export const { API } = AppConfig;
 
 // const configs = {
