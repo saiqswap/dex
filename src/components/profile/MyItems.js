@@ -105,6 +105,11 @@ const TabPanel = () => {
         <Typography variant="h6">{library.NO_RECORDS_FOUND}</Typography>
       )}
       <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <Typography>
+            {library.TOTAL}: {data?.length} item(s)
+          </Typography>
+        </Grid>
         {data &&
           data.map((item, index) => (
             <Grid item xs={6} md={4} lg={3} key={index}>

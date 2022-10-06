@@ -440,7 +440,14 @@ const MintComponent = ({ data, _handleReload }) => {
         onClick={() => setShowMintingPopup(true)}
         disabled={loading}
       >
-        {loading ? <CircularProgress size="29px" /> : "Mint"}
+        {loading ? (
+          <>
+            <Typography mr={1}>Minting</Typography>
+            <CircularProgress size="20px" />{" "}
+          </>
+        ) : (
+          "Mint"
+        )}
       </Button>
       <Modal
         open={showMintingPopup}
