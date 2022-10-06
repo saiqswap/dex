@@ -435,20 +435,22 @@ const MintComponent = ({ data, _handleReload }) => {
 
   return (
     <>
-      <Button
-        className="btn-listing"
-        onClick={() => setShowMintingPopup(true)}
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <Typography mr={1}>Minting</Typography>
-            <CircularProgress size="20px" />{" "}
-          </>
-        ) : (
-          "Mint"
-        )}
-      </Button>
+      {!data.isLockMinting && (
+        <Button
+          className="btn-listing"
+          onClick={() => setShowMintingPopup(true)}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Typography mr={1}>Minting</Typography>
+              <CircularProgress size="20px" />{" "}
+            </>
+          ) : (
+            "Mint"
+          )}
+        </Button>
+      )}
       <Modal
         open={showMintingPopup}
         onClose={() => setShowMintingPopup(false)}

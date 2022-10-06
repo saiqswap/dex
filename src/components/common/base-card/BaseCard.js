@@ -1,4 +1,4 @@
-import { Hidden, Typography } from "@mui/material";
+import { Box, Hidden, Typography, styled } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
@@ -6,6 +6,10 @@ import { formatAmount, _formatNameToLink } from "../../../settings/format";
 import { formatNftName } from "../../../utils/util";
 import CopyBox from "../CopyBox";
 import "./base-card.scss";
+
+const CustomClassImage = styled("img")(({ theme }) => ({
+  width: 40,
+}));
 
 export default function BaseCard({
   data,
@@ -27,98 +31,52 @@ export default function BaseCard({
   };
 
   return (
-    <div
-      className={`base-card ${data.type.toLowerCase()} ${
-        isOwner ? "owner" : ""
-      } ${data.status.toLowerCase()} ${data.level?.toLowerCase()} `}
-      onMouseEnter={(e) => onMouseMove(e, data.name)}
-      onClick={() => history.push(`/nft/${data.tokenId}`)}
-    >
-      <div className="light" />
-      <img
-        src={`/images/character/frame-character-type-${frameType}${
-          isOwner ? "-1" : ""
-        }.png`}
-        onLoadCapture={() => setLoaded(true)}
-        alt="base card"
-        width="100%"
-      />
-      <div className="base-light">
+    <Box className="new-base-card">
+      <Box position="relative">
         <img
-          src={`/images/character/frame-character-type-${frameType}-2.png`}
-          alt="base-light"
-          width="100%"
+          src={`${image_url}/nft_${data.type.toLowerCase()}_${formatNftName(
+            data.name
+          )}_${data.level.replace("_", "").toLowerCase()}.png`}
+          alt="thumbnail"
+          style={{
+            width: "calc(100% + 4px)",
+          }}
         />
-      </div>
-      <div className="base-light delay">
-        <img
-          src={`/images/character/frame-character-type-${frameType}-2.png`}
-          alt="base-light"
-          width="100%"
-        />
-      </div>
-      {data.status === "LISTING" && isOwner && (
-        <div className="base-card-status">
-          <p>Is being listed</p>
-        </div>
-      )}
-      {data.status === "IN_RESEARCHING" && isOwner && (
-        <div className="base-card-status">
-          <p>Is searching</p>
-        </div>
-      )}
-      {loaded && (
-        <div className="content">
-          <img
-            src={`${image_url}/${
-              data.type === "COSTUME" ? "body" : "thumbnail"
-            }_${formatNftName(data.name)}.png`}
-            alt="thumbnail"
-            className="thumbnail"
-          />
-          {data.level && (
-            <div className="character-level">
-              <Hidden smDown>
-                <Typography variant="body2" className="custom-font">
-                  {data.level.toLowerCase().replace("_", " ")}
-                </Typography>
-              </Hidden>
-            </div>
-          )}
-
-          {data.tokenId && (
-            <div className="character-id" onClick={(e) => e.stopPropagation()}>
-              <Hidden smDown>
-                <CopyBox content={data.tokenId}>
-                  <Typography variant="caption">#{data.tokenId}</Typography>
-                </CopyBox>
-              </Hidden>
-            </div>
-          )}
-
-          {data.name && (
-            <div className="character-name">
-              <Typography variant="body1" className="custom-font">
-                {data.name}
-              </Typography>
-            </div>
-          )}
-
-          {data.listingPrice > 0 && !isOwner && (
-            <div className="character-price">
-              <Typography variant="body1" className="custom-font">
-                {formatAmount(data.listingPrice)}{" "}
-                {data.paymentInformation && (
-                  <span>{data.paymentInformation.symbol}</span>
-                )}
-              </Typography>
-            </div>
-          )}
-
-          {button && <div className="character-btn">{button}</div>}
-
+        {data.name && (
+          <Typography
+            variant="body2"
+            className="custom-font"
+            sx={{
+              position: "absolute",
+              bottom: "5px",
+              left: "25px",
+            }}
+            fontWeight={700}
+          >
+            {data.name}
+          </Typography>
+        )}
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        px={2}
+        py={1}
+      >
+        {data.listingPrice > 0 && !isOwner && (
+          <div className="character-price">
+            <Typography variant="body1" className="custom-font">
+              {formatAmount(data.listingPrice)}{" "}
+              {data.paymentInformation && (
+                <span>{data.paymentInformation.symbol}</span>
+              )}
+            </Typography>
+          </div>
+        )}
+        <Box>
           {data.properties.class && (
-            <img
+            <CustomClassImage
               src={`${image_url}/class_${_formatNameToLink(
                 data.properties.class
               )}.png`}
@@ -133,7 +91,7 @@ export default function BaseCard({
           )}
 
           {data.properties.effect && (
-            <img
+            <CustomClassImage
               src={`${image_url}/effect_${_formatNameToLink(
                 data.properties.effect
               )}.png`}
@@ -148,7 +106,7 @@ export default function BaseCard({
           )}
 
           {data.properties.costumeEffect && (
-            <img
+            <CustomClassImage
               src={`${image_url}/effect_${_formatNameToLink(
                 data.properties.costumeEffect
               )}.png`}
@@ -161,24 +119,8 @@ export default function BaseCard({
               }}
             />
           )}
-
-          {data.gameLevel > 0 && data.type.toLowerCase() === "angel" && (
-            <div className="character-game_level">
-              <Typography variant="caption" className="custom-font">
-                {`Lv. ${data.gameLevel}`}
-              </Typography>
-            </div>
-          )}
-
-          {data.maxBattle && (
-            <div className="character-game_level">
-              <Typography variant="caption" className="custom-font">
-                {`B. ${data.maxBattle}`}
-              </Typography>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }

@@ -105,6 +105,7 @@ export const EndpointConstant = {
   NFT_MY_BOXES: "/nft/my-boxes",
   NFT_OPEN_BOX: "/nft/open-box",
   NFT_RI: "/nft/ri",
+  NFT_RE_COUNTDOWN: "/nft/ri/count-down",
   FUND_VERIFY_SWAP: "/fund/verify-swap",
   FUND_SWAP: "/fund/swap",
   FUND_LOCK_AMOUNT: "/fund/balancedeb",
