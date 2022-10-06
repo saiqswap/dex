@@ -2,8 +2,10 @@ import { Box, Divider, Popover, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { PROFILE_MENUS } from "../../settings/constants";
 import {
+  _getMyItems,
   _handleLogout,
   _removeWalletSignature,
 } from "../../store/actions/userActions";
@@ -33,6 +35,15 @@ export default function LoggedProfile({ loading, _handleSignClick }) {
     _handleClose();
     dispatch(_handleLogout());
     dispatch(_removeWalletSignature());
+  };
+
+  const _handleSync = () => {
+    _handleClose();
+    dispatch(
+      _getMyItems(() => {
+        toast.success("Sync data success");
+      })
+    );
   };
 
   return (
@@ -98,8 +109,18 @@ export default function LoggedProfile({ loading, _handleSignClick }) {
                   </Link>
                 )
             )}
-            <Box mt={1} mb={3}>
+            <Box mt={1} mb={2}>
               <Divider />
+            </Box>
+            <Box onClick={_handleSync} sx={{ cursor: "pointer" }}>
+              <Typography
+                variant="body1"
+                className="custom-font"
+                fontWeight={300}
+                sx={{ mb: 1 }}
+              >
+                Sync data
+              </Typography>
             </Box>
             <Box onClick={_logout} sx={{ cursor: "pointer" }}>
               <Typography

@@ -6,6 +6,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import Loader from "../components/common/Loader";
 import ItemDetail from "../components/item-detail/ItemDetail";
 import { API } from "../settings";
 import { formatAddress, formatAmount } from "../settings/format";
@@ -80,18 +81,7 @@ export default function NFTDetail() {
       <Grid container>
         <Grid item xs={12}>
           {data && <ItemDetail data={data} _handleReload={_handleReload} />}
-          {!data && (
-            <Box
-              style={{
-                minHeight: "50vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <CircularProgress />
-            </Box>
-          )}
+          {!data && <Loader />}
         </Grid>
         {transaction && transaction.items && transaction.items.length > 0 && (
           <Grid item xs={12} className="transaction-history">

@@ -15,7 +15,10 @@ import { provider } from "../../onchain/onchain";
 import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
-import { _getOnchainBalance } from "../../store/actions/userActions";
+import {
+  _getBalance,
+  _getOnchainBalance,
+} from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
 
@@ -48,11 +51,13 @@ export default function ClaimForm({ open, _onClose }) {
       () => {
         toast.success("Claim success...!");
         dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
+        dispatch(_getBalance());
         setLoading(false);
         _onClose();
       },
       (error) => {
-        toast.error(error.msg);
+        toast.error(library.SOMETHING_WRONG);
+        toast.error(library[error.code]);
         setLoading(false);
       }
     );
