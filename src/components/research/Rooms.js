@@ -32,6 +32,7 @@ import {
   _getOnchainBalance,
 } from "../../store/actions/userActions";
 import { get, post } from "../../utils/api";
+import Loader from "../common/Loader";
 
 const BoxItem = styled(Box)({
   background: "rgba(255,255,255,0.1)",
@@ -158,7 +159,7 @@ const Rooms = () => {
     });
   };
 
-  return (
+  return items ? (
     <div className="research-room">
       <Container style={{ marginBottom: 20 }}>
         <Grid container spacing={2}>
@@ -334,6 +335,8 @@ const Rooms = () => {
         </Box>
       </Modal>
     </div>
+  ) : (
+    <Loader />
   );
 };
 

@@ -15,11 +15,13 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { image_url } from "../../settings";
 import { EndpointConstant } from "../../settings/endpoint";
+import { _getMyItems } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import Loader from "../common/Loader";
@@ -99,6 +101,7 @@ const NewRI = () => {
   const { user, riStore } = useSelector((state) => state);
   const { myItems } = user;
   const { endTimeServer } = riStore;
+  const dispatch = useDispatch();
 
   // let timeout;
   useEffect(() => {
@@ -138,6 +141,7 @@ const NewRI = () => {
         handleCloseConfirmPopup();
         setStatusGetData(true);
         setSuccess(true);
+        dispatch(_getMyItems());
       },
       (err) => {
         toast.error(err.msg);
@@ -278,378 +282,394 @@ const NewRI = () => {
         </div>
       )}
 
-      <Container maxWidth="md">
-        <Grid
-          container
-          spacing={3}
-          className={`inventory-boxes`}
-          alignItems="center"
-          justifyContent="center"
-        >
-          {statusGetData ? (
-            <>
-              <Loader />
-            </>
-          ) : (
-            <>
-              {inventory.map((item, index) => (
-                <Grid
-                  item
-                  xs={item.screen.xs}
-                  sm={item.screen.sm}
-                  md={item.screen.md}
-                  key={index}
-                  className={`area-${item.key}`}
-                >
-                  {params[item.key] && (
-                    <IconButton
-                      className="btn-close"
-                      onClick={() => handleRemoveNFT(item.key)}
+      {data ? (
+        <>
+          <Container maxWidth="md">
+            <Grid
+              container
+              spacing={3}
+              className={`inventory-boxes`}
+              alignItems="center"
+              justifyContent="center"
+            >
+              {statusGetData ? (
+                <>
+                  <Loader />
+                </>
+              ) : (
+                <>
+                  {inventory.map((item, index) => (
+                    <Grid
+                      item
+                      xs={item.screen.xs}
+                      sm={item.screen.sm}
+                      md={item.screen.md}
+                      key={index}
+                      className={`area-${item.key}`}
                     >
-                      <Close />
-                    </IconButton>
-                  )}
-                  <div
-                    className={`inventory-box inventory-box--${item.boxType} 
+                      {params[item.key] && (
+                        <IconButton
+                          className="btn-close"
+                          onClick={() => handleRemoveNFT(item.key)}
+                        >
+                          <Close />
+                        </IconButton>
+                      )}
+                      <div
+                        className={`inventory-box inventory-box--${
+                          item.boxType
+                        } 
                 ${!data && "disable"} `}
-                    onClick={() => {
-                      data && handleClick(item.key);
+                        onClick={() => {
+                          data && handleClick(item.key);
+                        }}
+                      >
+                        <div className="content">
+                          {!params[item.key] && (
+                            <>
+                              <div className="box-name">
+                                <Typography
+                                  variant="body1"
+                                  className="custom-font"
+                                >
+                                  {item.label}
+                                </Typography>
+                              </div>
+                              {statusGetData ? <CircularProgress /> : <Add />}
+                            </>
+                          )}
+                          {params[item.key] ? (
+                            <img
+                              className={`custom-img ${
+                                item.key === "angel" && "angel"
+                              }`}
+                              src={`${image_url}/body_${formatNftName(
+                                params[item.key].name
+                              )}.png`}
+                              alt="nft"
+                            />
+                          ) : null}
+                        </div>
+                        <div className="line"></div>
+                        <div
+                          className={`bg-type-nft ${
+                            params[item.key] &&
+                            params[item.key].level.toLowerCase()
+                          }`}
+                        ></div>
+                      </div>
+                    </Grid>
+                  ))}
+                </>
+              )}
+            </Grid>
+            <Grid container justifyContent="center">
+              <Grid item xs={12} className="information-form">
+                {!params.angel && (
+                  <Hidden mdDown>
+                    <div className="slogan" id="mess">
+                      <p>Automated research system ready!</p>
+                    </div>
+                  </Hidden>
+                )}
+                <div>
+                  <Typography variant="body1" className="custom-font">
+                    Performance:
+                  </Typography>
+                  <Typography variant="body1">
+                    {angel ? (
+                      <span className="value-1">
+                        {params.angel.properties.riPerformance[0] +
+                          minPerformanceBonus}{" "}
+                        <span
+                          style={{
+                            color: "greenyellow",
+                            opacity: 0.7,
+                          }}
+                        >
+                          +{minPerformanceBonus}
+                        </span>
+                        <span> ~ </span>
+                        {params.angel.properties.riPerformance[1] +
+                          minPerformanceBonus}{" "}
+                        <span
+                          style={{
+                            color: "greenyellow",
+                            opacity: 0.7,
+                          }}
+                        >
+                          +{maxPerformanceBonus}
+                        </span>
+                      </span>
+                    ) : (
+                      "-/-"
+                    )}
+                    {params.angel && ` INC`}
+                    {params.costume && params.angel && (
+                      <span className="value-2">
+                        {" "}
+                        (+{riPerformanceBonus}% costume bonus)
+                      </span>
+                    )}
+                    {params.angel && ` per 10 mins`}
+                  </Typography>
+                </div>
+                <div className="mt-10">
+                  <Typography variant="body1" className="custom-font">
+                    Research Time:
+                  </Typography>
+                  <Typography variant="body1" display="inline-block">
+                    {params.angel ? (
+                      <span className="value-1">
+                        {params.angel.properties.riTime + riTime}{" "}
+                        <span
+                          style={{
+                            color: "greenyellow",
+                            opacity: 0.7,
+                          }}
+                        >
+                          +{riTime}
+                        </span>{" "}
+                        mins
+                      </span>
+                    ) : (
+                      "-/-"
+                    )}
+                    {params.minion_parts && params.angel && (
+                      <span className="value-3">
+                        {" "}
+                        (+{params.minion_parts.properties.riTimeBonus}% minion
+                        parts bonus)
+                      </span>
+                    )}
+                  </Typography>
+                </div>
+                <Divider className="mt-20" />
+                {params.angel && (
+                  <div className="mt-20">
+                    <div
+                      className="btn-start custom-font"
+                      onClick={() => {
+                        setOpenPopupConfirm(true);
+                      }}
+                    >
+                      Start
+                    </div>
+                  </div>
+                )}
+              </Grid>
+            </Grid>
+          </Container>
+
+          <Modal sx={style} open={openPopupConfirm}>
+            <Box className="custom-modal-confirm">
+              <Grid container justifyContent="center">
+                <Grid item xs={12} className="information-form">
+                  <div>
+                    <Typography variant="body1" className="custom-font">
+                      Performance:
+                    </Typography>
+                    <Typography variant="caption">
+                      {angel ? (
+                        <span className="value-1">
+                          {params.angel.properties.riPerformance[0] +
+                            minPerformanceBonus}{" "}
+                          <span
+                            style={{
+                              color: "greenyellow",
+                              opacity: 0.7,
+                            }}
+                          >
+                            +{minPerformanceBonus}
+                          </span>
+                          <span> ~ </span>
+                          {params.angel.properties.riPerformance[1] +
+                            minPerformanceBonus}{" "}
+                          <span
+                            style={{
+                              color: "greenyellow",
+                              opacity: 0.7,
+                            }}
+                          >
+                            +{maxPerformanceBonus}
+                          </span>
+                        </span>
+                      ) : (
+                        "-/-"
+                      )}
+                      {params.angel && ` INC`}
+                      {params.costume && params.angel && (
+                        <span className="value-2">
+                          {" "}
+                          (+{riPerformanceBonus}% costume bonus)
+                        </span>
+                      )}
+                      {params.angel && ` per 10 mins`}
+                    </Typography>
+                  </div>
+                  <div className="mt-10">
+                    <Typography variant="body1" className="custom-font">
+                      Research Time:
+                    </Typography>
+                    <Typography variant="caption">
+                      {params.angel ? (
+                        <span className="value-1">
+                          {params.angel.properties.riTime + riTime}{" "}
+                          <span
+                            style={{
+                              color: "greenyellow",
+                              opacity: 0.7,
+                            }}
+                          >
+                            +{riTime}
+                          </span>{" "}
+                          mins
+                        </span>
+                      ) : (
+                        "-/-"
+                      )}
+                      {params.minion_parts && params.angel && (
+                        <span className="value-3">
+                          {" "}
+                          (+{params.minion_parts.properties.riTimeBonus}% minion
+                          parts bonus)
+                        </span>
+                      )}
+                    </Typography>
+                  </div>
+                  <Divider className="mt-10 " />
+                  <FormControlLabel
+                    control={<Checkbox size="small" />}
+                    label={
+                      <Typography
+                        style={{
+                          color: `${active ? "#ffffffcc" : "#FF6464"}`,
+                          fontSize: 12,
+                        }}
+                      >
+                        i agree to the{" "}
+                        <a
+                          href="/docs/Privacy_Policy_Research_Institute_R-I.pdf"
+                          target="_blank"
+                          style={{
+                            color: "#2FA4FF",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          privacy policy
+                        </a>{" "}
+                        of the InfinityAngel.
+                      </Typography>
+                    }
+                    onChange={(e) => {
+                      setActive(e.target.checked);
+                      setConfirm(e.target.checked);
+                    }}
+                    labelPlacement="end"
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: 10,
                     }}
                   >
-                    <div className="content">
-                      {!params[item.key] && (
-                        <>
-                          <div className="box-name">
-                            <Typography variant="body1" className="custom-font">
-                              {item.label}
-                            </Typography>
-                          </div>
-                          {statusGetData ? <CircularProgress /> : <Add />}
-                        </>
-                      )}
-                      {params[item.key] ? (
-                        <img
-                          className={`custom-img ${
-                            item.key === "angel" && "angel"
-                          }`}
-                          src={`${image_url}/body_${formatNftName(
-                            params[item.key].name
-                          )}.png`}
-                          alt="nft"
-                        />
-                      ) : null}
-                    </div>
-                    <div className="line"></div>
                     <div
-                      className={`bg-type-nft ${
-                        params[item.key] && params[item.key].level.toLowerCase()
-                      }`}
-                    ></div>
+                      className="btn-close custom-font"
+                      style={{ background: "transparent" }}
+                      onClick={handleCloseConfirmPopup}
+                    >
+                      Cancel
+                    </div>
+                    <div
+                      className="btn-start custom-font"
+                      onClick={() => {
+                        confirm ? handleResearching() : setActive(false);
+                      }}
+                    >
+                      {loading ? (
+                        <CircularProgress style={{ width: 20, height: 20 }} />
+                      ) : (
+                        "Start"
+                      )}
+                    </div>
                   </div>
                 </Grid>
-              ))}
-            </>
-          )}
-        </Grid>
-        <Grid container justifyContent="center">
-          <Grid item xs={12} className="information-form">
-            {!params.angel && (
-              <Hidden mdDown>
-                <div className="slogan" id="mess">
-                  <p>Automated research system ready!</p>
-                </div>
-              </Hidden>
-            )}
-            <div>
-              <Typography variant="body1" className="custom-font">
-                Performance:
-              </Typography>
-              <Typography variant="body1">
-                {angel ? (
-                  <span className="value-1">
-                    {params.angel.properties.riPerformance[0] +
-                      minPerformanceBonus}{" "}
-                    <span
-                      style={{
-                        color: "greenyellow",
-                        opacity: 0.7,
-                      }}
-                    >
-                      +{minPerformanceBonus}
-                    </span>
-                    <span> ~ </span>
-                    {params.angel.properties.riPerformance[1] +
-                      minPerformanceBonus}{" "}
-                    <span
-                      style={{
-                        color: "greenyellow",
-                        opacity: 0.7,
-                      }}
-                    >
-                      +{maxPerformanceBonus}
-                    </span>
-                  </span>
-                ) : (
-                  "-/-"
-                )}
-                {params.angel && ` INC`}
-                {params.costume && params.angel && (
-                  <span className="value-2">
-                    {" "}
-                    (+{riPerformanceBonus}% costume bonus)
-                  </span>
-                )}
-                {params.angel && ` per 10 mins`}
-              </Typography>
-            </div>
-            <div className="mt-10">
-              <Typography variant="body1" className="custom-font">
-                Research Time:
-              </Typography>
-              <Typography variant="body1" display="inline-block">
-                {params.angel ? (
-                  <span className="value-1">
-                    {params.angel.properties.riTime + riTime}{" "}
-                    <span
-                      style={{
-                        color: "greenyellow",
-                        opacity: 0.7,
-                      }}
-                    >
-                      +{riTime}
-                    </span>{" "}
-                    mins
-                  </span>
-                ) : (
-                  "-/-"
-                )}
-                {params.minion_parts && params.angel && (
-                  <span className="value-3">
-                    {" "}
-                    (+{params.minion_parts.properties.riTimeBonus}% minion parts
-                    bonus)
-                  </span>
-                )}
-              </Typography>
-            </div>
-            <Divider className="mt-20" />
-            {params.angel && (
-              <div className="mt-20">
-                <div
-                  className="btn-start custom-font"
-                  onClick={() => {
-                    setOpenPopupConfirm(true);
-                  }}
-                >
-                  Start
-                </div>
-              </div>
-            )}
-          </Grid>
-        </Grid>
-      </Container>
+              </Grid>
+            </Box>
+          </Modal>
 
-      <Modal sx={style} open={openPopupConfirm}>
-        <Box className="custom-modal-confirm">
-          <Grid container justifyContent="center">
-            <Grid item xs={12} className="information-form">
-              <div>
-                <Typography variant="body1" className="custom-font">
-                  Performance:
+          {/* character selected popup */}
+          <Modal sx={style} open={openPopup}>
+            <Box className="custom-modal">
+              <Box className="custom-modal-head character-selected-popup-head">
+                <Typography variant="h5" className="custom-font">
+                  Select {selected.type.toUpperCase().replace("_", " ")}
                 </Typography>
-                <Typography variant="caption">
-                  {angel ? (
-                    <span className="value-1">
-                      {params.angel.properties.riPerformance[0] +
-                        minPerformanceBonus}{" "}
-                      <span
-                        style={{
-                          color: "greenyellow",
-                          opacity: 0.7,
-                        }}
+                <IconButton className="btn-icon-txt" onClick={handleClosePopup}>
+                  <Close />
+                </IconButton>
+              </Box>
+              <Divider />
+              <Box className="custom-modal-body character-selected-popup-body">
+                <Grid container spacing={1} className="nft-popup">
+                  {selected.data &&
+                    selected.data.map((item, index) => (
+                      <Grid
+                        item
+                        xs={4}
+                        sm={3}
+                        md={2}
+                        key={index}
+                        className={`nft-item ${
+                          moment(nowTime).format("L") ===
+                            moment(item.lastResearch).format("L") &&
+                          "disabled-card"
+                        } ${
+                          (item.type.toLowerCase() === "minion_parts" ||
+                            item.type.toLowerCase() === "costume") &&
+                          item.status.toLowerCase() === "in_researching" &&
+                          "disabled-card"
+                        }`}
                       >
-                        +{minPerformanceBonus}
-                      </span>
-                      <span> ~ </span>
-                      {params.angel.properties.riPerformance[1] +
-                        minPerformanceBonus}{" "}
-                      <span
-                        style={{
-                          color: "greenyellow",
-                          opacity: 0.7,
-                        }}
-                      >
-                        +{maxPerformanceBonus}
-                      </span>
-                    </span>
-                  ) : (
-                    "-/-"
-                  )}
-                  {params.angel && ` INC`}
-                  {params.costume && params.angel && (
-                    <span className="value-2">
-                      {" "}
-                      (+{riPerformanceBonus}% costume bonus)
-                    </span>
-                  )}
-                  {params.angel && ` per 10 mins`}
-                </Typography>
-              </div>
-              <div className="mt-10">
-                <Typography variant="body1" className="custom-font">
-                  Research Time:
-                </Typography>
-                <Typography variant="caption">
-                  {params.angel ? (
-                    <span className="value-1">
-                      {params.angel.properties.riTime + riTime}{" "}
-                      <span
-                        style={{
-                          color: "greenyellow",
-                          opacity: 0.7,
-                        }}
-                      >
-                        +{riTime}
-                      </span>{" "}
-                      mins
-                    </span>
-                  ) : (
-                    "-/-"
-                  )}
-                  {params.minion_parts && params.angel && (
-                    <span className="value-3">
-                      {" "}
-                      (+{params.minion_parts.properties.riTimeBonus}% minion
-                      parts bonus)
-                    </span>
-                  )}
-                </Typography>
-              </div>
-              <Divider className="mt-10 " />
-              <FormControlLabel
-                control={<Checkbox size="small" />}
-                label={
-                  <Typography
-                    style={{
-                      color: `${active ? "#ffffffcc" : "#FF6464"}`,
-                      fontSize: 12,
-                    }}
-                  >
-                    i agree to the{" "}
-                    <a
-                      href="/docs/Privacy_Policy_Research_Institute_R-I.pdf"
-                      target="_blank"
-                      style={{
-                        color: "#2FA4FF",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      privacy policy
-                    </a>{" "}
-                    of the InfinityAngel.
-                  </Typography>
-                }
-                onChange={(e) => {
-                  setActive(e.target.checked);
-                  setConfirm(e.target.checked);
-                }}
-                labelPlacement="end"
-              />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: 10,
-                }}
-              >
-                <div
-                  className="btn-close custom-font"
-                  style={{ background: "transparent" }}
-                  onClick={handleCloseConfirmPopup}
-                >
-                  Cancel
-                </div>
-                <div
-                  className="btn-start custom-font"
-                  onClick={() => {
-                    confirm ? handleResearching() : setActive(false);
-                  }}
-                >
-                  {loading ? (
-                    <CircularProgress style={{ width: 20, height: 20 }} />
-                  ) : (
-                    "Start"
-                  )}
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </Box>
-      </Modal>
+                        <div
+                          className={item.level.toLowerCase()}
+                          onClick={() => handleAddNFT(item)}
+                        >
+                          <img
+                            className="custom-img"
+                            src={`${image_url}/body_${formatNftName(
+                              item.name
+                            )}.png`}
+                            alt="nft"
+                          />
+                          <span className="nft-name">{item.name}</span>
 
-      {/* character selected popup */}
-      <Modal sx={style} open={openPopup}>
-        <Box className="custom-modal">
-          <Box className="custom-modal-head character-selected-popup-head">
-            <Typography variant="h5" className="custom-font">
-              Select {selected.type.toUpperCase().replace("_", " ")}
-            </Typography>
-            <IconButton className="btn-icon-txt" onClick={handleClosePopup}>
-              <Close />
-            </IconButton>
-          </Box>
-          <Divider />
-          <Box className="custom-modal-body character-selected-popup-body">
-            <Grid container spacing={1} className="nft-popup">
-              {selected.data &&
-                selected.data.map((item, index) => (
-                  <Grid
-                    item
-                    xs={4}
-                    sm={3}
-                    md={2}
-                    key={index}
-                    className={`nft-item ${
-                      moment(nowTime).format("L") ===
-                        moment(item.lastResearch).format("L") && "disabled-card"
-                    } ${
-                      (item.type.toLowerCase() === "minion_parts" ||
-                        item.type.toLowerCase() === "costume") &&
-                      item.status.toLowerCase() === "in_researching" &&
-                      "disabled-card"
-                    }`}
-                  >
-                    <div
-                      className={item.level.toLowerCase()}
-                      onClick={() => handleAddNFT(item)}
-                    >
-                      <img
-                        className="custom-img"
-                        src={`${image_url}/body_${formatNftName(
-                          item.name
-                        )}.png`}
-                        alt="nft"
-                      />
-                      <span className="nft-name">{item.name}</span>
-
-                      <div className="nft-status">
-                        <Typography variant="body1">
-                          {item.status === "IN_RESEARCHING" &&
-                            "R - I in progress"}
-                          {item.status === "ACTIVE" &&
-                            moment(nowTime).format("L") ===
-                              moment(item.lastResearch).format("L") && (
-                              <EndTimeCountdown endTime={endTimeServer} />
-                            )}
-                        </Typography>
-                      </div>
-                    </div>
-                  </Grid>
-                ))}
-            </Grid>
-          </Box>
-        </Box>
-      </Modal>
+                          <div className="nft-status">
+                            <Typography variant="body1">
+                              {item.status === "IN_RESEARCHING" &&
+                                "R - I in progress"}
+                              {item.status === "ACTIVE" &&
+                                moment(nowTime).format("L") ===
+                                  moment(item.lastResearch).format("L") && (
+                                  <>
+                                    You can R-I after{" "}
+                                    <EndTimeCountdown endTime={endTimeServer} />
+                                  </>
+                                )}
+                            </Typography>
+                          </div>
+                        </div>
+                      </Grid>
+                    ))}
+                </Grid>
+              </Box>
+            </Box>
+          </Modal>
+        </>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 };
