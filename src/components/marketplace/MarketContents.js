@@ -1,7 +1,7 @@
 import { SentimentVeryDissatisfied } from "@mui/icons-material";
 import { Container, Grid, useMediaQuery, useTheme } from "@mui/material";
 import React from "react";
-import BaseCard from "../common/base-card/BaseCard";
+import BaseCard from "../common/base-card/BaseCard.old";
 import Loader from "../common/Loader";
 
 const MarketContents = ({ data, nftType, onNftNameChange }) => {

@@ -45,6 +45,39 @@ const inventory = [
   },
 ];
 
+const EndTimeCountdown = ({ endTime }) => {
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    function update() {
+      const now = moment().utc().unix() * 1000;
+      const time = endTime - now;
+      setTime(time);
+    }
+    update();
+    const timer = setInterval(() => {
+      update();
+    }, 100);
+    return () => clearInterval(timer);
+  });
+
+  var sec_num = parseInt(time / 1000, 10); // don't forget the second param
+  var hours = Math.floor(sec_num / 3600);
+  var minutes = Math.floor((sec_num - hours * 3600) / 60);
+  var seconds = sec_num - hours * 3600 - minutes * 60;
+
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+  return hours + ":" + minutes + ":" + seconds;
+};
+
 const NewRI = () => {
   const history = useHistory();
   const [data, setData] = useState(null);
@@ -63,8 +96,9 @@ const NewRI = () => {
   const [mount, setMount] = useState(true);
   let params = { angel: angel, costume: skin, minion_parts: minion };
   const nowTime = moment().unix() * 1000;
-  const { user } = useSelector((state) => state);
+  const { user, riStore } = useSelector((state) => state);
   const { myItems } = user;
+  const { endTimeServer } = riStore;
 
   // let timeout;
   useEffect(() => {
@@ -604,8 +638,9 @@ const NewRI = () => {
                             "R - I in progress"}
                           {item.status === "ACTIVE" &&
                             moment(nowTime).format("L") ===
-                              moment(item.lastResearch).format("L") &&
-                            "Please wait until 0:00 (UTC)"}
+                              moment(item.lastResearch).format("L") && (
+                              <EndTimeCountdown endTime={endTimeServer} />
+                            )}
                         </Typography>
                       </div>
                     </div>
