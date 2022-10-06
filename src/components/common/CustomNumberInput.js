@@ -16,7 +16,7 @@ export default function CustomNumberInput(props) {
     <CustomInput
       type="number"
       onKeyDown={(e) => {
-        if (["-", "+", "e"].includes(e.key)) {
+        if (["-", "+", "e", "E"].includes(e.key)) {
           e.preventDefault();
         }
         if (e.target.value.length === 0 && e.key === ".") {

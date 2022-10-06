@@ -97,7 +97,7 @@ const MyWallet = () => {
                         </div>
                         <img src={item.symbol} alt="symbol" width="60px" />
                       </Box>
-                      {item.key === "INC" && funds[item.key].amount > 1 && (
+                      {item.key === "INC" && funds[item.key].amount > 0 && (
                         <Button
                           className="custom-btn custom-font"
                           onClick={() => setShowSwap(true)}
@@ -105,7 +105,7 @@ const MyWallet = () => {
                           Swap
                         </Button>
                       )}
-                      {item.key === "ING" && funds[item.key].amount > 1 && (
+                      {item.key === "ING" && funds[item.key].amount > 0 && (
                         <Button
                           className="custom-btn custom-font"
                           onClick={() => setShowClaim(true)}
