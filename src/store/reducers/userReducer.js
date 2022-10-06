@@ -27,11 +27,14 @@ const initialState = {
   preSaleTokenBalances: null,
   onChainBalances: null,
   lockBalances: null,
+  profileLoading: true,
 };
 
 export const UserReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case ReduxConstant.SET_USER_PROFILE_LOADING:
+      return { ...state, profileLoading: payload };
     case ReduxConstant.GET_USER_LOCK_BALANCE:
       return { ...state, lockBalances: payload };
     case GET_ONCHAIN_BALANCE:

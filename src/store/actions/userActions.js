@@ -50,6 +50,10 @@ export const _handleLogout = () => (dispatch) => {
 };
 
 export const _getNewProfile = () => (dispatch) => {
+  dispatch({
+    type: ReduxConstant.SET_USER_PROFILE_LOADING,
+    payload: true,
+  });
   get(
     ENDPOINT_GET_PROFILE,
     (data) => {
@@ -57,9 +61,17 @@ export const _getNewProfile = () => (dispatch) => {
         type: FETCH_USER,
         payload: data,
       });
+      dispatch({
+        type: ReduxConstant.SET_USER_PROFILE_LOADING,
+        payload: false,
+      });
     },
     (error) => {
       console.log(error);
+      dispatch({
+        type: ReduxConstant.SET_USER_PROFILE_LOADING,
+        payload: false,
+      });
       logout();
     }
   );

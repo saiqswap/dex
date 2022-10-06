@@ -29,6 +29,7 @@ import {
   _setWalletAddress,
   _setWalletName,
 } from "../store/actions/userActions";
+import { ReduxConstant } from "../store/constants";
 import { post } from "../utils/api";
 import { logout, setAccessToken } from "../utils/auth";
 import ConfirmChangeChain from "./header/ConfirmChangeChain";
@@ -141,8 +142,12 @@ function Header() {
   useEffect(() => {
     if (walletSignature === StatusList.UNKNOWN) {
       setLoading(false);
+      dispatch({
+        type: ReduxConstant.SET_USER_PROFILE_LOADING,
+        payload: false,
+      });
     }
-  }, [walletSignature]);
+  }, [dispatch, walletSignature]);
 
   useEffect(() => {
     if (information) {

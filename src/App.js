@@ -17,6 +17,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "./components/common/Loader";
 import Header from "./components/Header";
 import ErrorPage from "./pages/ErrorPage";
 import routes from "./routes";
@@ -39,6 +40,8 @@ import { isLoggedIn } from "./utils/auth";
 
 function App() {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state);
+  const { profileLoading } = user;
 
   let theme = createTheme();
   theme = createTheme(theme, {
@@ -92,7 +95,7 @@ function App() {
         <Router>
           <div className="App">
             <Header />
-            <ModalSwitch />
+            {profileLoading ? <Loader /> : <ModalSwitch />}
             {/* <Hidden mdUp>
             <BottomMenu />
           </Hidden> */}
@@ -141,22 +144,16 @@ function ModalSwitch() {
 const AuthRoute = (props) => {
   const { type, title, isActive } = props;
   const { user } = useSelector((state) => state);
-  const { walletSignature, information } = user;
+  const { information } = user;
   const [loggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
-    const _checkLoggedIn = () => {
-      if (information) {
-        setLoggedIn(true);
-      } else {
-        setLoggedIn(false);
-      }
-    };
-    const timer = setTimeout(() => {
-      _checkLoggedIn();
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [information, walletSignature]);
+    if (information) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, [information]);
 
   useEffect(() => {
     if (title) {
@@ -169,6 +166,8 @@ const AuthRoute = (props) => {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
+
+  console.log(loggedIn);
 
   if (type === "login" && loggedIn) {
     return <Redirect to="/" />;
