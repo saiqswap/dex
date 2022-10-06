@@ -1,17 +1,17 @@
 import { Add, Close } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Checkbox,
   CircularProgress,
   Container,
   Divider,
   FormControlLabel,
   Grid,
+  Hidden,
   IconButton,
-  Button,
   Modal,
   Typography,
-  Hidden,
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { image_url } from "../../settings";
 import { EndpointConstant } from "../../settings/endpoint";
-import { get, post } from "../../utils/api";
+import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import Loader from "../common/Loader";
 

@@ -3,11 +3,9 @@ import { createTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import "animate.css";
 import { gapi } from "gapi-script";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -25,9 +23,7 @@ import {
   CAPTCHA_KEY,
   DEFAULT_PROJECT_TITLE,
   GOOGLE_SIGN_IN_CLIENT_KEY,
-  StatusList,
 } from "./settings/constants";
-import { _getPreSaleRoundList } from "./store/actions/preSaleActions";
 import {
   _changeLanguage,
   _getApplicationConfig,
@@ -36,7 +32,6 @@ import {
 } from "./store/actions/settingActions";
 import { _getWalletInformation } from "./store/actions/userActions";
 import "./styles/main.scss";
-import { isLoggedIn } from "./utils/auth";
 
 function App() {
   const dispatch = useDispatch();
@@ -85,7 +80,6 @@ function App() {
         scope: "",
       });
     }
-
     gapi.load("client:auth2", start);
   }, []);
 
@@ -166,8 +160,6 @@ const AuthRoute = (props) => {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
-
-  console.log(loggedIn);
 
   if (type === "login" && loggedIn) {
     return <Redirect to="/" />;

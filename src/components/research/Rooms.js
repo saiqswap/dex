@@ -64,7 +64,7 @@ const Rooms = () => {
   const [slotSelected, setSlotSelected] = useState(0);
   const [limitRiSlot, setLimitRiSlot] = useState(3);
 
-  const { metamaskSigner, metamaskProvider, walletAddress } = user;
+  const { walletAddress } = user;
 
   const { information } = user;
   const { config } = setting;
@@ -125,7 +125,7 @@ const Rooms = () => {
             config,
             errorCallback
           ).then((e) => {
-            getReceipt(e, metamaskProvider).then((result) => {
+            getReceipt(e).then((result) => {
               if (result) {
                 post(
                   `${EndpointConstant.MARKET_RI_TRIGGER_PAID_RI_SLOT}?txHash=${e}`,

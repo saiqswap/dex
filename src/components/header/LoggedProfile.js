@@ -1,8 +1,7 @@
-import { Box, Divider, Hidden, Popover, Typography } from "@mui/material";
+import { Box, Divider, Popover, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { MAIN_MENUS } from "../../settings";
 import { PROFILE_MENUS } from "../../settings/constants";
 import {
   _handleLogout,
@@ -81,39 +80,24 @@ export default function LoggedProfile({ loading, _handleSignClick }) {
           }}
         >
           <Box>
-            <Hidden mdUp>
-              {PROFILE_MENUS.map(
-                (item, index) =>
-                  (!item.isLogged || (item.isLogged && information)) && (
-                    <Link to={item.url} key={index}>
-                      <Typography
-                        variant="body1"
-                        className="custom-font"
-                        fontWeight={300}
-                        sx={{
-                          pt: 1,
-                          pb: 1,
-                        }}
-                      >
-                        {library[item.label]}
-                      </Typography>
-                    </Link>
-                  )
-              )}
-            </Hidden>
-            <Link to="/profile/account">
-              <Typography
-                variant="body1"
-                className="custom-font"
-                fontWeight={300}
-                sx={{
-                  pt: 1,
-                  pb: 1,
-                }}
-              >
-                {library.PROFILE}
-              </Typography>
-            </Link>
+            {PROFILE_MENUS.map(
+              (item, index) =>
+                (!item.isLogged || (item.isLogged && information)) && (
+                  <Link to={item.url} key={index}>
+                    <Typography
+                      variant="body1"
+                      className="custom-font"
+                      fontWeight={300}
+                      sx={{
+                        pt: 1,
+                        pb: 1,
+                      }}
+                    >
+                      {library[item.label]}
+                    </Typography>
+                  </Link>
+                )
+            )}
             <Box mt={1} mb={3}>
               <Divider />
             </Box>

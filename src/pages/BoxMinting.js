@@ -79,7 +79,7 @@ export default function BoxMinting() {
               href="https://tofunft.com/collection/infinity-angel-box/items"
               target="_blank"
             >
-              <img src="/images/logo/tofunft.png" width={25} />
+              <img src="/images/logo/tofunft.png" width={25} alt="tofu-logo" />
               <Typography ml={1}>Buy on Tofunft</Typography>
             </CustomButton>
           </Grid>

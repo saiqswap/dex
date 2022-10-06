@@ -41,7 +41,13 @@ import SubMenu from "./header/SubMenu";
 
 function Header() {
   const { user, setting } = useSelector((state) => state);
-  const { walletAddress, walletName, walletSignature, information } = user;
+  const {
+    walletAddress,
+    walletName,
+    walletSignature,
+    information,
+    profileLoading,
+  } = user;
   const dispatch = useDispatch();
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const location = useLocation();
@@ -203,26 +209,27 @@ function Header() {
                 justifyContent="center"
                 style={{ height: 80 }}
               >
-                {AppConfig.MAIN_MENUS.map(
-                  (item, index) =>
-                    (!item.isLogged || (item.isLogged && information)) && (
-                      <Link
-                        to={item.url[0]}
-                        key={index}
-                        className={`nav-link ${
-                          item.url.includes(pathname) && "active"
-                        }`}
-                      >
-                        <Typography
-                          variant="body1"
-                          className="custom-font"
-                          fontWeight={600}
+                {!profileLoading &&
+                  AppConfig.MAIN_MENUS.map(
+                    (item, index) =>
+                      (!item.isLogged || (item.isLogged && information)) && (
+                        <Link
+                          to={item.url[0]}
+                          key={index}
+                          className={`nav-link ${
+                            item.url.includes(pathname) && "active"
+                          }`}
                         >
-                          {library[item.title]}
-                        </Typography>
-                      </Link>
-                    )
-                )}
+                          <Typography
+                            variant="body1"
+                            className="custom-font"
+                            fontWeight={600}
+                          >
+                            {library[item.title]}
+                          </Typography>
+                        </Link>
+                      )
+                  )}
               </Grid>
             </Hidden>
             <Grid
