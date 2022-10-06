@@ -68,7 +68,7 @@ const routes = [
     exact: false,
     path: "/research-institute/:comp",
     component: ResearchInstitute,
-    type: "guest",
+    type: "private",
     isActive: true,
     title: "Research Institute",
   },

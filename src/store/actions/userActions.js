@@ -276,7 +276,7 @@ export const _getWalletLogout = () => (dispatch) => {
   });
   dispatch({
     type: ADD_WALLET_SIGNATURE,
-    payload: null,
+    payload: "UNKNOWN",
   });
   dispatch({
     type: FETCH_USER,

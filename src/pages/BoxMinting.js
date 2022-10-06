@@ -20,7 +20,7 @@ export default function BoxMinting() {
       dispatch(_getMintingComboList());
     }, 10000);
     return () => clearInterval(timer);
-  });
+  }, [dispatch]);
 
   return (
     <div

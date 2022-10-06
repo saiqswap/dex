@@ -28,10 +28,10 @@ export const develop = {
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
   MAIN_MENUS: [
-    // {
-    //   title: "HOME",
-    //   url: ["/"],
-    // },
+    {
+      title: "HOME",
+      url: ["/"],
+    },
     // {
     //   title: "PRESALE",
     //   url: ["/pre-sale"],

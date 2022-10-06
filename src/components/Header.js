@@ -18,19 +18,19 @@ import { _getMintingBoxInformation } from "../store/actions/mintingActions";
 import {
   _addPartnerRef,
   _addRef,
-  _getOnchainBalance,
-  _getNewProfile,
-  _getWalletLogout,
-  _setWalletAddress,
-  _setWalletName,
-  _handleLogout,
+  _getBalance,
   _getMyItems,
+  _getNewProfile,
+  _getOnchainBalance,
+  _getWalletLogout,
+  _handleLogout,
   _handleProfileLogout,
   _removeWalletSignature,
-  _getBalance,
+  _setWalletAddress,
+  _setWalletName,
 } from "../store/actions/userActions";
 import { post } from "../utils/api";
-import { isLoggedIn, logout, setAccessToken } from "../utils/auth";
+import { logout, setAccessToken } from "../utils/auth";
 import ConfirmChangeChain from "./header/ConfirmChangeChain";
 import LoggedProfile from "./header/LoggedProfile";
 import LoginPopup from "./header/LoginPopup";
@@ -108,9 +108,6 @@ function Header() {
     dispatch(_addPartnerRef());
     if (walletAddress) {
       dispatch(_getMintingBoxInformation(walletAddress));
-    }
-    if (isLoggedIn()) {
-      dispatch(_getNewProfile());
     }
   }, [dispatch, walletAddress]);
 

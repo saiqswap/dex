@@ -114,8 +114,6 @@ const Rooms = () => {
       token.contractAddress,
       price,
       walletAddress,
-      metamaskProvider,
-      metamaskSigner,
       errorCallback
     ).then((result) => {
       if (result) {
