@@ -2,7 +2,7 @@ import { Button, Container, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formatUSD } from "../../settings/format";
+import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
 import { _getLockBalances } from "../../store/actions/userActions";
 import ClaimForm from "./ClaimForm";
 import SwapForm from "./SwapForm";
@@ -83,8 +83,9 @@ const MyWallet = () => {
                       >
                         <div>
                           <p>
-                            {formatUSD(
-                              funds[item.key] ? funds[item.key].amount : 0
+                            {formatNumberWithDecimal(
+                              funds[item.key] ? funds[item.key].amount : 0,
+                              2
                             )}
                           </p>
                           <small>
@@ -97,22 +98,28 @@ const MyWallet = () => {
                         </div>
                         <img src={item.symbol} alt="symbol" width="60px" />
                       </Box>
-                      {item.key === "INC" && funds[item.key].amount > 0 && (
-                        <Button
-                          className="custom-btn custom-font"
-                          onClick={() => setShowSwap(true)}
-                        >
-                          Swap
-                        </Button>
-                      )}
-                      {item.key === "ING" && funds[item.key].amount > 0 && (
-                        <Button
-                          className="custom-btn custom-font"
-                          onClick={() => setShowClaim(true)}
-                        >
-                          Claim
-                        </Button>
-                      )}
+                      {item.key === "INC" &&
+                        parseFloat(
+                          formatNumberWithDecimal(funds[item.key].amount, 2)
+                        ) > 0 && (
+                          <Button
+                            className="custom-btn custom-font"
+                            onClick={() => setShowSwap(true)}
+                          >
+                            Swap
+                          </Button>
+                        )}
+                      {item.key === "ING" &&
+                        parseFloat(
+                          formatNumberWithDecimal(funds[item.key].amount, 2)
+                        ) > 0 && (
+                          <Button
+                            className="custom-btn custom-font"
+                            onClick={() => setShowClaim(true)}
+                          >
+                            Claim{" "}
+                          </Button>
+                        )}
                       {/* {funds[item.key] && funds[item.key].amount > 1 && (
                       <Button
                         className="custom-btn custom-font"

@@ -13,7 +13,7 @@ export default function ErrorComponent() {
       toast.error(
         library[serverError.code]
           ? library[serverError.code]
-          : `${library.SOMETHING_WRONG} Error code: ${serverError.code} [${serverError.msg}]`
+          : `${library.SOMETHING_WRONG} Error code: ${serverError?.code} [${serverError?.msg}]`
       );
       dispatch(_showAppError(null));
     }

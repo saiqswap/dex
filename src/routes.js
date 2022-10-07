@@ -13,27 +13,27 @@ import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
 
 const routes = [
-  {
-    exact: true,
-    path: "/pre-sale/statistic",
-    component: PreSaleStatistic,
-    type: "guest",
-    isActive: true,
-  },
-  {
-    exact: true,
-    path: "/pre-sale/:round",
-    component: PreSaleRound,
-    type: "guest",
-    isActive: true,
-  },
-  {
-    exact: true,
-    path: "/pre-sale",
-    component: PresalePage,
-    type: "guest",
-    isActive: true,
-  },
+  // {
+  //   exact: true,
+  //   path: "/pre-sale/statistic",
+  //   component: PreSaleStatistic,
+  //   type: "guest",
+  //   isActive: true,
+  // },
+  // {
+  //   exact: true,
+  //   path: "/pre-sale/:round",
+  //   component: PreSaleRound,
+  //   type: "guest",
+  //   isActive: true,
+  // },
+  // {
+  //   exact: true,
+  //   path: "/pre-sale",
+  //   component: PresalePage,
+  //   type: "guest",
+  //   isActive: true,
+  // },
   {
     exact: true,
     path: "/minting-box",
@@ -42,13 +42,13 @@ const routes = [
     isActive: true,
     title: "Box Minting",
   },
-  {
-    exact: true,
-    path: "/marketplace",
-    component: Marketplace,
-    type: "guest",
-    isActive: true,
-  },
+  // {
+  //   exact: true,
+  //   path: "/marketplace",
+  //   component: Marketplace,
+  //   type: "guest",
+  //   isActive: true,
+  // },
   {
     exact: false,
     path: "/nft/:id",
@@ -72,14 +72,14 @@ const routes = [
     isActive: true,
     title: "Research Institute",
   },
-  {
-    exact: false,
-    path: "/boxes",
-    component: BoxesPage,
-    type: "guest",
-    isActive: true,
-    title: "Buy Box",
-  },
+  // {
+  //   exact: false,
+  //   path: "/boxes",
+  //   component: BoxesPage,
+  //   type: "guest",
+  //   isActive: true,
+  //   title: "Buy Box",
+  // },
   {
     exact: false,
     path: "/profile/:comp",

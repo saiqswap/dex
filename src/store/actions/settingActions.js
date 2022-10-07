@@ -19,7 +19,6 @@ import {
 } from "../constants";
 
 export const _showAppError = (error) => (dispatch) => {
-  console.log({ error, dispatch });
   dispatch({
     type: ReduxConstant.SET_ERROR_CODE,
     payload: error,
@@ -125,13 +124,13 @@ export const _changeLanguage =
     let payload;
     switch (lang) {
       case "rus":
-        payload = rus;
+        payload = { ...en, ...rus };
         break;
       case "kr":
-        payload = kr;
+        payload = { ...en, ...kr };
         break;
       case "jp":
-        payload = jp;
+        payload = { ...en, ...jp };
         break;
       default:
         payload = en;

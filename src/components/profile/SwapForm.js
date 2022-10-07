@@ -255,7 +255,9 @@ const Information = ({
       <Box textAlign="right">
         <Typography
           variant="caption"
-          onClick={() => _handleChangeFromAmount(availableAmount)}
+          onClick={() =>
+            _handleChangeFromAmount(formatNumberWithDecimal(availableAmount, 2))
+          }
           sx={{
             cursor: "pointer",
           }}
