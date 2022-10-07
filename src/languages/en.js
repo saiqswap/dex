@@ -192,4 +192,10 @@ export const en = {
     "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of Swap",
   //221006
   INSUFFICIENT_FUNDS: "Unavailable balance",
+  SWAP: "Swap",
+  WITHDRAW: "Withdrawals",
+  ASSET: "Asset",
+  TRANSACTIONS: "Transactions",
+  NOTE: "Note",
+  NFT: "NFT",
 };

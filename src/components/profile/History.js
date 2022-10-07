@@ -13,7 +13,12 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { explorer_url } from "../../settings";
 import { EndpointConstant } from "../../settings/endpoint";
-import { formatAddress, formatAmount, formatUSD } from "../../settings/format";
+import {
+  formatAddress,
+  formatAmount,
+  formatNumberWithDecimal,
+  formatUSD,
+} from "../../settings/format";
 import { post } from "../../utils/api";
 import Loader from "../common/Loader";
 
@@ -25,7 +30,74 @@ const History = () => {
 
   const menus = [
     {
-      title: "BOX_HISTORY",
+      title: "WITHDRAW",
+      type: ["WITHDRAW"],
+      columns: [
+        { key: "id", label: "", format: (e) => `#${e}` },
+        {
+          key: "amount",
+          label: "AMOUNT",
+          format: (e) => formatNumberWithDecimal(e, 2),
+        },
+        {
+          key: "asset",
+          label: "ASSET",
+        },
+        {
+          key: "txHash",
+          label: "TX_HASH",
+          format: (e) => (
+            <a target="_blank" rel="noreferrer" href={`${explorer_url}/${e}`}>
+              {formatAddress(e)}
+            </a>
+          ),
+        },
+        {
+          key: "createdTime",
+          label: "TIME",
+          format: (e) => moment(e).format("YYYY-MM-DD HH:mm:ss"),
+        },
+      ],
+    },
+    {
+      title: "TRANSACTIONS",
+      type: ["SWAP"],
+      columns: [
+        { key: "type", label: "TYPE" },
+        {
+          key: "amount",
+          label: "AMOUNT",
+          format: (e) => (
+            <Typography
+              color={
+                parseFloat(formatNumberWithDecimal(e, 2)) >= 0
+                  ? "var(--angel-type-2)"
+                  : "var(--angel-type-4)"
+              }
+              sx={{ textAlign: "right" }}
+            >
+              {parseFloat(formatNumberWithDecimal(e, 2)) >= 0 && "+"}
+              {formatNumberWithDecimal(e, 2)}
+            </Typography>
+          ),
+        },
+        {
+          key: "asset",
+          label: "ASSET",
+        },
+        {
+          key: "text",
+          label: "NOTE",
+        },
+        {
+          key: "createdTime",
+          label: "TIME",
+          format: (e) => moment(e).format("YYYY-MM-DD HH:mm:ss"),
+        },
+      ],
+    },
+    {
+      title: "BOX",
       type: ["BUY_BOX"],
       columns: [
         { key: "tokenId", label: "", format: (e) => `#${e}` },
@@ -52,7 +124,7 @@ const History = () => {
       ],
     },
     {
-      title: "NFT_HISTORY",
+      title: "NFT",
       type: ["BUY_NFT", "DELIST", "LISTING", "SELL_NFT"],
       columns: [
         { key: "id", label: "", format: (e) => `#${e}` },
@@ -198,19 +270,50 @@ const HistoryTable = ({ menu }) => {
   useEffect(() => {
     setHistory(null);
     if (menu.type[0] !== "BUY_BOX") {
-      const params = {
-        page: page,
-        pageSize: 10,
-        types: menu.type,
-      };
-      post(
-        EndpointConstant.NFT_TRANSACTION_LIST,
-        params,
-        (data) => {
-          setHistory(data);
-        },
-        (error) => console.error(error)
-      );
+      if (menu.type[0] === "WITHDRAW") {
+        const params = {
+          page: page,
+          pageSize: 10,
+        };
+        post(
+          EndpointConstant.FUND_WITHDRAW_GET_GET_LIST,
+          params,
+          (data) => {
+            setHistory(data);
+          },
+          (error) => console.error(error)
+        );
+      } else if (menu.type[0] === "SWAP") {
+        const params = {
+          page: page,
+          pageSize: 10,
+          filters: {
+            type: "SWAP",
+          },
+        };
+        post(
+          EndpointConstant.FUND_BALANCE_LOGS,
+          params,
+          (data) => {
+            setHistory(data);
+          },
+          (error) => console.error(error)
+        );
+      } else {
+        const params = {
+          page: page,
+          pageSize: 10,
+          types: menu.type,
+        };
+        post(
+          EndpointConstant.NFT_TRANSACTION_LIST,
+          params,
+          (data) => {
+            setHistory(data);
+          },
+          (error) => console.error(error)
+        );
+      }
     }
     if (menu.type[0] === "BUY_BOX") {
       const params = {
@@ -226,7 +329,7 @@ const HistoryTable = ({ menu }) => {
         (error) => console.error(error)
       );
     }
-  }, [menu.type, page]);
+  }, [menu, page]);
 
   return (
     <>
@@ -248,10 +351,11 @@ const HistoryTable = ({ menu }) => {
           </thead>
           <tbody>
             {history &&
-              history.items.map((row) => (
+              history.items.length > 0 &&
+              history.items.map((row, index) => (
                 <tr key={row.id}>
                   {menu.columns.map((col) => (
-                    <td key={row}>
+                    <td key={index}>
                       {col.format
                         ? col.format(row[col.key], row)
                         : row[col.key]}

@@ -92,6 +92,8 @@ export const EndpointConstant = {
   APPLICATION_CONFIG: "/config/application",
   MY_COMMISSION_HISTORY: "/affiliate/my-commission-history",
   FUND_WITHDRAW: "/fund/withdraw",
+  FUND_WITHDRAW_GET_GET_LIST: "/fund/withdraw/get-list",
+  FUND_BALANCE_LOGS: "/fund/balance/logs",
   MARKET_LISTING: "/market/listing",
   MARKET_DELIST: "/market/delist",
   MARKET_ORDER_SC_INPUT: "/market/order-sc-input",
