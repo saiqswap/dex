@@ -1,4 +1,11 @@
-import { Box, Hidden, Typography, styled,useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Hidden,
+  Typography,
+  styled,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
@@ -12,7 +19,6 @@ const CustomClassImage = styled("img")(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     width: "2em",
   },
-  
 }));
 
 export default function BaseCard({
@@ -35,11 +41,12 @@ export default function BaseCard({
   };
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log("data",data)
+  console.log("data", data);
   return (
-    
-    <Box className="new-base-card">
-      
+    <Box
+      className="new-base-card"
+      onClick={() => history.push(`/nft/${data.tokenId}`)}
+    >
       <Box position="relative">
         <img
           src={`${image_url}/nft_${data.type.toLowerCase()}_${formatNftName(
@@ -69,14 +76,14 @@ export default function BaseCard({
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        px={isSmall? 3 : 4}
-        py={isSmall? 3 : 4}
+        px={isSmall ? 3 : 4}
+        py={isSmall ? 3 : 4}
         sx={{
-        position: "relative",
-        background: `url("/images/marketplace/${data.level}.png")`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% 100%',
-        left:'4px',
+          position: "relative",
+          background: `url("/images/marketplace/${data.level}.png")`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% 100%",
+          left: "4px",
         }}
       >
         {data.listingPrice > 0 && !isOwner && (
@@ -136,7 +143,5 @@ export default function BaseCard({
         </Box>
       </Box>
     </Box>
-
-
   );
 }

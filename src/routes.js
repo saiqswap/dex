@@ -42,13 +42,13 @@ const routes = [
     isActive: true,
     title: "Box Minting",
   },
-  // {
-  //   exact: true,
-  //   path: "/marketplace",
-  //   component: Marketplace,
-  //   type: "guest",
-  //   isActive: true,
-  // },
+  {
+    exact: true,
+    path: "/marketplace",
+    component: Marketplace,
+    type: "guest",
+    isActive: true,
+  },
   {
     exact: false,
     path: "/nft/:id",
@@ -72,14 +72,14 @@ const routes = [
     isActive: true,
     title: "Research Institute",
   },
-  // {
-  //   exact: false,
-  //   path: "/boxes",
-  //   component: BoxesPage,
-  //   type: "guest",
-  //   isActive: true,
-  //   title: "Buy Box",
-  // },
+  {
+    exact: false,
+    path: "/boxes",
+    component: BoxesPage,
+    type: "guest",
+    isActive: true,
+    title: "Buy Box",
+  },
   {
     exact: false,
     path: "/profile/:comp",
