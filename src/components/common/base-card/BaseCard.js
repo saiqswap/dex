@@ -46,6 +46,7 @@ export default function BaseCard({
     <Box
       className="new-base-card"
       onClick={() => history.push(`/nft/${data.tokenId}`)}
+      onMouseEnter={(e) => onMouseMove(e, data.name)}
     >
       <Box position="relative">
         <img
