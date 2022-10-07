@@ -5,7 +5,6 @@ import {
   Grid,
   InputAdornment,
   Modal,
-  OutlinedInput,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -14,13 +13,14 @@ import { toast } from "react-toastify";
 import { provider } from "../../onchain/onchain";
 import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
-import { formatUSD } from "../../settings/format";
+import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
 import {
   _getBalance,
   _getOnchainBalance,
 } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
+import CustomNumberInput from "../common/CustomNumberInput";
 
 export default function ClaimForm({ open, _onClose }) {
   const { setting, user } = useSelector((state) => state);
@@ -43,10 +43,9 @@ export default function ClaimForm({ open, _onClose }) {
 
   const handleClaim = () => {
     setLoading(true);
+    const fAmount = parseFloat(formatNumberWithDecimal(amount, 2));
     post(
-      `${EndpointConstant.FUND_WITHDRAW}?asset=${
-        CoinList.INC
-      }&amount=${parseNumber(amount)}`,
+      `${EndpointConstant.FUND_WITHDRAW}?asset=${CoinList.INC}&amount=${fAmount}`,
       null,
       () => {
         toast.success("Claim success...!");
@@ -87,25 +86,27 @@ export default function ClaimForm({ open, _onClose }) {
           <Typography variant="h6" className="custom-font">
             {library.CLAIM} {tokenInformation.key} {library.CONFIRMATION}
           </Typography>
-          <OutlinedInput
+          <CustomNumberInput
             className="custom-font input txt-right"
-            value={amount ? amount.replace(/[^\d.]/g, "") : ""}
+            value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            endAdornment={
-              <InputAdornment position="end" style={{ opacity: 0.5 }}>
-                <Typography variant="body1" className="custom-font">
-                  {tokenInformation.key}
-                </Typography>
-              </InputAdornment>
-            }
-            startAdornment={
-              <InputAdornment position="start" style={{ opacity: 0.5 }}>
-                <Typography variant="body1" className="custom-font">
-                  {library.AMOUNT}:
-                </Typography>
-              </InputAdornment>
-            }
             aria-describedby="outlined-weight-helper-text"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end" style={{ opacity: 0.5 }}>
+                  <Typography variant="body1" className="custom-font">
+                    {tokenInformation.key}
+                  </Typography>
+                </InputAdornment>
+              ),
+              startAdornment: (
+                <InputAdornment position="start" style={{ opacity: 0.5 }}>
+                  <Typography variant="body1" className="custom-font">
+                    {library.AMOUNT}:
+                  </Typography>
+                </InputAdornment>
+              ),
+            }}
           />
           <div className="mt-20 available">
             <span>{library.AVAILABLE}:</span>

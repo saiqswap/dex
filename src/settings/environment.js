@@ -27,6 +27,8 @@ export const develop = {
   ),
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
+  image_url:
+    "https://6f7daba956414f5fa57231546ac07221.s3.ap-southeast-1.amazonaws.com",
   MAIN_MENUS: [
     {
       title: "HOME",
@@ -161,6 +163,7 @@ export const production = {
   ),
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
+  image_url: "https://files.infinityangel.io",
   MAIN_MENUS: [
     {
       title: "HOME",

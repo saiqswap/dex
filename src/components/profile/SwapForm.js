@@ -76,8 +76,17 @@ export default function SwapForm({ showSwap, _close }) {
     setSkipped(newSkipped);
   };
 
+  const _handleShowError = (error) => {
+    console.log(error);
+    toast.error(
+      library[error.code]
+        ? library[error.code]
+        : `${library.SOMETHING_WRONG} Error code: ${error.code} [${error.msg}]`
+    );
+  };
+
   const _checkVerifySwap = (_callback) => {
-    const fFromAmount = parseFloat(fromAmount);
+    const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
     if (!fFromAmount) {
       toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
     } else if (fFromAmount > availableAmount) {
@@ -97,7 +106,7 @@ export default function SwapForm({ showSwap, _close }) {
           setLoading(false);
         },
         (error) => {
-          console.error(error);
+          _handleShowError(error);
           setLoading(false);
         }
       );
@@ -108,12 +117,13 @@ export default function SwapForm({ showSwap, _close }) {
     if (checked) {
       setLoading(true);
       _handleNext();
+      const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
       post(
         EndpointConstant.FUND_SWAP,
         {
           asset: "INC",
           quoteAsset: "ING",
-          amount: fromAmount,
+          amount: fFromAmount,
         },
         (data) => {
           setTimeout(() => {
@@ -127,7 +137,9 @@ export default function SwapForm({ showSwap, _close }) {
           setVerifySwap(data);
           dispatch(_getBalance());
         },
-        (error) => console.error(error)
+        (error) => {
+          _handleShowError(error);
+        }
       );
     } else {
       toast.error(library.PLEASE_READ_AND_ACCEPT_FOR_SWAP);
@@ -189,7 +201,12 @@ export default function SwapForm({ showSwap, _close }) {
   return (
     <CustomModal open={showSwap} _close={_close} isShowCloseButton={!loading}>
       <Box sx={{ width: "100%" }} py={4} px={2} textAlign="left">
-        <Box component="form" sx={{ textAlign: "left" }} onSubmit={handleNext}>
+        <Box
+          component="form"
+          sx={{ textAlign: "left" }}
+          onSubmit={handleNext}
+          noValidate
+        >
           <CustomStepper activeStep={activeStep}>
             {steps.map((step, index) => {
               const stepProps = {};
@@ -222,6 +239,7 @@ export default function SwapForm({ showSwap, _close }) {
                   width: "50%",
                 }}
                 loading={loading}
+                type="submit"
               >
                 {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </CustomLoadingButton>
@@ -259,6 +277,7 @@ const Information = ({
           endAdornment: (
             <img src="/images/coins/INC.png" width="50px" alt="ing-logo" />
           ),
+          step: "any",
         }}
         fullWidth
         label="INC amount"
@@ -309,7 +328,7 @@ const ConfirmComponent = ({
       </Box>
       <Box display="fex" justifyContent="space-between">
         <Typography>{library.SEND_AMOUNT}</Typography>
-        <Typography>{fromAmount} INC</Typography>
+        <Typography>{formatNumberWithDecimal(fromAmount, 2)} INC</Typography>
       </Box>
       <Box display="fex" justifyContent="space-between">
         <Typography>{library.FEES}</Typography>
@@ -320,7 +339,8 @@ const ConfirmComponent = ({
       <Box display="fex" justifyContent="space-between">
         <Typography>{library.ESTIMATED_RECEIVED}</Typography>
         <Typography>
-          {verifySwap.amount} {verifySwap.quoteAsset}
+          {formatNumberWithDecimal(verifySwap.amount, 2)}{" "}
+          {verifySwap.quoteAsset}
         </Typography>
       </Box>
       <FormGroup sx={{ mt: 2 }}>

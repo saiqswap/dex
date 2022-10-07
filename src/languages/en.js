@@ -190,4 +190,6 @@ export const en = {
   FEES: "Fees",
   PLEASE_READ_AND_ACCEPT_FOR_SWAP:
     "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of Swap",
+  //221006
+  INSUFFICIENT_FUNDS: "Unavailable balance",
 };
