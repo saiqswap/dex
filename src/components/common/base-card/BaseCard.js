@@ -1,4 +1,4 @@
-import { Box, Hidden, Typography, styled } from "@mui/material";
+import { Box, Hidden, Typography, styled,useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
@@ -8,7 +8,11 @@ import CopyBox from "../CopyBox";
 import "./base-card.scss";
 
 const CustomClassImage = styled("img")(({ theme }) => ({
-  width: 40,
+  width: "2.5em",
+  [theme.breakpoints.down("sm")]: {
+    width: "2em",
+  },
+  
 }));
 
 export default function BaseCard({
@@ -29,6 +33,8 @@ export default function BaseCard({
       }, 200);
     }
   };
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   console.log("data",data)
   return (
     
@@ -63,8 +69,8 @@ export default function BaseCard({
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        px={4}
-        py={4}
+        px={isSmall? 3 : 4}
+        py={isSmall? 3 : 4}
         sx={{
         position: "relative",
         background: `url("/images/marketplace/${data.level}.png")`,
