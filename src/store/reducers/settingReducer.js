@@ -34,12 +34,15 @@ const initialState = {
   templates: null,
   loading: true,
   applicationConfig: null,
+  serverError: null,
 };
 
 export const SettingReducer = (state = initialState, action) => {
   const { type, payload } = action;
   const { pageYOffset } = state;
   switch (type) {
+    case ReduxConstant.SET_ERROR_CODE:
+      return { ...state, serverError: payload };
     case ReduxConstant.GET_APPLICATION_CONFIG:
       return { ...state, applicationConfig: payload };
     case UPDATE_LOADING_STATUS:

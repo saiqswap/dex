@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
 import { formatNumberWithDecimal } from "../../settings/format";
+import { _showAppError } from "../../store/actions/settingActions";
 import { _getBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import PolicyCheck from "../box-minting/PolicyCheck";
@@ -76,15 +77,6 @@ export default function SwapForm({ showSwap, _close }) {
     setSkipped(newSkipped);
   };
 
-  const _handleShowError = (error) => {
-    console.log(error);
-    toast.error(
-      library[error.code]
-        ? library[error.code]
-        : `${library.SOMETHING_WRONG} Error code: ${error.code} [${error.msg}]`
-    );
-  };
-
   const _checkVerifySwap = (_callback) => {
     const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
     if (!fFromAmount) {
@@ -106,7 +98,7 @@ export default function SwapForm({ showSwap, _close }) {
           setLoading(false);
         },
         (error) => {
-          _handleShowError(error);
+          dispatch(_showAppError(error));
           setLoading(false);
         }
       );
@@ -138,7 +130,7 @@ export default function SwapForm({ showSwap, _close }) {
           dispatch(_getBalance());
         },
         (error) => {
-          _handleShowError(error);
+          dispatch(_showAppError(error));
         }
       );
     } else {

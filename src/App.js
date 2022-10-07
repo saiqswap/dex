@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ErrorComponent from "./components/common/ErrorComponent";
 import Loader from "./components/common/Loader";
 import Header from "./components/Header";
 import ErrorPage from "./pages/ErrorPage";
@@ -89,6 +90,7 @@ function App() {
         <Router>
           <div className="App">
             <Header />
+            <ErrorComponent />
             {profileLoading ? <Loader /> : <ModalSwitch />}
             {/* <Hidden mdUp>
             <BottomMenu />

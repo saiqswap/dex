@@ -18,6 +18,14 @@ import {
   UPDATE_LOADING_STATUS,
 } from "../constants";
 
+export const _showAppError = (error) => (dispatch) => {
+  console.log({ error, dispatch });
+  dispatch({
+    type: ReduxConstant.SET_ERROR_CODE,
+    payload: error,
+  });
+};
+
 export const _getApplicationConfig = () => (dispatch) => {
   get(EndpointConstant.APPLICATION_CONFIG, (data) =>
     dispatch({
