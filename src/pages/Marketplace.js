@@ -281,7 +281,7 @@ export default function Marketplace() {
             </Box>
           </Grid>
           <Hidden lgDown>
-            <Grid item xs={5}>
+            <Grid sx={{zIndex:"-1"}} item xs={5}>
               <Box className="product-intro">
                 {nftName && (
                   <img
