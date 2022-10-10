@@ -49,6 +49,16 @@ export default function BaseCard({
       onClick={() => history.push(`/nft/${data.tokenId}`)}
       onMouseEnter={(e) => onMouseMove(e, data.name)}
     >
+      {data.status === "LISTING" && isOwner && (
+        <div className="base-card-status">
+          <p>Is being listed</p>
+        </div>
+      )}
+      {data.status === "IN_RESEARCHING" && isOwner && (
+        <div className="base-card-status">
+          <p>Is searching</p>
+        </div>
+      )}
       <Box position="relative">
         <img
           src={_getNFTImageLink(data.type, data.name, data.level)}
