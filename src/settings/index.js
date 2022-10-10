@@ -14,7 +14,7 @@ export const hostname = window.location.hostname.replace("www.", "");
 export let AppConfig = production;
 if (
   [
-    // "localhost",
+    "localhost",
     "marketplaceinfinity.feliciastation.com",
     "marketplaceinfinity.feliciastation.com",
   ].includes(hostname)

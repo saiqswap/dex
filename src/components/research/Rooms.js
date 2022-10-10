@@ -67,11 +67,15 @@ const Rooms = () => {
   const { walletAddress } = user;
   const { information } = user;
   const { config } = setting;
+  const [nextSlotCanBuy, setNextSlotCanBuy] = useState(null);
 
   useEffect(() => {
     if (information) {
       setLimitRiSlot(information.limitRiSlot);
       const temp = information.limitRiSlot - (items && items.length);
+      if (information.limitRiSlot < RI_SLOT_LIMIT) {
+        setNextSlotCanBuy(information.limitRiSlot + 1);
+      }
       setOver(temp);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -279,13 +283,17 @@ const Rooms = () => {
                       className={`box-slot ${index >= limitRiSlot ? "" : ""}`}
                       onClick={() => {
                         if (index >= over) {
-                          setOpen(true);
-                          setSlotSelected(riSlotPrice);
-                          setSlotPrice(
-                            `${formatUSD(riSlotPrice.price)} ${
-                              riSlotPrice.coin
-                            }`
-                          );
+                          if (riSlotPrice.slotNumber === nextSlotCanBuy) {
+                            setOpen(true);
+                            setSlotSelected(riSlotPrice);
+                            setSlotPrice(
+                              `${formatUSD(riSlotPrice.price)} ${
+                                riSlotPrice.coin
+                              }`
+                            );
+                          } else {
+                            toast.error("You must buy previous slot.");
+                          }
                         } else {
                           items && history.push("/research-institute/R-I");
                         }
