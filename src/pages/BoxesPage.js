@@ -13,7 +13,6 @@ import {
   purchaseBox,
 } from "../onchain/onchain";
 import { _getOnchainBalance } from "../store/actions/userActions";
-import "../styles/boxes-page.scss";
 import { get, post } from "../utils/api";
 
 const BoxesPage = () => {

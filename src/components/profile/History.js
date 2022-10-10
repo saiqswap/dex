@@ -101,7 +101,7 @@ const History = () => {
       type: ["BUY_BOX"],
       columns: [
         { key: "tokenId", label: "", format: (e) => `#${e}` },
-        { key: "type", label: "TYPE", format: (e) => e.replace(/_/g, " ") },
+        { key: "type", label: "TYPE", format: (e) => e?.replace(/_/g, " ") },
         {
           key: "txHash",
           label: "TX_HASH",
@@ -353,9 +353,9 @@ const HistoryTable = ({ menu }) => {
             {history &&
               history.items.length > 0 &&
               history.items.map((row, index) => (
-                <tr key={row.id}>
+                <tr key={`${menu.type[0]}-${index}`}>
                   {menu.columns.map((col) => (
-                    <td key={index}>
+                    <td key={`${col.key}-${index}`}>
                       {col.format
                         ? col.format(row[col.key], row)
                         : row[col.key]}

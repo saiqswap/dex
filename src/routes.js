@@ -11,8 +11,16 @@ import Profile from "./pages/Profile";
 import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
+import SwapPage from "./pages/SwapPage";
 
 const routes = [
+  {
+    exact: true,
+    path: "/swap",
+    component: SwapPage,
+    type: "guest",
+    isActive: true,
+  },
   // {
   //   exact: true,
   //   path: "/pre-sale/statistic",

@@ -433,7 +433,7 @@ const MintComponent = ({ data, _handleReload }) => {
     );
   };
 
-  return (
+  return AppConfig.has_minting ? (
     <>
       {!data.isLockMinting && (
         <Button
@@ -472,7 +472,7 @@ const MintComponent = ({ data, _handleReload }) => {
         </div>
       </Modal>
     </>
-  );
+  ) : null;
 };
 
 const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
@@ -555,7 +555,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
     setPrice(value ? value.replace(/[^\d.]/g, "") : "");
   };
 
-  return (
+  return AppConfig.has_listing ? (
     <>
       <Button
         className="btn-listing"
@@ -620,7 +620,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
         )}
       </Modal>
     </>
-  );
+  ) : null;
 };
 
 const DelistComponent = ({ data, _handleReload }) => {
@@ -642,7 +642,7 @@ const DelistComponent = ({ data, _handleReload }) => {
     );
   };
 
-  return (
+  return AppConfig.has_listing ? (
     <>
       <Button
         className="btn-delist custom-font"
@@ -672,7 +672,7 @@ const DelistComponent = ({ data, _handleReload }) => {
         </div>
       </Modal>
     </>
-  );
+  ) : null;
 };
 
 const BuyComponent = ({ data, _handleReload }) => {
@@ -745,7 +745,7 @@ const BuyComponent = ({ data, _handleReload }) => {
       toast.error("Please sign-in for buy NFT.");
     }
   };
-  return (
+  return AppConfig.has_buy ? (
     <>
       <Button
         className={"btn-buy custom-font"}
@@ -755,5 +755,5 @@ const BuyComponent = ({ data, _handleReload }) => {
         {loading ? <CircularProgress size="29px" /> : "Buy"}
       </Button>
     </>
-  );
+  ) : null;
 };

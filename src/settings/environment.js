@@ -27,8 +27,16 @@ export const develop = {
   ),
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
-  image_url:
-    "https://6f7daba956414f5fa57231546ac07221.s3.ap-southeast-1.amazonaws.com",
+  // image_url:
+  //   "https://6f7daba956414f5fa57231546ac07221.s3.ap-southeast-1.amazonaws.com",
+  image_url: "https://files.infinityangel.io",
+  has_minting: true,
+  has_listing: true,
+  has_buy: true,
+  OPEN_FEATURES: {
+    isSwap: true,
+    isClaim: true,
+  },
   MAIN_MENUS: [
     {
       title: "HOME",
@@ -42,14 +50,14 @@ export const develop = {
       title: "MINTING",
       url: ["/minting-box"],
     },
-    {
-      title: "MARKETPLACE",
-      url: ["/marketplace"],
-    },
-    {
-      title: "BOXES",
-      url: ["/boxes"],
-    },
+    // {
+    //   title: "MARKETPLACE",
+    //   url: ["/marketplace"],
+    // },
+    // {
+    //   title: "BOXES",
+    //   url: ["/boxes"],
+    // },
     {
       title: "SUMMON",
       url: ["/summon"],
@@ -63,6 +71,10 @@ export const develop = {
         "/research-institute/history",
       ],
       isLogged: true,
+    },
+    {
+      title: "SWAP",
+      url: ["/swap"],
     },
   ],
   BLOCKCHAIN: {
@@ -164,6 +176,13 @@ export const production = {
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
   image_url: "https://files.infinityangel.io",
+  has_minting: true,
+  has_listing: false,
+  has_buy: false,
+  OPEN_FEATURES: {
+    isSwap: false,
+    isClaim: false,
+  },
   MAIN_MENUS: [
     {
       title: "HOME",
@@ -172,6 +191,24 @@ export const production = {
     {
       title: "MINTING",
       url: ["/minting-box"],
+    },
+    {
+      title: "SUMMON",
+      url: ["/summon"],
+      isLogged: true,
+    },
+    {
+      title: "R - I",
+      url: [
+        "/research-institute/R-I",
+        "/research-institute/slot",
+        "/research-institute/history",
+      ],
+      isLogged: true,
+    },
+    {
+      title: "SWAP",
+      url: ["/swap"],
     },
   ],
   BLOCKCHAIN: {

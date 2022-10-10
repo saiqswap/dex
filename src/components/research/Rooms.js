@@ -64,13 +64,9 @@ const Rooms = () => {
   const [loading, setLoading] = useState(false);
   const [slotSelected, setSlotSelected] = useState(0);
   const [limitRiSlot, setLimitRiSlot] = useState(3);
-
   const { walletAddress } = user;
-
   const { information } = user;
   const { config } = setting;
-
-  const riSlotPrice = config ? config.riSlotPrice[0] : { coin: "", price: 0 };
 
   useEffect(() => {
     if (information) {
@@ -101,13 +97,10 @@ const Rooms = () => {
     setLoading(false);
   };
 
-  const handlePurchaseSlot = (index) => {
-    const slot = config.riSlotPrice[index]
-      ? config.riSlotPrice[index]
-      : config.riSlotPrice[0];
+  const handlePurchaseSlot = () => {
+    const slot = slotSelected;
     const token = config.contracts.find((e) => e.symbol === slot.coin);
     const price = parseUnits(slot.price.toString(), token.decimals);
-
     setLoading(true);
 
     checkBeforeBuy(
@@ -144,7 +137,7 @@ const Rooms = () => {
                           provider
                         )
                       );
-                    }, 3000);
+                    }, 10000);
                   },
                   (error) => {
                     console.log(error);
@@ -276,35 +269,42 @@ const Rooms = () => {
           {items &&
             Array(RI_SLOT_LIMIT - (items && items.length))
               .fill(" ")
-              .map((item, index) => (
-                <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
-                  <Box
-                    className={`box-slot ${index >= limitRiSlot ? "" : ""}`}
-                    onClick={() => {
-                      if (index >= over) {
-                        setOpen(true);
-                        setSlotSelected(3 - index);
-                        setSlotPrice(
-                          `${formatUSD(riSlotPrice.price)} ${riSlotPrice.coin}`
-                        );
-                      } else {
-                        items && history.push("/research-institute/R-I");
-                      }
-                    }}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <div>
-                      {index >= over && (
-                        <p className="ri-fee custom-font">{`${formatUSD(
-                          riSlotPrice.price
-                        )} ${riSlotPrice.coin}`}</p>
-                      )}
-                      <Add />
-                      <BoxItem>{items.length + index + 1}</BoxItem>
-                    </div>
-                  </Box>
-                </Grid>
-              ))}
+              .map((item, index) => {
+                const riSlotPrice = config?.riSlotPrice?.find(
+                  (i) => i.slotNumber === index + 1
+                );
+                return (
+                  <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
+                    <Box
+                      className={`box-slot ${index >= limitRiSlot ? "" : ""}`}
+                      onClick={() => {
+                        if (index >= over) {
+                          setOpen(true);
+                          setSlotSelected(riSlotPrice);
+                          setSlotPrice(
+                            `${formatUSD(riSlotPrice.price)} ${
+                              riSlotPrice.coin
+                            }`
+                          );
+                        } else {
+                          items && history.push("/research-institute/R-I");
+                        }
+                      }}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <div>
+                        {index >= over && (
+                          <p className="ri-fee custom-font">{`${formatUSD(
+                            riSlotPrice.price
+                          )} ${riSlotPrice.coin}`}</p>
+                        )}
+                        <Add />
+                        <BoxItem>{items.length + index + 1}</BoxItem>
+                      </div>
+                    </Box>
+                  </Grid>
+                );
+              })}
         </Grid>
       </Container>
 

@@ -1,17 +1,18 @@
 import {
   Box,
-  Hidden,
-  Typography,
   styled,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
-import { formatAmount, _formatNameToLink } from "../../../settings/format";
-import { formatNftName } from "../../../utils/util";
-import CopyBox from "../CopyBox";
+import {
+  formatAmount,
+  _formatNameToLink,
+  _getNFTImageLink,
+} from "../../../settings/format";
 import "./base-card.scss";
 
 const CustomClassImage = styled("img")(({ theme }) => ({
@@ -41,7 +42,7 @@ export default function BaseCard({
   };
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log("data", data);
+
   return (
     <Box
       className="new-base-card"
@@ -50,12 +51,12 @@ export default function BaseCard({
     >
       <Box position="relative">
         <img
-          src={`${image_url}/nft_${data.type.toLowerCase()}_${formatNftName(
-            data.name
-          )}_${data.level.replace("_", "").toLowerCase()}.png`}
+          src={_getNFTImageLink(data.type, data.name, data.level)}
           alt="thumbnail"
+          onLoadCapture={() => setLoaded(true)}
           style={{
             width: "calc(100% + 4px)",
+            visibility: loaded ? "visible" : "hidden",
           }}
         />
         {data.name && (
@@ -66,6 +67,7 @@ export default function BaseCard({
               position: "absolute",
               bottom: "5px",
               left: "25px",
+              visibility: loaded ? "visible" : "hidden",
             }}
             fontWeight={700}
           >
@@ -77,7 +79,7 @@ export default function BaseCard({
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        px={isSmall ? 3 : 4}
+        px={isSmall ? 3 : 3.5}
         py={isSmall ? 3 : 4}
         sx={{
           position: "relative",
@@ -85,9 +87,10 @@ export default function BaseCard({
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
           left: "4px",
+          visibility: loaded ? "visible" : "hidden",
         }}
       >
-        {data.listingPrice > 0 && !isOwner && (
+        {data.listingPrice > 0 && !isOwner ? (
           <div className="character-price">
             <Typography variant="body1" className="custom-font">
               {formatAmount(data.listingPrice)}{" "}
@@ -96,8 +99,13 @@ export default function BaseCard({
               )}
             </Typography>
           </div>
+        ) : (
+          <div className="character-price">
+            <Typography variant="body1" className="custom-font"></Typography>
+          </div>
         )}
-        <Box>
+        <Box height={40}></Box>
+        {/* <Box>
           {data.properties.class && (
             <CustomClassImage
               src={`${image_url}/class_${_formatNameToLink(
@@ -141,7 +149,7 @@ export default function BaseCard({
               }}
             />
           )}
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

@@ -1,4 +1,5 @@
-import { AppConfig } from ".";
+import { AppConfig, image_url } from ".";
+import { formatNftName } from "../utils/util";
 
 export const deleteText = (str) => {
   str += "";
@@ -199,4 +200,10 @@ export const _formatNameToLink = (string) => {
     .replace("'", "")
     .replace(/\s/g, "_")
     .replace(/-/g, "_");
+};
+
+export const _getNFTImageLink = (type, name, level) => {
+  return `${image_url}/nft_${type.toLowerCase()}_${formatNftName(
+    name
+  )}_${level.toLowerCase()}.png`;
 };

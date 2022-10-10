@@ -33,6 +33,7 @@ import {
 } from "./store/actions/settingActions";
 import { _getWalletInformation } from "./store/actions/userActions";
 import "./styles/main.scss";
+import "./styles/boxes-page.scss";
 
 function App() {
   const dispatch = useDispatch();

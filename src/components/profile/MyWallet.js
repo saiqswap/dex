@@ -2,6 +2,7 @@ import { Button, Container, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppConfig } from "../../settings";
 import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
 import { _getLockBalances } from "../../store/actions/userActions";
 import ClaimForm from "./ClaimForm";
@@ -101,7 +102,8 @@ const MyWallet = () => {
                       {item.key === "INC" &&
                         parseFloat(
                           formatNumberWithDecimal(funds[item.key].amount, 2)
-                        ) > 0 && (
+                        ) > 0 &&
+                        AppConfig.OPEN_FEATURES.isSwap && (
                           <Button
                             className="custom-btn custom-font"
                             onClick={() => setShowSwap(true)}
@@ -112,7 +114,8 @@ const MyWallet = () => {
                       {item.key === "ING" &&
                         parseFloat(
                           formatNumberWithDecimal(funds[item.key].amount, 2)
-                        ) > 0 && (
+                        ) > 0 &&
+                        AppConfig.OPEN_FEATURES.isClaim && (
                           <Button
                             className="custom-btn custom-font"
                             onClick={() => setShowClaim(true)}

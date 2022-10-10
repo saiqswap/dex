@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import SummonEffect from "../components/summon/SummonEffect";
 import { BoxType } from "../settings/constants";
 import { EndpointConstant } from "../settings/endpoint";
+import { _showAppError } from "../store/actions/settingActions";
 import { _getMyItems } from "../store/actions/userActions";
 import "../styles/summon-page.scss";
 import { get, post } from "../utils/api";
@@ -85,6 +86,7 @@ const Summon = () => {
         (error) => {
           setOpening(false);
           toast.error(library.SOMETHING_WRONG);
+          dispatch(_showAppError(error));
           setCompleted(true);
         }
       );

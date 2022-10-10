@@ -44,6 +44,7 @@ import { _getMintingBoxInformation } from "../../store/actions/mintingActions";
 import { _getOnchainBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
+import AvailableTemplates from "../AvailableTemplates";
 import GeneralPopup from "../common/GeneralPopup";
 import MintingLimit from "./MintingLimit";
 import {
@@ -63,7 +64,6 @@ const selectAmount = [10, 20, 30];
 const NewBoxMintingForm = ({ onClose, data, open }) => {
   const [selectedAsset, setSelectedAsset] = useState("USDT");
   const [boxInformation, setBoxInformation] = useState(null);
-  const [available, setAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const { setting, user, minting } = useSelector((state) => state);
@@ -118,21 +118,6 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
       }
     }
   }, [data, mintingBoxInformation]);
-
-  useEffect(() => {
-    if (data) {
-      if (data.boxType && templates) {
-        let tempData;
-        tempData = templates.filter((x) =>
-          data.boxType.toLowerCase().includes(x.type.toLowerCase())
-        );
-        tempData.sort((a, b) =>
-          a.level.toLowerCase().localeCompare(b.level.toLowerCase())
-        );
-        setAvailable(tempData);
-      }
-    }
-  }, [data, templates]);
 
   //set percent progress
   useEffect(() => {
@@ -486,8 +471,10 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
           <Grid item xs={12} md={5} className="box-info">
             <DropRate data={data} />
           </Grid>
-          <Grid item xs={12} md={7} className="box-info">
-            <AvailableTemplate available={available} library={library} />
+          <Grid item xs={12} md={7} className="box-info ">
+            <div className="items">
+              <AvailableTemplates boxType={data.boxType} />
+            </div>
           </Grid>
           <Grid item xs={12}>
             <NoticeAndInformation />
@@ -499,62 +486,6 @@ const NewBoxMintingForm = ({ onClose, data, open }) => {
 };
 
 export default NewBoxMintingForm;
-
-const AvailableTemplate = ({ available, library }) => {
-  return (
-    <div className="items" style={{ marginLeft: 0 }}>
-      <Typography className="custom-font" textAlign={"left"} mb={1}>
-        {library.AVAILABLE}:{" "}
-        {available && (
-          <span>{`${available.length} ${
-            available[0]
-              ? available[0].type.toLowerCase().replace("_", " ")
-              : ""
-          }${available[0]?.type.toLowerCase() === "angel" ? "s" : ""}`}</span>
-        )}
-      </Typography>
-      {available ? (
-        <ul>
-          {available.map((item, index) => (
-            <Tooltip
-              key={index}
-              title={
-                <div
-                  style={{
-                    padding: "5px 20px",
-                    fontSize: "1rem",
-                  }}
-                >
-                  {`${item.name} ${item.level.replace("_", " ")}`}
-                </div>
-              }
-              placement="right-end"
-              arrow
-            >
-              <li className={item.level.toLowerCase()}>
-                <span className="custom-font">
-                  {item.level.replace("_", " ")}
-                </span>
-                <img
-                  src={`${image_url}/${
-                    item.type === "ANGEL"
-                      ? `avatar_${formatNftName(item.name)}`
-                      : `body_${formatNftName(item.name)}`
-                  }.png`}
-                  alt=""
-                />
-              </li>
-            </Tooltip>
-          ))}
-        </ul>
-      ) : (
-        <ul style={{ justifyContent: "center", opacity: 0.2 }}>
-          <CircularProgress />
-        </ul>
-      )}
-    </div>
-  );
-};
 
 const DropRate = ({ data }) => {
   let tierDescriptions = tierAngelDescription;
