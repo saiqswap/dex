@@ -194,11 +194,11 @@ export const production = {
       title: "MINTING",
       url: ["/minting-box"],
     },
-    {
-      title: "SUMMON",
-      url: ["/summon"],
-      isLogged: true,
-    },
+    // {
+    //   title: "SUMMON",
+    //   url: ["/summon"],
+    //   isLogged: true,
+    // },
     {
       title: "R - I",
       url: [

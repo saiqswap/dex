@@ -65,14 +65,14 @@ const routes = [
     type: "guest",
     isActive: true,
   },
-  {
-    exact: false,
-    path: "/summon",
-    component: Summon,
-    isActive: true,
-    title: "Summon",
-    type: "private",
-  },
+  // {
+  //   exact: false,
+  //   path: "/summon",
+  //   component: Summon,
+  //   isActive: true,
+  //   title: "Summon",
+  //   type: "private",
+  // },
   {
     exact: false,
     path: "/research-institute/:comp",
