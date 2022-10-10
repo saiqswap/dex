@@ -60,7 +60,7 @@ const routes = [
   // },
   {
     exact: false,
-    path: "/nft/:id",
+    path: "/nft-detail/:id",
     component: NFTDetail,
     type: "guest",
     isActive: true,

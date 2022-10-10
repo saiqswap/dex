@@ -235,6 +235,13 @@ const ItemDetail = ({ data, _handleReload }) => {
                   </h3>
                 </div>
               </TierDescription>
+              {data.status === "IN_RESEARCHING" && (
+                <div className="nft-type">
+                  <h3 className={`type-${data.level.toLowerCase()}`}>
+                    Researching
+                  </h3>
+                </div>
+              )}
             </div>
           </div>
         </Grid>
