@@ -36,6 +36,7 @@ export const develop = {
   OPEN_FEATURES: {
     isSwap: true,
     isClaim: true,
+    hasPresale: true,
   },
   MAIN_MENUS: [
     {
@@ -182,6 +183,7 @@ export const production = {
   OPEN_FEATURES: {
     isSwap: false,
     isClaim: false,
+    hasPresale: false,
   },
   MAIN_MENUS: [
     {

@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { _getNFTImageLink } from "../settings/format";
 
 export default function AvailableTemplates({ boxType }) {
-  console.log(boxType);
   const { setting } = useSelector((state) => state);
   const { templates } = setting;
   const [available, setAvailable] = useState(null);

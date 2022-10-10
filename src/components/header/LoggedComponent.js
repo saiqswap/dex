@@ -11,6 +11,7 @@ import CopyComponent from "../common/CopyComponent";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useHistory } from "react-router-dom";
 import { CoinList } from "../../settings/constants";
+import { AppConfig } from "../../settings";
 
 const WalletOption = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -147,14 +148,16 @@ const LoggedComponent = () => {
         </Box>
       </Box>
       <Box pl={3} pr={3} pb={3}>
-        <MenuItem
-          onClick={() => {
-            history.push("/pre-sale/statistic");
-          }}
-        >
-          <AccessTimeIcon />
-          <Box ml={2}> {library.VESTING_SCHEDULE}</Box>
-        </MenuItem>
+        {AppConfig.OPEN_FEATURES.hasPresale && (
+          <MenuItem
+            onClick={() => {
+              history.push("/pre-sale/statistic");
+            }}
+          >
+            <AccessTimeIcon />
+            <Box ml={2}> {library.VESTING_SCHEDULE}</Box>
+          </MenuItem>
+        )}
         <MenuItem onClick={_handleLogout}>
           <ExitToAppOutlinedIcon /> <Box ml={2}>{library.LOGOUT}</Box>
         </MenuItem>
