@@ -271,7 +271,7 @@ const Rooms = () => {
               .fill(" ")
               .map((item, index) => {
                 const riSlotPrice = config?.riSlotPrice?.find(
-                  (i) => i.slotNumber === index + 1
+                  (i) => i.slotNumber === index + items.length + 1
                 );
                 return (
                   <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
