@@ -23,7 +23,8 @@ import {
   prefix,
   purchaseECR721,
 } from "../../onchain/onchain";
-import { config, image_url } from "../../settings";
+import { AppConfig, image_url } from "../../settings";
+import { EndpointConstant } from "../../settings/endpoint";
 import {
   formatAddress,
   formatAmount,
@@ -67,7 +68,7 @@ const ItemDetail = ({ data, _handleReload }) => {
     setLoadingActionButton(false);
   }, [data]);
 
-  if (reducerConfig) {
+  if (reducerConfig && data.paymentContract) {
     paymentInfo = reducerConfig.contracts.find(
       (e) => e.contractAddress === data.paymentContract
     );
@@ -166,9 +167,9 @@ const ItemDetail = ({ data, _handleReload }) => {
                   />
                 );
               } else {
-                // ActionButton = () => (
-                //   <MintComponent data={data} _handleReload={_reload} />
-                // );
+                ActionButton = () => (
+                  <MintComponent data={data} _handleReload={_reload} />
+                );
               }
             }
           } else {
@@ -395,73 +396,84 @@ const ItemDetail = ({ data, _handleReload }) => {
 
 export default ItemDetail;
 
-// const MintComponent = ({ data, _handleReload }) => {
-//   const [showMintingPopup, setShowMintingPopup] = useState(false);
-//   const [loading, setLoading] = useState(false);
+const MintComponent = ({ data, _handleReload }) => {
+  const [showMintingPopup, setShowMintingPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-//   const _handleMinNFT = () => {
-//     setLoading(true);
-//     setShowMintingPopup(false);
-//     post(
-//       `/nft/mint?tokenId=${data.tokenId.toString()}`,
-//       null,
-//       () => {
-//         var temp = setInterval(() => {
-//           get(
-//             `/nft/get-by-id?tokenId=${data.tokenId.toString()}`,
-//             (res) => {
-//               if (res.mintTxHash) {
-//                 _handleReload();
-//                 clearInterval(temp);
-//               }
-//             },
-//             () => {
-//               toast.error("Listing failed");
-//               setLoading(false);
-//               clearInterval(temp);
-//             }
-//           );
-//         }, 5000);
-//       },
-//       () => {
-//         toast.error("Listing failed");
-//         setLoading(false);
-//       }
-//     );
-//   };
+  const _handleMinNFT = () => {
+    setLoading(true);
+    setShowMintingPopup(false);
+    post(
+      `${EndpointConstant.NFT_MINT}?tokenId=${data.tokenId.toString()}`,
+      null,
+      () => {
+        var temp = setInterval(() => {
+          get(
+            `${
+              EndpointConstant.NFT_GET_BY_ID
+            }?tokenId=${data.tokenId.toString()}`,
+            (res) => {
+              if (res.mintTxHash) {
+                _handleReload();
+                clearInterval(temp);
+              }
+            },
+            () => {
+              toast.error("Listing failed");
+              setLoading(false);
+              clearInterval(temp);
+            }
+          );
+        }, 5000);
+      },
+      () => {
+        toast.error("Listing failed");
+        setLoading(false);
+      }
+    );
+  };
 
-//   return (
-//     <>
-//       <Button
-//         className="btn-listing"
-//         onClick={() => setShowMintingPopup(true)}
-//         disabled={loading}
-//       >
-//         {loading ? <CircularProgress size="29px" /> : "Mint"}
-//       </Button>
-//       <Modal
-//         open={showMintingPopup}
-//         onClose={() => setShowMintingPopup(false)}
-//         aria-labelledby="modal-modal-title"
-//         aria-describedby="modal-modal-description"
-//         className="custom-modal-vk"
-//       >
-//         <div className="listing-popup">
-//           <Typography variant="h6" className="custom-font">
-//             Are you sure for mint NFT #{data && data.tokenId} ?
-//           </Typography>
-//           <LoadingButton
-//             className="custom-btn custom-font mt-20"
-//             onClick={_handleMinNFT}
-//             loading={loading}
-//           >
-//             {loading ? "" : "Mint NFT"}
-//           </LoadingButton>
-//         </div>
-//       </Modal>
-//     </>
-//   );
-// };
+  return AppConfig.has_minting ? (
+    <>
+      {!data.isLockMinting && (
+        <Button
+          className="btn-listing"
+          onClick={() => setShowMintingPopup(true)}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Typography mr={1}>Minting</Typography>
+              <CircularProgress size="20px" />{" "}
+            </>
+          ) : (
+            "Mint"
+          )}
+        </Button>
+      )}
+      <Modal
+        open={showMintingPopup}
+        onClose={() => setShowMintingPopup(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className="custom-modal-vk"
+      >
+        <div className="listing-popup">
+          <Typography variant="h6" className="custom-font">
+            Are you sure for mint NFT #{data && data.tokenId} ?
+          </Typography>
+          <LoadingButton
+            className="custom-btn custom-font mt-20"
+            onClick={_handleMinNFT}
+            loading={loading}
+          >
+            {loading ? "" : "Mint NFT"}
+          </LoadingButton>
+        </div>
+      </Modal>
+    </>
+  ) : null;
+};
 
 const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
   const history = useHistory();
@@ -474,7 +486,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
 
   const _handleListing = (signature) => {
     post(
-      "/market/listing",
+      EndpointConstant.MARKET_LISTING,
       {
         signature,
         data: {
@@ -518,7 +530,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
           paymentContract: paymentInfo.contractAddress,
           foundationFeePercent: reducerConfig.foundationFeePercent,
         };
-        var listingParams = config.BLOCKCHAIN.config.LISTING_PARAMS(message);
+        var listingParams = AppConfig.BLOCKCHAIN.config.LISTING_PARAMS(message);
         listingParams.domain.verifyingContract =
           setting.config.marketplaceContract;
 
@@ -543,7 +555,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
     setPrice(value ? value.replace(/[^\d.]/g, "") : "");
   };
 
-  return (
+  return AppConfig.has_listing ? (
     <>
       <Button
         className="btn-listing"
@@ -608,7 +620,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
         )}
       </Modal>
     </>
-  );
+  ) : null;
 };
 
 const DelistComponent = ({ data, _handleReload }) => {
@@ -619,7 +631,7 @@ const DelistComponent = ({ data, _handleReload }) => {
     setLoading(true);
     setShowDelistPopup(false);
     _delete(
-      `/market/delist?tokenId=${data.tokenId}`,
+      `${EndpointConstant.MARKET_DELIST}?tokenId=${data.tokenId}`,
       null,
       () => {
         toast.success(`NFT ${data.tokenId} is delist.`);
@@ -630,7 +642,7 @@ const DelistComponent = ({ data, _handleReload }) => {
     );
   };
 
-  return (
+  return AppConfig.has_listing ? (
     <>
       <Button
         className="btn-delist custom-font"
@@ -660,7 +672,7 @@ const DelistComponent = ({ data, _handleReload }) => {
         </div>
       </Modal>
     </>
-  );
+  ) : null;
 };
 
 const BuyComponent = ({ data, _handleReload }) => {
@@ -695,7 +707,7 @@ const BuyComponent = ({ data, _handleReload }) => {
       ).then((result) => {
         if (result) {
           get(
-            `/market/order-sc-input?tokenId=${nftToken.tokenId}`,
+            `${EndpointConstant.MARKET_ORDER_SC_INPUT}?tokenId=${nftToken.tokenId}`,
             (data) => {
               purchaseECR721(
                 data,
@@ -710,7 +722,7 @@ const BuyComponent = ({ data, _handleReload }) => {
                     _handleReload();
                     toast.success("Success...!");
                     post(
-                      `/market/trigger-paid-nft?txHash=${e}`,
+                      `${EndpointConstant.MARKET_TRIGGER_PAIR_NFT}?txHash=${e}`,
                       {},
                       () => {},
                       () => {}
@@ -733,7 +745,7 @@ const BuyComponent = ({ data, _handleReload }) => {
       toast.error("Please sign-in for buy NFT.");
     }
   };
-  return (
+  return AppConfig.has_buy ? (
     <>
       <Button
         className={"btn-buy custom-font"}
@@ -743,5 +755,5 @@ const BuyComponent = ({ data, _handleReload }) => {
         {loading ? <CircularProgress size="29px" /> : "Buy"}
       </Button>
     </>
-  );
+  ) : null;
 };

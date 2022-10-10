@@ -1,19 +1,9 @@
-import { Close } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  IconButton,
-  styled,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, styled, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { image_url } from "../../settings";
 import {
   BoxType,
   tierAngelDescription,
@@ -21,7 +11,7 @@ import {
   tierMinionPartDescription,
 } from "../../settings/constants";
 import { formatAmount } from "../../settings/format";
-import { formatNftName } from "../../utils/util";
+import AvailableTemplates from "../AvailableTemplates";
 import GeneralPopup from "../common/GeneralPopup";
 
 const BoxItem = ({ data, _handlePurchaseBox, loading, template }) => {
@@ -135,7 +125,6 @@ const ConfirmPopup = ({
   template,
   type,
 }) => {
-  const [available, setAvailable] = useState(null);
   const { setting } = useSelector((state) => state);
   const { config } = setting;
 
@@ -143,36 +132,8 @@ const ConfirmPopup = ({
     ? config.contracts.find((e) => e.contractAddress === data.paymentContract)
     : {};
 
-  useEffect(() => {
-    if (type && template) {
-      let data;
-      data = template.filter(
-        (x) => x.type.toLowerCase() === type.toLowerCase()
-      );
-      data.sort((a, b) =>
-        a.level.toLowerCase().localeCompare(b.level.toLowerCase())
-      );
-      setAvailable(data);
-    }
-  }, [type, template]);
-
   return (
-    <GeneralPopup open={open}>
-      <IconButton
-        sx={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-        }}
-        style={{
-          minWidth: "fit-content",
-          marginTop: 0,
-        }}
-        size="small"
-        onClick={onClose}
-      >
-        <Close fontSize="small" />
-      </IconButton>
+    <GeneralPopup open={open} onClose={onClose} disabled={loading}>
       <Box mt={3} />
       <Grid container>
         <Grid item xs={12} md={5} className="submit-box">
@@ -196,88 +157,9 @@ const ConfirmPopup = ({
             <div className="box-info">
               <DropRate data={data} />
             </div>
-            {/* <Typography className="custom-font" textAlign={"left"}>
-              Drop Rate Detail
-            </Typography>
-            <ul>
-              {BoxType[data.type].rate.map((item, index) => (
-                <li key={index}>
-                  <Typography>
-                    <span
-                      className="custom-font mr-10"
-                      style={{
-                        fontSize: data.type.includes("COSTUME")
-                          ? "0.7rem"
-                          : "0.8rem",
-                        width: data.type.includes("COSTUME") ? "75px" : "65px",
-                        display: "inline-block",
-                      }}
-                    >
-                      {item.name}:
-                    </span>
-                    <span>{item.rate}%</span>
-                  </Typography>
-                </li>
-              ))}
-            </ul> */}
           </div>
           <div className="items">
-            <Typography
-              className="custom-font"
-              textAlign={"left"}
-              mt={2}
-              mb={1}
-            >
-              Available:{" "}
-              {available && (
-                <span>{`${available.length} ${
-                  available[0]
-                    ? available[0].type.toLowerCase().replace("_", " ")
-                    : ""
-                }${
-                  available[0]?.type.toLowerCase() === "angel" ? "s" : ""
-                }`}</span>
-              )}
-            </Typography>
-            {available ? (
-              <ul>
-                {available.map((item, index) => (
-                  <Tooltip
-                    key={index}
-                    title={
-                      <div
-                        style={{
-                          padding: "5px 20px",
-                          fontSize: "1rem",
-                        }}
-                      >
-                        {`${item.name} ${item.level.replace("_", " ")}`}
-                      </div>
-                    }
-                    placement="top"
-                    arrow
-                  >
-                    <li className={item.level.toLowerCase()}>
-                      <span className="custom-font">
-                        {item.level.replace("_", " ")}
-                      </span>
-                      <img
-                        src={`${image_url}/${
-                          item.type === "ANGEL"
-                            ? `avatar_${formatNftName(item.name)}`
-                            : `body_${formatNftName(item.name)}`
-                        }.png`}
-                        alt=""
-                      />
-                    </li>
-                  </Tooltip>
-                ))}
-              </ul>
-            ) : (
-              <ul style={{ justifyContent: "center", opacity: 0.2 }}>
-                <CircularProgress />
-              </ul>
-            )}
+            <AvailableTemplates boxType={data.type} />
           </div>
         </Grid>
       </Grid>

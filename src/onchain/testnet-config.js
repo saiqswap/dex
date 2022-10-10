@@ -8,7 +8,7 @@ export const TESTNET_DOMAIN = {
 export const TESTNET_CONFIG = {
   CHAIN_INFO: {
     chainId: "0x61",
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545"],
+    rpcUrls: ["https://data-seed-prebsc-2-s2.binance.org:8545"],
     chainName: "Binance Smart Chain Testnet",
     nativeCurrency: { name: "Binance", decimals: 18, symbol: "tBNB" },
     blockExplorerUrls: ["https://testnet.bscscan.com"],
@@ -19,7 +19,6 @@ export const TESTNET_CONFIG = {
   EXCHANGE_ADDRESS: TESTNET_DOMAIN.verifyingContract,
   PURCHASE_BOX_ADDRESS: "0x04E59EC7496238578c65aAB9FBd91F59FF0d71A9",
   PURCHASE_TOKEN_ADDRESS: "0x79710EAcB353Fc236D784eCD6157A2d9385B4F7B",
-  LOGIN_MESSAGE: "This is sign message",
   LISTING_PARAMS: (message) => ({
     types: {
       EIP712Domain: [

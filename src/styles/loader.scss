@@ -8,7 +8,17 @@
   align-items: center;
   justify-content: center;
   margin-left: -40px;
-  
+}
+.custom-lds-spinner {
+  color: official;
+  // position: relative;
+  // width: 80px;
+  min-height: unset;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -40px;
 }
 .lds-spinner div {
   transform-origin: 40px 40px;

@@ -181,4 +181,21 @@ export const en = {
   ENDS_IN: "Ends in",
   SOLD: "Sold",
   PRESALE: "Pre-sale",
+  //220928
+  PLEASE_ENTER_EMAIL: "Please enter your email",
+  INVALID_EMAIL: "Email is invalid",
+  LOGIN_HASH: "Login hash",
+  SEND_AMOUNT: "Send amount",
+  ESTIMATED_RECEIVED: "Estimated received",
+  FEES: "Fees",
+  PLEASE_READ_AND_ACCEPT_FOR_SWAP:
+    "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of Swap",
+  //221006
+  INSUFFICIENT_FUNDS: "Unavailable balance",
+  SWAP: "Swap",
+  WITHDRAW: "Withdrawals",
+  ASSET: "Asset",
+  TRANSACTIONS: "Transactions",
+  NOTE: "Note",
+  NFT: "NFT",
 };

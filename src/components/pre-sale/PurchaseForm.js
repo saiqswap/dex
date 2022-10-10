@@ -142,15 +142,21 @@ export default function PurchaseForm({ data }) {
   const [staticSold, setStaticSold] = useState(0);
   const [staticSold_0, setStaticSold_0] = useState(0);
 
-  const staticTimer = (endTime, total) => {
-    const now = moment().utc().unix() * 1000;
-    // const now = 1664190000000;
+  const staticTimer = (endTime, total, now = moment().utc().unix() * 1000) => {
     let usedTime = endTime - now;
     usedTime = usedTime / 1000 / 60;
-    usedTime = 240 - usedTime;
-    const amountPerMinute = total / 240;
+    // push on 2h
+    // usedTime = 120 - usedTime;
+    // const amountPerMinute = total / 120;
+    // push on 2h:30m
+    usedTime = 150 - usedTime;
+    const amountPerMinute = total / 150;
     const tempStaticSold = usedTime * amountPerMinute;
-    console.log(tempStaticSold);
+    // console.log(
+    //   "Server time:",
+    //   moment(now).format("YYYY-MM-DD HH:mm:ss"),
+    //   `${amountPerMinute} * ${usedTime} = ${tempStaticSold}`
+    // );
     if (tempStaticSold > 0) {
       setStaticSold(tempStaticSold);
     }
@@ -161,7 +167,7 @@ export default function PurchaseForm({ data }) {
       setStaticSold_0(7000000);
     }
     if (data.roundId === "0x1000000000000000000000000000000000000002") {
-      setStaticSold_0(14000000 + 24000000);
+      setStaticSold_0(14000000 + 24000000 + 14000000);
     }
   }, [data]);
 
@@ -180,20 +186,43 @@ export default function PurchaseForm({ data }) {
       //1st: 14,000,000
       //2nd: 24,000,000 9:30 -> 19:30
       //3nd: 14,000,000 14:00 -> 16:00
+      //4nd: 9,000,000 18:00
       const now = moment().utc().unix() * 1000;
-      const total = 14000000;
-      const endTime = 1664190000000;
+      const total = 9000000;
+      const endTime = 1664276400000;
       if (now > endTime) {
         setStaticSold(total);
       } else {
         staticTimer(endTime, total);
       }
     }
+    if (data.roundId === "0x1000000000000000000000000000000000000003") {
+      const now = moment().utc().unix() * 1000;
+      // const now = 1664706600000;
+      let total = 4000000;
+      const times = [
+        1664535600000, 1664622000000, 1664708400000, 1664794800000,
+        1664881200000,
+      ];
+      const usedTimes = times.filter((time) => now >= time);
+      const unusedTime = times.filter((time) => now < time);
+      setStaticSold_0(total * usedTimes.length);
+      const endTime = unusedTime[0];
+      if (endTime) {
+        if (now > endTime) {
+          setStaticSold(total);
+        } else {
+          staticTimer(endTime, total, now);
+        }
+      } else {
+        setStaticSold(0);
+      }
+    }
   }, [data, staticSold_0]);
 
   // useEffect(() => {
-  //   console.log({ staticSold, currentSold: data.currentSold });
-  // }, [data.currentSold, staticSold]);
+  //   console.log({ staticSold, staticSold_0, total: staticSold + staticSold_0 });
+  // }, [staticSold_0, staticSold]);
 
   useEffect(() => {
     if (balances) {
@@ -273,9 +302,10 @@ export default function PurchaseForm({ data }) {
 
   const _handlePurchase = () => {
     const boxScPrice = parseUnits(formatPrice(fromAmount, 8), 18);
-    const contractAddress = SUPPORT_TOKENS.find(
-      (t) => t.asset === from
-    ).contractAddress;
+    const contractAddress =
+      from === "BNB"
+        ? SUPPORT_TOKENS.find((t) => t.asset === from).paymentContract
+        : SUPPORT_TOKENS.find((t) => t.asset === from).contractAddress;
     if (contractAddress) {
       setPurchasing(true);
       _checkBeforePurchase(

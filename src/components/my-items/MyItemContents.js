@@ -87,7 +87,9 @@ const MyItemContents = ({ type, checkedList, searchKey, data }) => {
                       <Grid item xs={12}>
                         <div className="nft-character">
                           <img
-                            src={`${image_url}/body_${formatNftName(item.name)}.png`}
+                            src={`${image_url}/body_${formatNftName(
+                              item.name
+                            )}.png`}
                             alt=""
                           />
                         </div>

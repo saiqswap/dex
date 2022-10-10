@@ -11,7 +11,6 @@ export const ENDPOINT_GET_DEPOSIT = `/fund/get-deposit`;
 export const ENDPOINT_GET_WITHDRAW = `/fund/get-withdraw`;
 export const ENDPOINT_GET_VALIDATE_ADDRESS = `/fund/validate-address`;
 export const ENDPOINT_POST_WITHDRAW_TRANSFER = `/fund/withdraw`;
-
 export const ENDPOINT_GET_LOGIN_ACTIVITY = `/user-service/login-activity`;
 export const ENDPOINT_ACTIVE_USER = `/user-service/user/active`;
 export const ENDPOINT_DELETE_DISABLE_ACCOUNT = `/user-service/user/disable`;
@@ -27,7 +26,6 @@ export const ENDPOINT_GET_DEPOSIT_HISTORY = `/fund-service/deposit/list`;
 export const ENDPOINT_GET_SWAP_PRODUCT_LIST = `/swap-service/product`;
 export const ENDPOINT_GET_FUND_LOGS = `/fund-service/fund/log`;
 export const ENDPOINT_GET_REFERRAL_STATISTIC = `/user-service/referral/statistic`;
-
 export const ENDPOINT_GET_PACKAGE = `/home/package`;
 export const ENDPOINT_GET_BALANCE = `/fund/balance`;
 export const ENDPOINT_GET_POST_LOT = `/lot`;
@@ -85,3 +83,33 @@ export const ENDPOINT_MINTING_BOX_COMBOS = `/presale/combos-for-sell`;
 export const ENDPOINT_MINTING_BOX_COMBO_SC_INPUT = `/presale/combo-sc-input`;
 export const ENDPOINT_MINTING_BOX_COMBO_PAID = `/presale/trigger-paid-combo`;
 export const ENDPOINT_MINTING_BOX_INFORMATION = `/presale/get-info`;
+
+//user
+export const ENDPOINT_USER_UPDATE_EMAIL = "/user/email";
+export const ENDPOINT_USER_LOGIN_WITH_SIGNATURE = "/user/login-by-signature";
+
+export const EndpointConstant = {
+  APPLICATION_CONFIG: "/config/application",
+  MY_COMMISSION_HISTORY: "/affiliate/my-commission-history",
+  FUND_WITHDRAW: "/fund/withdraw",
+  FUND_WITHDRAW_GET_GET_LIST: "/fund/withdraw/get-list",
+  FUND_BALANCE_LOGS: "/fund/balance/logs",
+  MARKET_LISTING: "/market/listing",
+  MARKET_DELIST: "/market/delist",
+  MARKET_ORDER_SC_INPUT: "/market/order-sc-input",
+  MARKET_TRIGGER_PAIR_NFT: "/market/trigger-paid-nft",
+  MARKET_RI_SLOT_SC_INPUT: "/market/ri-slot-sc-input",
+  MARKET_RI_TRIGGER_PAID_RI_SLOT: "/market/trigger-paid-ri-slot",
+  NFT_MY_BOX_HISTORY: "/nft/my-box-history",
+  NFT_TRANSACTION_LIST: "/nft-transaction/list",
+  NFT_MINT: "/nft/mint",
+  NFT_GET_BY_ID: "/nft/get-by-id",
+  NFT_MY_BOXES: "/nft/my-boxes",
+  NFT_OPEN_BOX: "/nft/open-box",
+  NFT_RI: "/nft/ri",
+  NFT_RE_COUNTDOWN: "/nft/ri/count-down",
+  FUND_VERIFY_SWAP: "/fund/verify-swap",
+  FUND_SWAP: "/fund/swap",
+  FUND_LOCK_AMOUNT: "/fund/balancedeb",
+  USER_UPDATE_ADDRESS: "/user/address",
+};

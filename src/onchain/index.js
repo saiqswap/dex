@@ -1,41 +1,29 @@
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
-import { BLOCKCHAIN } from "../settings";
-import { ADDRESS_0, PRE_SALE_ROUNDS } from "../settings/constants";
+import { AppConfig } from "../settings";
+import { BIT_BULL_ADDRESS_0, PRE_SALE_ROUNDS } from "../settings/constants";
 import { EscrowVesting } from "./blockchain/Escrow_Vesting";
 import { provider, signer } from "./onchain";
-import presaleConfig from "./presale-config";
 import { getReceiptFromTxHash, parseEthereumError } from "./utils/common";
-const { ERC20_ABI } = BLOCKCHAIN;
 
 const ESCROW_VESTING = new EscrowVesting(
-  presaleConfig.PROVIDER,
-  presaleConfig.ESCROW_VESTING_CONTRACT_ADDRESS
+  AppConfig.DEFAULT_PROVIDER,
+  AppConfig.ESCROW_VESTING_CONTRACT_ADDRESS
 );
 
 export const _getPreSaleRounds = async (_callback) => {
   try {
     const roundList = [];
-    // ------ get list round ------
-    const arrRounds = await ESCROW_VESTING.getListRound();
-
-    for (let roundId of arrRounds) {
-      // get detail round
+    for (let staticDetailData of PRE_SALE_ROUNDS) {
       const roundsInput = {
-        roundId,
+        roundId: staticDetailData.roundId,
       };
       const onchainDetailRound = await ESCROW_VESTING.getRound(roundsInput);
-      const staticDetailData = PRE_SALE_ROUNDS.find(
-        (round) => round.roundId === roundId
-      );
-
-      if (staticDetailData) {
-        if (staticDetailData.isSync) {
-          const detailRound = { ...staticDetailData, ...onchainDetailRound };
-          roundList.push(detailRound);
-        } else {
-          roundList.push(staticDetailData);
-        }
+      if (staticDetailData.roundId === onchainDetailRound.roundId) {
+        const detailRound = { ...staticDetailData, ...onchainDetailRound };
+        roundList.push(detailRound);
+      } else {
+        roundList.push(staticDetailData);
       }
     }
     _callback(roundList);
@@ -53,11 +41,11 @@ export const _checkBeforePurchase = async (
   _handleErrorCallback
 ) => {
   try {
-    if (tokenERC20Address === ADDRESS_0) return true;
+    if (tokenERC20Address === BIT_BULL_ADDRESS_0) return true;
 
     const contractInstance = new ethers.Contract(
       tokenERC20Address,
-      ERC20_ABI,
+      AppConfig.BLOCKCHAIN.ERC20_ABI,
       provider
     );
 
@@ -81,7 +69,7 @@ export const _checkBeforePurchase = async (
     ) {
       const contractWithSigner = new ethers.Contract(
         tokenERC20Address,
-        ERC20_ABI,
+        AppConfig.BLOCKCHAIN.ERC20_ABI,
         signer
       );
 
@@ -166,20 +154,25 @@ export const _getVestingBalance = async (investor) => {
 };
 
 export const _claimToken = async (vestingId, _handleSuccess, _handleError) => {
-  const tx_withdraw = await ESCROW_VESTING.withdraw(
-    {
-      vestingId,
-    },
-    signer
-  );
-  const rs_withdraw = await getReceiptFromTxHash(
-    ESCROW_VESTING.provider,
-    tx_withdraw.hash
-  );
-  console.log("ESCROW_VESTING.withdraw: ", rs_withdraw);
-  if (rs_withdraw.isSuccess) {
-    _handleSuccess();
-  } else {
+  try {
+    const tx_withdraw = await ESCROW_VESTING.withdraw(
+      {
+        vestingId,
+      },
+      signer
+    );
+    const rs_withdraw = await getReceiptFromTxHash(
+      ESCROW_VESTING.provider,
+      tx_withdraw.hash
+    );
+    console.log("ESCROW_VESTING.withdraw: ", rs_withdraw);
+    if (rs_withdraw.isSuccess) {
+      _handleSuccess();
+    } else {
+      _handleError();
+    }
+  } catch (error) {
     _handleError();
+    this._showError(error);
   }
 };

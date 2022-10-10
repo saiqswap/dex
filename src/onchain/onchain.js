@@ -1,8 +1,7 @@
 import { constants, ethers } from "ethers";
 import { toast } from "react-toastify";
-import { BLOCKCHAIN } from "../settings";
+import { AppConfig } from "../settings";
 import { ADDRESS_0 } from "../settings/constants";
-const { EXCHANGE_ABI, PURCHASE_ITEM_ABI, ERC20_ABI, config } = BLOCKCHAIN;
 
 export let prefix = null;
 export let provider = null;
@@ -65,7 +64,7 @@ export const _connectToMetamaskWallet = (walletName, _updateAddress) => {
 export const _changeChain = async (_handleSuccess) => {
   await prefix.request({
     method: "wallet_addEthereumChain",
-    params: [config.CHAIN_INFO],
+    params: [AppConfig.BLOCKCHAIN.config.CHAIN_INFO],
   });
   _handleSuccess();
 };
@@ -82,7 +81,7 @@ export const checkBeforeBuy = async (
 
     const contractInstance = new ethers.Contract(
       tokenERC20Address,
-      ERC20_ABI,
+      AppConfig.BLOCKCHAIN.ERC20_ABI,
       provider
     );
 
@@ -106,7 +105,7 @@ export const checkBeforeBuy = async (
     ) {
       const contractWithSigner = new ethers.Contract(
         tokenERC20Address,
-        ERC20_ABI,
+        AppConfig.BLOCKCHAIN.ERC20_ABI,
         signer
       );
 
@@ -149,7 +148,7 @@ export const purchaseBox = async (
   try {
     const contractInstance = new ethers.Contract(
       config.purchaseContract,
-      PURCHASE_ITEM_ABI,
+      AppConfig.BLOCKCHAIN.PURCHASE_ITEM_ABI,
       signer
     );
 
@@ -182,7 +181,7 @@ export const purchaseSlot = async (
 
     const contractInstance = new ethers.Contract(
       config.purchaseContract,
-      PURCHASE_ITEM_ABI,
+      AppConfig.BLOCKCHAIN.PURCHASE_ITEM_ABI,
       signer
     );
 
@@ -221,7 +220,7 @@ export const purchaseECR721 = async (
   try {
     const contractInstance = new ethers.Contract(
       config.marketplaceContract,
-      EXCHANGE_ABI,
+      AppConfig.BLOCKCHAIN.EXCHANGE_ABI,
       signer
     );
 

@@ -20,14 +20,19 @@ import { toast } from "react-toastify";
 import {
   checkBeforeBuy,
   getReceipt,
+  provider,
   purchaseSlot,
 } from "../../onchain/onchain";
 import { image_url } from "../../settings";
 import { RI_SLOT_LIMIT } from "../../settings/constants";
-import { ENDPOINT_GET_PROFILE } from "../../settings/endpoint";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
-import { _getBalance } from "../../store/actions/userActions";
+import {
+  _getNewProfile,
+  _getOnchainBalance,
+} from "../../store/actions/userActions";
 import { get, post } from "../../utils/api";
+import Loader from "../common/Loader";
 
 const BoxItem = styled(Box)({
   background: "rgba(255,255,255,0.1)",
@@ -59,13 +64,9 @@ const Rooms = () => {
   const [loading, setLoading] = useState(false);
   const [slotSelected, setSlotSelected] = useState(0);
   const [limitRiSlot, setLimitRiSlot] = useState(3);
-
-  const { metamaskSigner, metamaskProvider, walletAddress } = user;
-
+  const { walletAddress } = user;
   const { information } = user;
   const { config } = setting;
-
-  const riSlotPrice = config ? config.riSlotPrice[0] : { coin: "", price: 0 };
 
   useEffect(() => {
     if (information) {
@@ -77,41 +78,29 @@ const Rooms = () => {
   }, [information, JSON.stringify(items)]);
 
   useEffect(() => {
-    get(
-      "/nft/ri?page=1&pageSize=10&status=IN_RESEARCHING",
-      (data) => {
-        if (mounted) {
-          setItems(data.items.reverse());
-          setReload(false);
-        }
-      },
-      () => toast.error("error")
-    );
+    if (information) {
+      get(
+        `${EndpointConstant.NFT_RI}?page=1&pageSize=10&status=IN_RESEARCHING`,
+        (data) => {
+          if (mounted) {
+            setItems(data.items.reverse());
+            setReload(false);
+          }
+        },
+        () => toast.error("error")
+      );
+    }
     return () => setMounted(false);
-  }, [mounted, reload]);
+  }, [information, mounted, reload]);
 
   const errorCallback = () => {
     setLoading(false);
   };
 
-  const handleFetchLimitSlot = (oldNumber, successCallback) => {
-    var getInterval = setInterval(() => {
-      get(ENDPOINT_GET_PROFILE, (result) => {
-        if (result.limitRiSlot !== oldNumber) {
-          successCallback();
-          clearInterval(getInterval);
-        }
-      });
-    }, 2000);
-  };
-
-  const handlePurchaseSlot = (index) => {
-    const slot = config.riSlotPrice[index]
-      ? config.riSlotPrice[index]
-      : config.riSlotPrice[0];
+  const handlePurchaseSlot = () => {
+    const slot = slotSelected;
     const token = config.contracts.find((e) => e.symbol === slot.coin);
     const price = parseUnits(slot.price.toString(), token.decimals);
-
     setLoading(true);
 
     checkBeforeBuy(
@@ -119,12 +108,10 @@ const Rooms = () => {
       token.contractAddress,
       price,
       walletAddress,
-      metamaskProvider,
-      metamaskSigner,
       errorCallback
     ).then((result) => {
       if (result) {
-        get(`/market/ri-slot-sc-input`, (data) => {
+        get(EndpointConstant.MARKET_RI_SLOT_SC_INPUT, (data) => {
           purchaseSlot(
             data,
             price,
@@ -132,18 +119,25 @@ const Rooms = () => {
             config,
             errorCallback
           ).then((e) => {
-            getReceipt(e, metamaskProvider).then((result) => {
+            getReceipt(e).then((result) => {
               if (result) {
                 post(
-                  `/market/trigger-paid-ri-slot?txHash=${e}`,
+                  `${EndpointConstant.MARKET_RI_TRIGGER_PAID_RI_SLOT}?txHash=${e}`,
                   {},
                   () => {
-                    handleFetchLimitSlot(information.limitRiSlot, () => {
+                    setTimeout(() => {
                       setLoading(false);
                       setOpen(false);
                       toast.success("Success...!");
-                      dispatch(_getBalance(walletAddress, metamaskProvider));
-                    });
+                      dispatch(_getNewProfile());
+                      dispatch(
+                        _getOnchainBalance(
+                          config.contracts,
+                          walletAddress,
+                          provider
+                        )
+                      );
+                    }, 10000);
                   },
                   (error) => {
                     console.log(error);
@@ -158,7 +152,7 @@ const Rooms = () => {
     });
   };
 
-  return (
+  return items ? (
     <div className="research-room">
       <Container style={{ marginBottom: 20 }}>
         <Grid container spacing={2}>
@@ -275,35 +269,42 @@ const Rooms = () => {
           {items &&
             Array(RI_SLOT_LIMIT - (items && items.length))
               .fill(" ")
-              .map((item, index) => (
-                <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
-                  <Box
-                    className={`box-slot ${index >= limitRiSlot ? "" : ""}`}
-                    onClick={() => {
-                      if (index >= over) {
-                        setOpen(true);
-                        setSlotSelected(3 - index);
-                        setSlotPrice(
-                          `${formatUSD(riSlotPrice.price)} ${riSlotPrice.coin}`
-                        );
-                      } else {
-                        items && history.push("/research-institute/R-I");
-                      }
-                    }}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <div>
-                      {index >= over && (
-                        <p className="ri-fee custom-font">{`${formatUSD(
-                          riSlotPrice.price
-                        )} ${riSlotPrice.coin}`}</p>
-                      )}
-                      <Add />
-                      <BoxItem>{items.length + index + 1}</BoxItem>
-                    </div>
-                  </Box>
-                </Grid>
-              ))}
+              .map((item, index) => {
+                const riSlotPrice = config?.riSlotPrice?.find(
+                  (i) => i.slotNumber === index + items.length + 1
+                );
+                return (
+                  <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
+                    <Box
+                      className={`box-slot ${index >= limitRiSlot ? "" : ""}`}
+                      onClick={() => {
+                        if (index >= over) {
+                          setOpen(true);
+                          setSlotSelected(riSlotPrice);
+                          setSlotPrice(
+                            `${formatUSD(riSlotPrice.price)} ${
+                              riSlotPrice.coin
+                            }`
+                          );
+                        } else {
+                          items && history.push("/research-institute/R-I");
+                        }
+                      }}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <div>
+                        {index >= over && (
+                          <p className="ri-fee custom-font">{`${formatUSD(
+                            riSlotPrice.price
+                          )} ${riSlotPrice.coin}`}</p>
+                        )}
+                        <Add />
+                        <BoxItem>{items.length + index + 1}</BoxItem>
+                      </div>
+                    </Box>
+                  </Grid>
+                );
+              })}
         </Grid>
       </Container>
 
@@ -334,6 +335,8 @@ const Rooms = () => {
         </Box>
       </Modal>
     </div>
+  ) : (
+    <Loader />
   );
 };
 

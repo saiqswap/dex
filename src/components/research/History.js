@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
 import { get } from "../../utils/api";
 import Loader from "../common/Loader";
@@ -48,7 +49,7 @@ const History = () => {
   useEffect(() => {
     setHistory(null);
     get(
-      `/nft/ri?page=${page}&pageSize=10&status=COMPLETED`,
+      `${EndpointConstant.NFT_RI}?page=${page}&pageSize=10&status=COMPLETED`,
       (data) => {
         setHistory(data);
       },

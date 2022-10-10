@@ -1,9 +1,12 @@
 import { Box } from "@mui/material";
 import React from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import History from "../components/research/History";
 import NewRI from "../components/research/NewRI";
 import Rooms from "../components/research/Rooms";
+import { _getRICountdown } from "../store/actions/riActions";
 import "../styles/research-page.scss";
 
 const menus = [
@@ -14,6 +17,11 @@ const menus = [
 
 const ResearchInstitute = () => {
   const { comp } = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(_getRICountdown());
+  }, [dispatch]);
 
   return (
     <div id="research-page">

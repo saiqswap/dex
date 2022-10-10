@@ -8,6 +8,9 @@ import { _addToken } from "../../onchain/onchain";
 import { formatAddress, formatNumberWithDecimal } from "../../settings/format";
 import { _getWalletLogout } from "../../store/actions/userActions";
 import CopyComponent from "../common/CopyComponent";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { useHistory } from "react-router-dom";
+import { CoinList } from "../../settings/constants";
 
 const WalletOption = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -49,6 +52,7 @@ const LoggedComponent = () => {
   const { onChainBalances, walletAddress } = user;
   const dispatch = useDispatch();
   const { library } = setting;
+  const history = useHistory();
 
   const _handleLogout = () => {
     dispatch(_getWalletLogout());
@@ -80,75 +84,77 @@ const LoggedComponent = () => {
           borderRadius="12px"
         >
           {onChainBalances &&
-            onChainBalances.map((item, index) => (
-              <WalletOption
-                key={index}
-                sx={{
-                  borderBottom:
-                    index < onChainBalances.length - 1
-                      ? "1px solid var(--border-color)"
-                      : "unset",
-                  borderTopLeftRadius: index === 0 ? 10 : 0,
-                  borderTopRightRadius: index === 0 ? 10 : 0,
-                  borderBottomLeftRadius:
-                    index === onChainBalances.length - 1 ? 10 : 0,
-                  borderBottomRightRadius:
-                    index === onChainBalances.length - 1 ? 10 : 0,
-                }}
-              >
-                <Grid
-                  container
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid item>
-                        <img
-                          alt={item.asset}
-                          src={`/images/coins/${item.symbol}.png`}
-                          style={{ height: 24 }}
-                        />
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="body1">
-                          {formatNumberWithDecimal(item.onChainBalance)}
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <small>{item.asset}</small>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                {index > 0 && (
-                  <InstallButton
-                    onClick={() => {
-                      _addToken({
-                        tokenAddress: item.contractAddress,
-                        tokenSymbol: item.symbol,
-                        tokenDecimals: item.decimals,
-                        tokenImage: `https://marketplace.infinityangel.io/images/coins/${item.symbol}.png`,
-                      });
+            onChainBalances.map(
+              (item, index) =>
+                item.symbol !== CoinList.INC && (
+                  <WalletOption
+                    key={index}
+                    sx={{
+                      borderBottom:
+                        index < onChainBalances.length - 1
+                          ? "1px solid var(--border-color)"
+                          : "unset",
+                      borderTopLeftRadius: index === 0 ? 10 : 0,
+                      borderTopRightRadius: index === 0 ? 10 : 0,
+                      borderBottomLeftRadius:
+                        index === onChainBalances.length - 1 ? 10 : 0,
+                      borderBottomRightRadius:
+                        index === onChainBalances.length - 1 ? 10 : 0,
                     }}
                   >
-                    <Typography variant="body2">{library.ADD}</Typography>
-                  </InstallButton>
-                )}
-              </WalletOption>
-            ))}
+                    <Grid
+                      container
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Grid item>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid item>
+                            <img
+                              alt={item.asset}
+                              src={`/images/coins/${item.symbol}.png`}
+                              style={{ height: 24 }}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <Typography variant="body1">
+                              {formatNumberWithDecimal(item.onChainBalance)}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <small>{item.asset}</small>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    {index > 0 && (
+                      <InstallButton
+                        onClick={() => {
+                          _addToken({
+                            tokenAddress: item.contractAddress,
+                            tokenSymbol: item.symbol,
+                            tokenDecimals: item.decimals,
+                            tokenImage: `https://marketplace.infinityangel.io/images/coins/${item.symbol}.png`,
+                          });
+                        }}
+                      >
+                        <Typography variant="body2">{library.ADD}</Typography>
+                      </InstallButton>
+                    )}
+                  </WalletOption>
+                )
+            )}
         </Box>
       </Box>
       <Box pl={3} pr={3} pb={3}>
-        {/* <MenuItem
+        <MenuItem
           onClick={() => {
             history.push("/pre-sale/statistic");
-            _onClose();
           }}
         >
           <AccessTimeIcon />
           <Box ml={2}> {library.VESTING_SCHEDULE}</Box>
-        </MenuItem> */}
+        </MenuItem>
         <MenuItem onClick={_handleLogout}>
           <ExitToAppOutlinedIcon /> <Box ml={2}>{library.LOGOUT}</Box>
         </MenuItem>

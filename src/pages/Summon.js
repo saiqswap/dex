@@ -7,9 +7,12 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import SummonEffect from "../components/summon/SummonEffect";
 import { BoxType } from "../settings/constants";
+import { EndpointConstant } from "../settings/endpoint";
+import { _showAppError } from "../store/actions/settingActions";
 import { _getMyItems } from "../store/actions/userActions";
 import "../styles/summon-page.scss";
 import { get, post } from "../utils/api";
@@ -29,20 +32,25 @@ const Summon = () => {
   const [showList] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const dispatch = useDispatch();
+  const { user, setting } = useSelector((state) => state);
+  const { information } = user;
+  const { library } = setting;
 
   useEffect(() => {
-    get(`/nft/my-boxes`, (data) => {
-      if (mounted) {
-        var result = data.reduce(function (r, a) {
-          r[a.type] = r[a.type] || [];
-          r[a.type].push(a);
-          return r;
-        }, Object.create(null));
-        setBoxes(result);
-      }
-    });
+    if (information) {
+      get(EndpointConstant.NFT_MY_BOXES, (data) => {
+        if (mounted) {
+          var result = data.reduce(function (r, a) {
+            r[a.type] = r[a.type] || [];
+            r[a.type].push(a);
+            return r;
+          }, Object.create(null));
+          setBoxes(result);
+        }
+      });
+    }
     return () => setMounted(false);
-  }, [mounted]);
+  }, [information, mounted]);
 
   const handleOpenBox = () => {
     setOpenBox(false);
@@ -57,10 +65,9 @@ const Summon = () => {
       setOpening(true);
       setCompleted(false);
       post(
-        `/nft/open-box?boxTokenId=${box.tokenId}`,
+        `${EndpointConstant.NFT_OPEN_BOX}?boxTokenId=${box.tokenId}`,
         {},
         (data) => {
-          // get(`/nft/my-boxes`, (data) => setBoxes(data));
           setItem(data);
           setBoxesSelected(
             boxesSelected.filter((item) => item.tokenId !== box.tokenId)
@@ -74,11 +81,12 @@ const Summon = () => {
           setOpening(false);
           setShowInfo(true);
           dispatch(_getMyItems());
-          setTimeout(() => {
-            setCompleted(true);
-          }, 7000);
+          setCompleted(true);
         },
         (error) => {
+          setOpening(false);
+          toast.error(library.SOMETHING_WRONG);
+          dispatch(_showAppError(error));
           setCompleted(true);
         }
       );
@@ -86,7 +94,6 @@ const Summon = () => {
   };
 
   const _handleSelectBox = (key) => {
-    console.log(keySelected);
     setKeySelected(null);
     setTimeout(() => {
       setBoxesSelected(boxes && boxes[key] ? boxes[key] : []);
@@ -181,59 +188,6 @@ const Summon = () => {
                         </Typography>
                       </div>
                     </div>
-                    {/* <div
-                      key={index}
-                      className={
-                        "box-item " +
-                        (keySelected === item.value ? "active" : "")
-                      }
-                      onClick={() => _handleSelectBox(item.value)}
-                    >
-                      <div
-                        className="content"
-                        style={{ "--color": item.color }}
-                      >
-                        <img
-                          src={item.card}
-                          className="card"
-                          alt="images card"
-                        />
-                        <img src={item.image} className="img-box" alt="" />
-                        <div className="base-light">
-                          <img
-                            src={item.light}
-                            alt="base-light"
-                            width="100%"
-                          />
-                        </div>
-                        <div className="base-light delay">
-                          <img
-                            src={item.light}
-                            alt="base-light"
-                            width="100%"
-                          />
-                        </div>
-                        <div className="info">
-                          <Typography
-                            variant="body2"
-                            className="custom-font box-name"
-                            style={{ color: item.color }}
-                          >
-                            {item.value.split("_").join(" ").toLowerCase()} Box
-                          </Typography>
-                          <Typography variant="body2" className="available">
-                            <span>Avl:</span>
-                            <span>
-                              x
-                              {boxes && boxes[item.value]
-                                ? boxes[item.value].length
-                                : 0}
-                            </span>
-                          </Typography>
-                        </div>
-                      </div>
-                      <div className="light-2"></div>
-                    </div> */}
                   </Grid>
                 ))}
               </Grid>
@@ -262,6 +216,7 @@ const Summon = () => {
                 onClick={() => {
                   _handleOpenBox();
                 }}
+                disabled={opening}
               >
                 {!opening ? (
                   "Summon"

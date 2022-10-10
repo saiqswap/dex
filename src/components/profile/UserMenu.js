@@ -1,42 +1,12 @@
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
-import WidgetsIcon from "@mui/icons-material/Widgets";
 import { Button, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
 import { useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { PROFILE_MENUS } from "../../settings/constants";
 import { formatAddress } from "../../settings/format";
 import UserAvatar from "../common/UserAvatar";
-
-const menus = [
-  {
-    icon: <AccountBoxIcon />,
-    url: "/profile/account",
-    label: "ACCOUNT",
-    key: "account",
-  },
-  {
-    icon: <WidgetsIcon />,
-    url: "/profile/my-items?type=ANGEL",
-    label: "MY_ITEMS",
-    key: "my-items",
-  },
-  {
-    icon: <HistoryEduIcon />,
-    url: "/profile/history",
-    label: "HISTORY",
-    key: "history",
-  },
-  {
-    icon: <AccountBalanceWalletIcon />,
-    url: "/profile/wallet",
-    label: "WALLET",
-    key: "wallet",
-  },
-];
 
 const UserMenu = ({ component }) => {
   const { user, setting } = useSelector((state) => state);
@@ -79,7 +49,7 @@ const UserMenu = ({ component }) => {
         </div>
       )}
       <ul className="menus custom-font">
-        {menus.map((item, index) => (
+        {PROFILE_MENUS.map((item, index) => (
           <li key={index} className={component === item.key ? "active" : ""}>
             <Link to={item.url}>
               <Button className="custom-font" startIcon={item.icon}>

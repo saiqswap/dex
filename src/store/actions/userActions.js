@@ -2,12 +2,14 @@ import { ethers } from "ethers";
 import { _getVestingBalance } from "../../onchain";
 import { ERC20_ABI } from "../../onchain/abi-bytecode";
 import { prefix } from "../../onchain/onchain";
+import { SpecialPresale } from "../../onchain/special-presale";
 import {
   ADDRESS_0,
   PRE_SALE_ROUNDS,
-  SUPPORT_TOKENS,
+  StatusList,
 } from "../../settings/constants";
 import {
+  EndpointConstant,
   ENDPOINT_GET_BALANCE,
   ENDPOINT_GET_PROFILE,
   ENDPOINT_MY_NFT,
@@ -22,6 +24,7 @@ import {
   GET_BALANCE,
   GET_ONCHAIN_BALANCE,
   GET_PRE_SALE_BALANCE,
+  ReduxConstant,
   UPDATE_PARTNER_REF,
   UPDATE_REF,
   UPDATE_WALLET_NAME,
@@ -47,6 +50,10 @@ export const _handleLogout = () => (dispatch) => {
 };
 
 export const _getNewProfile = () => (dispatch) => {
+  dispatch({
+    type: ReduxConstant.SET_USER_PROFILE_LOADING,
+    payload: true,
+  });
   get(
     ENDPOINT_GET_PROFILE,
     (data) => {
@@ -54,11 +61,28 @@ export const _getNewProfile = () => (dispatch) => {
         type: FETCH_USER,
         payload: data,
       });
+      dispatch({
+        type: ReduxConstant.SET_USER_PROFILE_LOADING,
+        payload: false,
+      });
     },
     (error) => {
       console.log(error);
+      dispatch({
+        type: ReduxConstant.SET_USER_PROFILE_LOADING,
+        payload: false,
+      });
       logout();
     }
+  );
+};
+
+export const _getLockBalances = () => (dispatch) => {
+  get(EndpointConstant.FUND_LOCK_AMOUNT, (data) =>
+    dispatch({
+      type: ReduxConstant.GET_USER_LOCK_BALANCE,
+      payload: data,
+    })
   );
 };
 
@@ -116,44 +140,61 @@ export const _getOnchainBalance =
     });
   };
 
-export const _getBalance = (walletAddress, metamaskProvider) => (dispatch) => {
+export const _getBalance = () => (dispatch) => {
   get(ENDPOINT_GET_BALANCE, (data) => {
-    (async () => {
+    const balances = data;
+    balances.forEach((e) => {
       dispatch({
         type: GET_BALANCE,
-        payload: [],
+        payload: balances,
       });
-      const balances = data;
-      balances.forEach((e) => {
-        (async () => {
-          var balance = null;
-          if (e.contractAddress === ADDRESS_0 && prefix) {
-            balance = await prefix.request({
-              method: "eth_getBalance",
-              params: [walletAddress, "latest"],
-            });
-          } else {
-            try {
-              const contractInstance = new ethers.Contract(
-                e.contractAddress,
-                ERC20_ABI,
-                metamaskProvider
-              );
-              balance = await contractInstance.balanceOf(walletAddress);
-            } catch (error) {
-              console.log(error);
-            }
-          }
-          balance = Number(ethers.utils.formatEther(balance));
-          e.onChainBalance = balance;
-        })().then(() => {
-          dispatch({
-            type: GET_BALANCE,
-            payload: balances,
-          });
-        });
-      });
-    })();
+    });
+  });
+};
+
+export const _getPresaleVesting = (walletAddress) => async (dispatch) => {
+  dispatch({
+    type: GET_PRE_SALE_BALANCE,
+    payload: null,
+  });
+  //get vesting information
+  let preSaleTokenBalances = await _getVestingBalance(walletAddress);
+  for (let index = 0; index < preSaleTokenBalances.length; index++) {
+    const staticDetailData = PRE_SALE_ROUNDS.find(
+      (round) => round.roundId === preSaleTokenBalances[index].vestingId
+    );
+    preSaleTokenBalances[index] = {
+      ...preSaleTokenBalances[index],
+      ...staticDetailData,
+    };
+  }
+  const vestingDetail = preSaleTokenBalances?.filter(
+    (e) => e.totalLockAmount > 0
+  );
+  //special vesting
+  let specialOnchainVestingBalance = await SpecialPresale._getVestingBalance(
+    walletAddress
+  );
+  let specialVestingBalance = [];
+  if (Array.isArray(specialOnchainVestingBalance)) {
+    specialVestingBalance = specialOnchainVestingBalance;
+  } else {
+    specialVestingBalance.push(specialOnchainVestingBalance);
+  }
+  specialVestingBalance = specialVestingBalance?.filter(
+    (e) => e.totalLockAmount > 0
+  );
+  for (const iterator of specialVestingBalance) {
+    iterator.isSpecialRound = true;
+    iterator.information = await SpecialPresale._getVestingInfo(
+      iterator.vestingId
+    );
+  }
+  // console.log(specialVestingBalance);
+  //special vesting
+  dispatch({
+    type: GET_PRE_SALE_BALANCE,
+    payload: [...vestingDetail, ...specialVestingBalance],
   });
 };
 
@@ -211,7 +252,7 @@ export const _getWalletInformation = () => (dispatch) => {
   });
   const walletSignature = window.localStorage.getItem("wallet-signature")
     ? window.localStorage.getItem("wallet-signature")
-    : null;
+    : StatusList.UNKNOWN;
   dispatch({
     type: ADD_WALLET_SIGNATURE,
     payload: walletSignature,
@@ -247,7 +288,7 @@ export const _getWalletLogout = () => (dispatch) => {
   });
   dispatch({
     type: ADD_WALLET_SIGNATURE,
-    payload: null,
+    payload: "UNKNOWN",
   });
   dispatch({
     type: FETCH_USER,

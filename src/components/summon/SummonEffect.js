@@ -8,6 +8,7 @@ import { formatAmount, _formatNameToLink } from "../../settings/format";
 const SummonEffect = ({ open, data, boxImage, showInfo }) => {
   const [opening, setOpening] = useState(false);
   const [hideBox, setHideBox] = useState(false);
+
   useEffect(() => {
     if (open === true) {
       setOpening(true);
@@ -22,6 +23,7 @@ const SummonEffect = ({ open, data, boxImage, showInfo }) => {
       }, 6000);
     }
   }, [open]);
+
   useEffect(() => {
     setOpening(false);
     setHideBox(false);

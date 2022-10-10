@@ -1,31 +1,31 @@
 import { TabContext, TabPanel } from "@mui/lab";
 import {
   Box,
-  Grid,
-  styled,
-  Typography,
-  Tabs,
-  Tab,
-  Modal,
   Divider,
-  Button,
+  Grid,
+  Modal,
+  styled,
+  Tab,
+  Tabs,
+  Typography,
 } from "@mui/material";
 import { Container } from "@mui/system";
 import moment from "moment";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import BackgroundComponent from "../components/common/BackgroundComponent";
-import { CustomButton } from "../components/common/CustomButton";
+import {
+  CustomButton,
+  CustomLoadingButton,
+} from "../components/common/CustomButton";
 import Loader from "../components/common/Loader";
 import { _claimToken } from "../onchain";
 import { provider } from "../onchain/onchain";
+import { SpecialPresale } from "../onchain/special-presale";
 import { PRE_SALE_ROUNDS, PRE_SALE_TOKEN } from "../settings/constants";
 import { formatNumberWithDecimal } from "../settings/format";
-import { _getBalance } from "../store/actions/userActions";
+import { _getBalance, _getPresaleVesting } from "../store/actions/userActions";
 
 const CustomBox = styled(Box)({
   borderRadius: "7px",
@@ -34,11 +34,28 @@ const CustomBox = styled(Box)({
   backdropFilter: "blur(20px)",
 });
 
+const CustomTab = styled(Tab)(({ theme }) => ({
+  border: "unset!important",
+  backgroundColor: "unset!important",
+  borderRadius: "0px!important",
+  padding: "12px 16px!important",
+  borderBottom: "1px solid var(--border-color)!important",
+  minHeight: 48,
+  "&.Mui-selected": {
+    borderColor: "#fff!important",
+  },
+}));
+
 export default function PreSaleStatistic() {
   const { user, setting } = useSelector((state) => state);
   let { preSaleTokenBalances, walletAddress } = user;
   const { library } = setting;
   const [value, setValue] = useState("0");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(_getPresaleVesting(walletAddress));
+  }, [dispatch, walletAddress]);
 
   if (preSaleTokenBalances) {
     preSaleTokenBalances = preSaleTokenBalances?.filter(
@@ -67,7 +84,7 @@ export default function PreSaleStatistic() {
                   aria-label="scrollable auto tabs example"
                 >
                   {preSaleTokenBalances?.map((item, index) => (
-                    <Tab
+                    <CustomTab
                       label={`${library.ROUND} ${
                         item.key === 0 ? "OG" : item.key ? item.key : "special"
                       }`}
@@ -119,6 +136,7 @@ const VestingDetail = ({ data, index }) => {
   const [information, setInformation] = useState(null);
   const [currentLockAmount, setCurrentLockAmount] = useState(0);
   const [totalUnlockAmount, setTotalUnlockAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useState(() => {
     if (data) {
@@ -142,13 +160,36 @@ const VestingDetail = ({ data, index }) => {
 
   const _handleClaim = () => {
     setOpenConfirm(false);
-    _claimToken(
-      data.vestingId,
-      () => {
-        _syncData();
-      },
-      () => toast.error(library.SOMETHING_WRONG)
-    );
+    setLoading(true);
+    if (data.isSpecialRound) {
+      SpecialPresale._claimToken(
+        data.vestingId,
+        () => {
+          setTimeout(() => {
+            setLoading(false);
+            _syncData();
+            toast.success("Success");
+          }, 3000);
+        },
+        () => {
+          setLoading(false);
+        }
+      );
+    } else {
+      _claimToken(
+        data.vestingId,
+        () => {
+          setTimeout(() => {
+            setLoading(false);
+            _syncData();
+            toast.success("Success");
+          }, 3000);
+        },
+        () => {
+          setLoading(false);
+        }
+      );
+    }
   };
 
   const _syncData = () => {
@@ -160,7 +201,10 @@ const VestingDetail = ({ data, index }) => {
       <TabPanel value={String(index)} index={index} sx={{ padding: 0 }}>
         <CustomBox p={2}>
           <Typography>
-            {library.INFORMATION}: {library[information]}
+            {library.INFORMATION}:{" "}
+            {data.isSpecialRound
+              ? `TGE ${data?.information?.TGEUnlockPercent}%, ${data?.information?.cliffMonths} Month cliff, Vesting for ${data?.information?.number0fLinearMonth} month`
+              : library[information]}
           </Typography>
           <Typography>
             {library.WITHDRAWABLE_AMOUNT}:{" "}
@@ -180,9 +224,12 @@ const VestingDetail = ({ data, index }) => {
           </Typography>
           {Number(data.totalUnlockAmount).toFixed(2) > 0 && (
             <Box mt={1}>
-              <CustomButton onClick={() => setOpenConfirm(true)}>
+              <CustomLoadingButton
+                loading={loading}
+                onClick={() => setOpenConfirm(true)}
+              >
                 {library.CLAIM}
-              </CustomButton>
+              </CustomLoadingButton>
             </Box>
           )}
           <Grid container mt={1} spacing={1}>

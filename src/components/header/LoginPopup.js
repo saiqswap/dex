@@ -11,6 +11,7 @@ import {
   SCOPES_KEY,
 } from "../../settings/constants";
 import {
+  EndpointConstant,
   ENDPOINT_LOGIN_WITH_GOOGLE,
   ENDPOINT_POST_USER_LOGIN,
   ENDPOINT_POST_USER_REGISTER_OTP,
@@ -28,7 +29,7 @@ import CustomModal from "../common/CustomModal";
 export default function LoginPopup({ open, _handleClose }) {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { setting, user } = useSelector((state) => state);
-  const { library } = setting;
+  const { library, applicationConfig } = setting;
   const { walletAddress, walletSignature } = user;
   const dispatch = useDispatch();
   const [showOTP, setShowOTP] = useState(false);
@@ -38,10 +39,10 @@ export default function LoginPopup({ open, _handleClose }) {
 
   const _updateAddress = () => {
     put(
-      `/user/address`,
+      EndpointConstant.USER_UPDATE_ADDRESS,
       {
         signature: walletSignature,
-        message: "This is sign message",
+        message: applicationConfig.ARR_SIGN_MESSAGE.HUMAN,
         address: walletAddress,
       },
       (data) => {
@@ -68,7 +69,7 @@ export default function LoginPopup({ open, _handleClose }) {
     if (successCallback) successCallback(token);
   });
 
-  const _handleLoginByGoogle = (e) => {
+  const _handleRegisterByGoogle = (e) => {
     getReCaptcha((reCaptcha) => {
       const referral = localStorage.getItem("referral");
       const param = {
@@ -195,7 +196,7 @@ export default function LoginPopup({ open, _handleClose }) {
               </CustomButton>
             )}
             buttonText="Login"
-            onSuccess={_handleLoginByGoogle}
+            onSuccess={_handleRegisterByGoogle}
             onFailure={(e) => console.log(e)}
             cookiePolicy={"single_host_origin"}
           />

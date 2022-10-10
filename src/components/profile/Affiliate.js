@@ -1,6 +1,7 @@
 import { Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatAmount } from "../../settings/format";
 import { post } from "../../utils/api";
 import Loader from "../common/Loader";
@@ -26,26 +27,26 @@ export default function Affiliate() {
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    const param = {
-      page: page,
-      pageSize: 10,
-      search: "",
-      orderBy: "",
-      getMeta: false,
-      filters: {},
-    };
-    post(
-      "/affiliate/my-commission-history",
-      param,
-      (data) => {
-        setData(data);
-      },
-      (err) => {
-        toast.error(err);
-      }
-    );
-  }, [page]);
+  // useEffect(() => {
+  //   const param = {
+  //     page: page,
+  //     pageSize: 10,
+  //     search: "",
+  //     orderBy: "",
+  //     getMeta: false,
+  //     filters: {},
+  //   };
+  //   post(
+  //     EndpointConstant.MY_COMMISSION_HISTORY,
+  //     param,
+  //     (data) => {
+  //       setData(data);
+  //     },
+  //     (err) => {
+  //       toast.error(err);
+  //     }
+  //   );
+  // }, [page]);
 
   return (
     <div>

@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { MAIN_MENUS } from "../../settings";
+import { AppConfig } from "../../settings";
 import { _changeLanguage } from "../../store/actions/settingActions";
 
 const MenuButton = styled(Button)(({ theme }) => ({
@@ -92,7 +92,7 @@ export default function SubMenu() {
         >
           <Box>
             <Hidden mdUp>
-              {MAIN_MENUS.map(
+              {AppConfig.MAIN_MENUS.map(
                 (item, index) =>
                   (!item.isLogged || (item.isLogged && information)) && (
                     <Link to={item.url[0]} key={index}>

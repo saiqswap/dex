@@ -3,29 +3,35 @@ import { useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   prefix,
   provider,
   _changeChain,
   _checkLogin,
 } from "../onchain/onchain";
-import { BLOCKCHAIN, MAIN_MENUS } from "../settings";
+import { AppConfig } from "../settings";
+import { StatusList } from "../settings/constants";
+import { ENDPOINT_USER_LOGIN_WITH_SIGNATURE } from "../settings/endpoint";
+import { ErrorCode } from "../settings/errorCode";
 import { _getMintingBoxInformation } from "../store/actions/mintingActions";
 import {
   _addPartnerRef,
   _addRef,
-  _getOnchainBalance,
-  _getNewProfile,
-  _getWalletLogout,
-  _setWalletAddress,
-  _setWalletName,
-  _handleLogout,
   _getBalance,
   _getMyItems,
+  _getNewProfile,
+  _getOnchainBalance,
+  _getWalletLogout,
+  _handleLogout,
   _handleProfileLogout,
+  _removeWalletSignature,
+  _setWalletAddress,
+  _setWalletName,
 } from "../store/actions/userActions";
+import { ReduxConstant } from "../store/constants";
 import { post } from "../utils/api";
-import { isLoggedIn, logout, setAccessToken } from "../utils/auth";
+import { logout, setAccessToken } from "../utils/auth";
 import ConfirmChangeChain from "./header/ConfirmChangeChain";
 import LoggedProfile from "./header/LoggedProfile";
 import LoginPopup from "./header/LoginPopup";
@@ -35,12 +41,18 @@ import SubMenu from "./header/SubMenu";
 
 function Header() {
   const { user, setting } = useSelector((state) => state);
-  const { walletAddress, walletName, walletSignature, information } = user;
+  const {
+    walletAddress,
+    walletName,
+    walletSignature,
+    information,
+    profileLoading,
+  } = user;
   const dispatch = useDispatch();
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const location = useLocation();
   const [pathname, setPathname] = useState("");
-  const { library, config } = setting;
+  const { library, config, applicationConfig } = setting;
   const [accountNotFound, setAccountNotFound] = useState(false);
   const [showSignPopup, setShowSignPopup] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -66,7 +78,9 @@ function Header() {
 
   useEffect(() => {
     if (walletAddress) {
-      if (Number(prefix.networkVersion) !== BLOCKCHAIN.domain.chainId) {
+      if (
+        Number(prefix.networkVersion) !== AppConfig.BLOCKCHAIN.domain.chainId
+      ) {
         setShowModalConfirm(true);
       }
       prefix.on("accountsChanged", (address) => {
@@ -80,7 +94,7 @@ function Header() {
         }
       });
       prefix.on("chainChanged", (newNetwork) => {
-        if (Number(newNetwork) !== BLOCKCHAIN.domain.chainId) {
+        if (Number(newNetwork) !== AppConfig.BLOCKCHAIN.domain.chainId) {
           setShowModalConfirm(true);
         }
       });
@@ -102,9 +116,6 @@ function Header() {
     if (walletAddress) {
       dispatch(_getMintingBoxInformation(walletAddress));
     }
-    if (isLoggedIn()) {
-      dispatch(_getNewProfile());
-    }
   }, [dispatch, walletAddress]);
 
   useEffect(() => {
@@ -123,14 +134,26 @@ function Header() {
 
   useEffect(() => {
     if (executeRecaptcha) {
-      if (walletSignature) {
+      if (
+        walletSignature &&
+        walletSignature !== StatusList.UNKNOWN &&
+        applicationConfig
+      ) {
         _loginBySignature(walletSignature);
-      } else {
-        setLoading(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [executeRecaptcha, walletSignature]);
+  }, [applicationConfig, executeRecaptcha, walletSignature]);
+
+  useEffect(() => {
+    if (walletSignature === StatusList.UNKNOWN) {
+      setLoading(false);
+      dispatch({
+        type: ReduxConstant.SET_USER_PROFILE_LOADING,
+        payload: false,
+      });
+    }
+  }, [dispatch, walletSignature]);
 
   useEffect(() => {
     if (information) {
@@ -140,24 +163,28 @@ function Header() {
 
   const _loginBySignature = async (signature) => {
     getReCaptcha((reCaptcha) => {
+      setLoading(true);
       post(
-        `/user/login-by-signature`,
+        ENDPOINT_USER_LOGIN_WITH_SIGNATURE,
         {
           signature,
-          message: "This is sign message",
+          message: applicationConfig.ARR_SIGN_MESSAGE.HUMAN,
           address: walletAddress,
           reCaptcha,
         },
         (data) => {
           setAccessToken(data.accessToken);
           dispatch(_getNewProfile());
-          dispatch(_getBalance(walletAddress, provider));
           dispatch(_getMyItems());
+          dispatch(_getBalance());
         },
         (error) => {
           setLoading(false);
-          if (error.code === "ACCOUNT_NOTFOUND") {
+          if (error.code === ErrorCode.ACCOUNT_NOTFOUND) {
             setAccountNotFound(true);
+          } else {
+            toast.error(error.msg);
+            dispatch(_removeWalletSignature());
           }
         }
       );
@@ -182,26 +209,27 @@ function Header() {
                 justifyContent="center"
                 style={{ height: 80 }}
               >
-                {MAIN_MENUS.map(
-                  (item, index) =>
-                    (!item.isLogged || (item.isLogged && information)) && (
-                      <Link
-                        to={item.url[0]}
-                        key={index}
-                        className={`nav-link ${
-                          item.url.includes(pathname) && "active"
-                        }`}
-                      >
-                        <Typography
-                          variant="body1"
-                          className="custom-font"
-                          fontWeight={600}
+                {!profileLoading &&
+                  AppConfig.MAIN_MENUS.map(
+                    (item, index) =>
+                      (!item.isLogged || (item.isLogged && information)) && (
+                        <Link
+                          to={item.url[0]}
+                          key={index}
+                          className={`nav-link ${
+                            item.url.includes(pathname) && "active"
+                          }`}
                         >
-                          {library[item.title]}
-                        </Typography>
-                      </Link>
-                    )
-                )}
+                          <Typography
+                            variant="body1"
+                            className="custom-font"
+                            fontWeight={600}
+                          >
+                            {library[item.title]}
+                          </Typography>
+                        </Link>
+                      )
+                  )}
               </Grid>
             </Hidden>
             <Grid

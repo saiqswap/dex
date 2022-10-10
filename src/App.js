@@ -3,9 +3,9 @@ import { createTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import "animate.css";
 import { gapi } from "gapi-script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -15,6 +15,8 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ErrorComponent from "./components/common/ErrorComponent";
+import Loader from "./components/common/Loader";
 import Header from "./components/Header";
 import ErrorPage from "./pages/ErrorPage";
 import routes from "./routes";
@@ -24,21 +26,19 @@ import {
   GOOGLE_SIGN_IN_CLIENT_KEY,
 } from "./settings/constants";
 import {
-  _getMintingBoxList,
-  _getMintingComboList,
-} from "./store/actions/mintingActions";
-import { _getPreSaleRoundList } from "./store/actions/preSaleActions";
-import {
   _changeLanguage,
+  _getApplicationConfig,
   _getConfig,
   _getTemplates,
 } from "./store/actions/settingActions";
 import { _getWalletInformation } from "./store/actions/userActions";
 import "./styles/main.scss";
-import { isLoggedIn } from "./utils/auth";
+import "./styles/boxes-page.scss";
 
 function App() {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state);
+  const { profileLoading } = user;
 
   let theme = createTheme();
   theme = createTheme(theme, {
@@ -68,18 +68,11 @@ function App() {
   useEffect(() => {
     document.getElementsByTagName("html")[0].setAttribute("dark", true);
     dispatch(_getConfig());
-    dispatch(_getMintingBoxList());
-    dispatch(_getMintingComboList());
     dispatch(_getTemplates());
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
-    dispatch(_getPreSaleRoundList());
-    const timer = setInterval(() => {
-      dispatch(_getMintingBoxList());
-      dispatch(_getMintingComboList());
-    }, 10000);
-    console.log("Infinity Angel Marketplace - Ver 0.0.3");
-    return () => clearInterval(timer);
+    dispatch(_getApplicationConfig());
+    console.log("Infinity Angel Marketplace - Ver 0.0.4");
   }, [dispatch]);
 
   useEffect(() => {
@@ -89,7 +82,6 @@ function App() {
         scope: "",
       });
     }
-
     gapi.load("client:auth2", start);
   }, []);
 
@@ -99,7 +91,8 @@ function App() {
         <Router>
           <div className="App">
             <Header />
-            <ModalSwitch />
+            <ErrorComponent />
+            {profileLoading ? <Loader /> : <ModalSwitch />}
             {/* <Hidden mdUp>
             <BottomMenu />
           </Hidden> */}
@@ -147,7 +140,17 @@ function ModalSwitch() {
 
 const AuthRoute = (props) => {
   const { type, title, isActive } = props;
-  const loggedIn = isLoggedIn();
+  const { user } = useSelector((state) => state);
+  const { information } = user;
+  const [loggedIn, setLoggedIn] = useState(true);
+
+  useEffect(() => {
+    if (information) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, [information]);
 
   useEffect(() => {
     if (title) {
@@ -165,7 +168,7 @@ const AuthRoute = (props) => {
     return <Redirect to="/" />;
   }
   if (type === "private" && !loggedIn) {
-    return <Redirect to="/login" />;
+    return <Redirect to="/" />;
   }
   return (
     <>

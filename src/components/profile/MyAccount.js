@@ -1,5 +1,6 @@
 import { ContentCopyRounded } from "@mui/icons-material";
 import {
+  Box,
   Container,
   Divider,
   IconButton,
@@ -7,13 +8,17 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatAmount } from "../../settings/format";
+import { _getLockBalances } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import CopyBox from "../common/CopyBox";
 import Loader from "../common/Loader";
+import GenerateSignature from "./GenerateSignature";
+import UpdateEmail from "./UpdateEmail";
 
 const menu = {
   // title: "NFT History",
@@ -49,11 +54,10 @@ const MyAccount = () => {
       filters: {},
     };
     post(
-      "/affiliate/my-commission-history",
+      EndpointConstant.MY_COMMISSION_HISTORY,
       param,
       (data) => {
         setData(data);
-        console.log(data.items);
       },
       (err) => {
         toast.error(err);
@@ -74,7 +78,9 @@ const MyAccount = () => {
       </Typography>
       <Divider className="mt-20" />
       <p className="mt-20 opacity-05">{library.EMAIL}</p>
-      <p className="email">{information.email}</p>
+      <Box display="flex" alignItems="center" className="email">
+        {information.email} <UpdateEmail />
+      </Box>
       <p className="mt-20 opacity-05">{library.REFERRAL_LINK}</p>
       <p className="referral">
         <CopyBox
@@ -97,6 +103,7 @@ const MyAccount = () => {
           </IconButton>
         </CopyBox>
       </p>
+      <GenerateSignature />
       <Typography
         variant="h5"
         className="custom-font"

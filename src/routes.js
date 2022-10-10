@@ -11,8 +11,16 @@ import Profile from "./pages/Profile";
 import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
+import SwapPage from "./pages/SwapPage";
 
 const routes = [
+  {
+    exact: true,
+    path: "/swap",
+    component: SwapPage,
+    type: "guest",
+    isActive: true,
+  },
   // {
   //   exact: true,
   //   path: "/pre-sale/statistic",
@@ -42,44 +50,44 @@ const routes = [
     isActive: true,
     title: "Box Minting",
   },
-  // {
-  //   exact: true,
-  //   path: "/marketplace",
-  //   component: Marketplace,
-  //   type: "guest",
-  //   isActive: true,
-  // },
-  // {
-  //   exact: false,
-  //   path: "/nft/:id",
-  //   component: NFTDetail,
-  //   type: "guest",
-  //   isActive: true,
-  // },
-  // {
-  //   exact: false,
-  //   path: "/summon",
-  //   component: Summon,
-  //   type: "guest",
-  //   isActive: true,
-  //   title: "Summon",
-  // },
-  // {
-  //   exact: false,
-  //   path: "/research-institute/:comp",
-  //   component: ResearchInstitute,
-  //   type: "guest",
-  //   isActive: true,
-  //   title: "Research Institute",
-  // },
-  // {
-  //   exact: false,
-  //   path: "/boxes",
-  //   component: BoxesPage,
-  //   type: "guest",
-  //   isActive: true,
-  //   title: "Buy Box",
-  // },
+  {
+    exact: true,
+    path: "/marketplace",
+    component: Marketplace,
+    type: "guest",
+    isActive: true,
+  },
+  {
+    exact: false,
+    path: "/nft/:id",
+    component: NFTDetail,
+    type: "guest",
+    isActive: true,
+  },
+  {
+    exact: false,
+    path: "/summon",
+    component: Summon,
+    isActive: true,
+    title: "Summon",
+    type: "private",
+  },
+  {
+    exact: false,
+    path: "/research-institute/:comp",
+    component: ResearchInstitute,
+    type: "private",
+    isActive: true,
+    title: "Research Institute",
+  },
+  {
+    exact: false,
+    path: "/boxes",
+    component: BoxesPage,
+    type: "guest",
+    isActive: true,
+    title: "Buy Box",
+  },
   {
     exact: false,
     path: "/profile/:comp",

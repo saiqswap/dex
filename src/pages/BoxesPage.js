@@ -1,15 +1,19 @@
-import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
-import "../styles/boxes-page.scss";
 import { Container, Grid, Hidden, Typography } from "@mui/material";
-import { get, post } from "../utils/api";
+import { Box } from "@mui/system";
 import { parseUnits } from "ethers/lib/utils";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { checkBeforeBuy, getReceipt, purchaseBox } from "../onchain/onchain";
-import { _getBalance } from "../store/actions/userActions";
 import BoxItem from "../components/boxes/BoxItem";
 import Loader from "../components/common/Loader";
+import {
+  checkBeforeBuy,
+  getReceipt,
+  provider,
+  purchaseBox,
+} from "../onchain/onchain";
+import { _getOnchainBalance } from "../store/actions/userActions";
+import { get, post } from "../utils/api";
 
 const BoxesPage = () => {
   return (
@@ -26,7 +30,7 @@ const BoxesContainer = () => {
   const [boxes, setBoxes] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user, setting } = useSelector((state) => state);
-  const { metamaskProvider, walletAddress, balances } = user;
+  const { metamaskProvider, walletAddress, onChainBalances } = user;
   const { config } = setting;
   const [mounted, setMounted] = useState(true);
   const [template, setTemplate] = useState(null);
@@ -73,7 +77,6 @@ const BoxesContainer = () => {
   const _handleErrorCallback = (error) => {
     console.log(error);
     toast.error(error.message);
-    // console.log(error);
     setLoading(false);
   };
 
@@ -81,8 +84,8 @@ const BoxesContainer = () => {
     const purchaseToken = config.contracts.find(
       (e) => e.contractAddress === box.paymentContract
     );
-    const purchaseBalance = balances.find(
-      (e) => e.contractAddress === purchaseToken.contractAddress
+    const purchaseBalance = onChainBalances.find(
+      (e) => e.contractAddress === box.paymentContract
     );
     if (purchaseBalance.onChainBalance >= box.price) {
       setLoading(true);
@@ -121,7 +124,11 @@ const BoxesContainer = () => {
                               );
                               handleGetBoxes();
                               dispatch(
-                                _getBalance(walletAddress, metamaskProvider)
+                                _getOnchainBalance(
+                                  config.contracts,
+                                  walletAddress,
+                                  provider
+                                )
                               );
                             }
                           });
