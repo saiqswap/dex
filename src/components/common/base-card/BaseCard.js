@@ -46,7 +46,7 @@ export default function BaseCard({
   return (
     <Box
       className="new-base-card"
-      onClick={() => history.push(`/nft-detail/${data.tokenId}`)}
+      onClick={() => history.push(`/details/${data.tokenId}`)}
       onMouseEnter={(e) => onMouseMove(e, data.name)}
     >
       {data.status === "LISTING" && isOwner && (
