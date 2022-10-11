@@ -32,12 +32,12 @@ const History = () => {
     {
       key: "startTime",
       label: "Start time",
-      format: (e) => moment(e).utc().format("HH:mm:ss YYYY-MM-DD"),
+      format: (e) => moment(e).format("HH:mm:ss YYYY-MM-DD"),
     },
     {
       key: "endTime",
       label: "End time",
-      format: (e) => moment(e).utc().format("HH:mm:ss YYYY-MM-DD"),
+      format: (e) => moment(e).format("HH:mm:ss YYYY-MM-DD"),
     },
     {
       key: "",
