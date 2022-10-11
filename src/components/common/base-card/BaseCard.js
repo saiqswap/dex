@@ -115,7 +115,7 @@ export default function BaseCard({
           </div>
         )}
         <Box height={40}></Box>
-        {/* <Box>
+        <Box>
           {data.properties.class && (
             <CustomClassImage
               src={`${image_url}/class_${_formatNameToLink(
@@ -159,7 +159,7 @@ export default function BaseCard({
               }}
             />
           )}
-        </Box> */}
+        </Box>
       </Box>
     </Box>
   );
