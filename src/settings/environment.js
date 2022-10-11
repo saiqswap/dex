@@ -177,7 +177,7 @@ export const production = {
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
   image_url: "https://files.infinityangel.io",
-  has_minting: true,
+  has_minting: false,
   has_listing: false,
   has_buy: false,
   OPEN_FEATURES: {
