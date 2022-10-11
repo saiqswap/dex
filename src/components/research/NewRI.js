@@ -21,6 +21,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { image_url } from "../../settings";
 import { EndpointConstant } from "../../settings/endpoint";
+import { _getNFTImageLink } from "../../settings/format";
 import { _getMyItems } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
@@ -346,6 +347,11 @@ const NewRI = () => {
                               src={`${image_url}/body_${formatNftName(
                                 params[item.key].name
                               )}.png`}
+                              // src={_getNFTImageLink(
+                              //   params[item.key].type,
+                              //   params[item.key].name,
+                              //   params[item.key].level
+                              // )}
                               alt="nft"
                             />
                           ) : null}
@@ -638,9 +644,14 @@ const NewRI = () => {
                         >
                           <img
                             className="custom-img"
-                            src={`${image_url}/body_${formatNftName(
-                              item.name
-                            )}.png`}
+                            // src={`${image_url}/body_${formatNftName(
+                            //   item.name
+                            // )}.png`}
+                            src={_getNFTImageLink(
+                              item.type,
+                              item.name,
+                              item.level
+                            )}
                             alt="nft"
                           />
                           <span className="nft-name">{item.name}</span>

@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
 import { get } from "../../utils/api";
 import Loader from "../common/Loader";
@@ -32,7 +31,12 @@ const History = () => {
     },
     {
       key: "startTime",
-      label: "Time",
+      label: "Start time",
+      format: (e) => moment(e).utc().format("HH:mm:ss YYYY-MM-DD"),
+    },
+    {
+      key: "endTime",
+      label: "End time",
       format: (e) => moment(e).utc().format("HH:mm:ss YYYY-MM-DD"),
     },
     {
@@ -49,7 +53,7 @@ const History = () => {
   useEffect(() => {
     setHistory(null);
     get(
-      `${EndpointConstant.NFT_RI}?page=${page}&pageSize=10&status=COMPLETED`,
+      `/nft/ri?page=${page}&pageSize=10&status=COMPLETED`,
       (data) => {
         setHistory(data);
       },

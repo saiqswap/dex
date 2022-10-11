@@ -467,50 +467,50 @@ body {
     }
 
     > div {
-      padding: 20px;
+      // padding: 20px;
       cursor: pointer;
       overflow: hidden;
       position: relative;
 
-      &::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        clip-path: polygon(
-          7% 0,
-          93% 0,
-          100% 7%,
-          100% 93%,
-          93% 100%,
-          7% 100%,
-          0 93%,
-          0 7%
-        );
-      }
+      // &::after {
+      //   content: "";
+      //   width: 100%;
+      //   height: 100%;
+      //   position: absolute;
+      //   top: 0;
+      //   left: 0;
+      //   clip-path: polygon(
+      //     7% 0,
+      //     93% 0,
+      //     100% 7%,
+      //     100% 93%,
+      //     93% 100%,
+      //     7% 100%,
+      //     0 93%,
+      //     0 7%
+      //   );
+      // }
 
-      &::before {
-        content: "";
-        width: calc(100% - 6px);
-        height: calc(100% - 6px);
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        background: radial-gradient(circle, #000, #091724);
-        clip-path: polygon(
-          7% 0,
-          93% 0,
-          100% 7%,
-          100% 93%,
-          93% 100%,
-          7% 100%,
-          0 93%,
-          0 7%
-        );
-        z-index: 10;
-      }
+      // &::before {
+      //   content: "";
+      //   width: calc(100% - 6px);
+      //   height: calc(100% - 6px);
+      //   position: absolute;
+      //   top: 3px;
+      //   left: 3px;
+      //   background: radial-gradient(circle, #000, #091724);
+      //   clip-path: polygon(
+      //     7% 0,
+      //     93% 0,
+      //     100% 7%,
+      //     100% 93%,
+      //     93% 100%,
+      //     7% 100%,
+      //     0 93%,
+      //     0 7%
+      //   );
+      //   z-index: 10;
+      // }
 
       &:hover {
         border-color: rgba(197, 178, 99, 0.8);
@@ -568,15 +568,15 @@ body {
 
       img {
         width: 100%;
-        height: 100px;
+        // height: 100px;
         object-fit: contain;
         position: relative;
         z-index: 11;
-        padding: 5px;
+        // padding: 5px;
 
-        &.custom-img {
-          transform: scale(1.3) !important;
-        }
+        // &.custom-img {
+        //   transform: scale(1.3) !important;
+        // }
       }
 
       .nft-name {
@@ -584,11 +584,12 @@ body {
         z-index: 11;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         width: 100%;
         bottom: 10px;
-        left: 0;
-        font-size: 0.8rem;
+        bottom: 5px;
+        font-size: 0.5rem;
+        padding-left: 15px;
       }
 
       .nft-status {
