@@ -13,11 +13,7 @@ export const hostname = window.location.hostname.replace("www.", "");
 //setup environment
 export let AppConfig = production;
 if (
-  [
-    "localhost",
-    "marketplaceinfinity.feliciastation.com",
-    "marketplaceinfinity.feliciastation.com",
-  ].includes(hostname)
+  ["localhost", "marketplaceinfinity.feliciastation.com"].includes(hostname)
 ) {
   AppConfig = develop;
 } else if (["marketplace.megdev.co"].includes(hostname)) {
