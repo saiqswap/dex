@@ -625,20 +625,19 @@ body {
 
 .custom-font {
   font-family: "Orbitron" !important;
-  padding-top: 0.5rem;
-  @media screen and(max-width: 899px) {
-    font-size:1.5rem!important;
-  }
-  @media screen and(max-width: 600px) {
-    font-size:1rem!important;
-  }
-  @media screen and (min-width: 1200px) {
-    font-size:1rem!important;
-  }
-  @media screen and (max-width:399px) {
-    font-size:0.8rem!important;
-  }
-
+  // padding-top: 0.5rem;
+  // @media screen and(max-width: 899px) {
+  //   font-size:1.5rem!important;
+  // }
+  // @media screen and(max-width: 600px) {
+  //   font-size:1rem!important;
+  // }
+  // @media screen and (min-width: 1200px) {
+  //   font-size:1rem!important;
+  // }
+  // @media screen and (max-width:399px) {
+  //   font-size:0.8rem!important;
+  // }
 }
 
 .custom-btn {
