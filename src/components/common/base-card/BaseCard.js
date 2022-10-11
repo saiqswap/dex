@@ -16,9 +16,25 @@ import {
 import "./base-card.scss";
 
 const CustomClassImage = styled("img")(({ theme }) => ({
-  width: "2.5em",
+  width: "3.4em",
+  paddingTop: "0.5em",
+  marginRight: "0.1em",
+
   [theme.breakpoints.down("sm")]: {
-    width: "2em",
+    width: "9vw!important",
+    marginRight : "0!important"
+  },
+
+  [theme.breakpoints.down('md')]: {
+    marginRight : "0.5vw"
+  },
+  [theme.breakpoints.down("lg")]: {
+    // width: "2.7em",
+    // paddingRight: "0.5em",
+  },
+  [theme.breakpoints.up("lg")]: {
+    width: "2.6em",
+    paddingRight: "0",
   },
 }));
 
@@ -89,8 +105,8 @@ export default function BaseCard({
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        px={isSmall ? 3 : 3.5}
-        py={isSmall ? 3 : 4}
+        // px={isSmall ? 3 : 1%}
+        // py={isSmall ? 3 : }
         sx={{
           position: "relative",
           background: `url("/images/marketplace/${data.level}.png")`,
@@ -98,6 +114,7 @@ export default function BaseCard({
           backgroundSize: "100% 100%",
           left: "4px",
           visibility: loaded ? "visible" : "hidden",
+          padding:"13%"
         }}
       >
         {data.listingPrice > 0 && !isOwner ? (
