@@ -184,7 +184,15 @@ const History = () => {
               </Grid>
               <Grid item xs={9}>
                 <Typography className="value">
-                  {moment(detail.startTime).utc().format("HH:MM:ss YYYY-MM-DD")}
+                  {moment(detail.startTime).format("YYYY-MM-DD HH:MM:ss")}
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className="label">End time</Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <Typography className="value">
+                  {moment(detail.endTime).format("YYYY-MM-DD HH:MM:ss")}
                 </Typography>
               </Grid>
             </Grid>
