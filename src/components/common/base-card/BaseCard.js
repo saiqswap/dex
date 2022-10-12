@@ -14,7 +14,7 @@ import {
   _getNFTImageLink,
 } from "../../../settings/format";
 import "./base-card.scss";
-
+import VerifiedTwoToneIcon from "@mui/icons-material/VerifiedTwoTone";
 const CustomClassImage = styled("img")(({ theme }) => ({
   width: "3.4em",
   paddingTop: "0.5em",
@@ -22,11 +22,11 @@ const CustomClassImage = styled("img")(({ theme }) => ({
 
   [theme.breakpoints.down("sm")]: {
     width: "9vw!important",
-    marginRight : "0!important"
+    marginRight: "0!important",
   },
 
-  [theme.breakpoints.down('md')]: {
-    marginRight : "0.5vw"
+  [theme.breakpoints.down("md")]: {
+    marginRight: "0.5vw",
   },
   [theme.breakpoints.down("lg")]: {
     // width: "2.7em",
@@ -36,6 +36,14 @@ const CustomClassImage = styled("img")(({ theme }) => ({
     width: "2.6em",
     paddingRight: "0",
   },
+}));
+
+const CustomIsMinted = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  zIndex: 99,
+  top: 4,
+  left: "50%",
+  transform: "translate(-50%, 0)",
 }));
 
 export default function BaseCard({
@@ -94,10 +102,25 @@ export default function BaseCard({
               bottom: "5px",
               left: "25px",
               visibility: loaded ? "visible" : "hidden",
+              display: "flex",
+              alignItems: "center",
             }}
             fontWeight={700}
           >
             {data.name}
+            {data.mintTxHash && (
+              <VerifiedTwoToneIcon
+                fontSize="small"
+                sx={{
+                  path: {
+                    color: `var(--angel-${data.level
+                      .toLowerCase()
+                      .replace("tier", "type")
+                      .replace("_", "-")})`,
+                  },
+                }}
+              />
+            )}
           </Typography>
         )}
       </Box>
@@ -114,7 +137,7 @@ export default function BaseCard({
           backgroundSize: "100% 100%",
           left: "4px",
           visibility: loaded ? "visible" : "hidden",
-          padding:"13%"
+          padding: "13%",
         }}
       >
         {data.listingPrice > 0 && !isOwner ? (
