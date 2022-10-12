@@ -69,11 +69,9 @@ const ItemDetail = ({ data, _handleReload }) => {
   }, [data]);
 
   if (reducerConfig && data.paymentContract) {
-    console.log(reducerConfig, data);
     paymentInfo = reducerConfig.contracts.find(
       (e) => e.contractAddress === data.paymentContract
     );
-    console.log(paymentInfo);
   }
 
   const renderPrice = () => {
