@@ -69,9 +69,11 @@ const ItemDetail = ({ data, _handleReload }) => {
   }, [data]);
 
   if (reducerConfig && data.paymentContract) {
+    console.log(reducerConfig, data);
     paymentInfo = reducerConfig.contracts.find(
       (e) => e.contractAddress === data.paymentContract
     );
+    console.log(paymentInfo);
   }
 
   const renderPrice = () => {
@@ -93,7 +95,7 @@ const ItemDetail = ({ data, _handleReload }) => {
           {" "}
           <p>Reference price:</p>
           <h2>
-            {formatUSD(data.basePrice)} <span>{paymentInfo.symbol}</span>
+            {formatUSD(data.basePrice)} <span>{paymentInfo?.symbol}</span>
           </h2>
         </>
       );
@@ -442,7 +444,7 @@ const MintComponent = ({ data, _handleReload }) => {
 
   return AppConfig.has_minting ? (
     <>
-      {!data.isLockMinting && (
+      {!data.isLockMinting && !data.inDb && (
         <Button
           className="btn-listing"
           onClick={() => setShowMintingPopup(true)}
