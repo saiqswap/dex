@@ -13,12 +13,6 @@ export const TESTNET_CONFIG = {
     nativeCurrency: { name: "Binance", decimals: 18, symbol: "tBNB" },
     blockExplorerUrls: ["https://testnet.bscscan.com"],
   },
-  GET_ORDER_INPUT: "getOrderInput",
-  LISTING: "listing",
-  BASE_URI: "http://localhost:4000/api/v1",
-  EXCHANGE_ADDRESS: TESTNET_DOMAIN.verifyingContract,
-  PURCHASE_BOX_ADDRESS: "0x04E59EC7496238578c65aAB9FBd91F59FF0d71A9",
-  PURCHASE_TOKEN_ADDRESS: "0x79710EAcB353Fc236D784eCD6157A2d9385B4F7B",
   LISTING_PARAMS: (message) => ({
     types: {
       EIP712Domain: [
