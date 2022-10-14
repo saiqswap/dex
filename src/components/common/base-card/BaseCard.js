@@ -133,14 +133,14 @@ export default function BaseCard({ data, onNftNameChange, isOwner }) {
       >
         {data.listingPrice > 0 ? (
           <div className="character-price">
-            <Typography variant="body1" className="custom-font">
+            <Typography variant="body2" className="custom-font">
               {formatAmount(data.listingPrice)}{" "}
               {paymentInformation && <span>{paymentInformation.symbol}</span>}
             </Typography>
           </div>
         ) : (
           <div className="character-price">
-            <Typography variant="body1" className="custom-font"></Typography>
+            <Typography variant="body2" className="custom-font"></Typography>
           </div>
         )}
         <Box height={40}></Box>
