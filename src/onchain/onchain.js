@@ -231,8 +231,10 @@ export const purchaseECR721 = async (
 
     return tx.hash;
   } catch (error) {
+    if (error?.data?.code === -32000) {
+      toast.error(`Unavailable balance`);
+    }
     _handleErrorCallback();
-    console.log(error);
   }
 };
 

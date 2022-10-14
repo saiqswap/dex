@@ -470,12 +470,10 @@ const MintComponent = ({ data, _handleReload }) => {
           )}
         </Button>
       )}
-      <Modal
+      <CustomBlueSmallModal
         open={showMintingPopup}
         onClose={() => setShowMintingPopup(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="custom-modal-vk"
+        isShowCloseButton={!loading}
       >
         <div className="listing-popup">
           <Typography variant="h6" className="custom-font">
@@ -485,11 +483,12 @@ const MintComponent = ({ data, _handleReload }) => {
             className="custom-btn custom-font mt-20"
             onClick={_handleMinNFT}
             loading={loading}
+            fullWidth
           >
-            {loading ? "" : "Mint NFT"}
+            {"Mint NFT"}
           </LoadingButton>
         </div>
-      </Modal>
+      </CustomBlueSmallModal>
     </>
   ) : null;
 };
