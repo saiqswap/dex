@@ -1,11 +1,7 @@
-import {
-  Box,
-  styled,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
-import React, { useState } from "react";
+import VerifiedTwoToneIcon from "@mui/icons-material/VerifiedTwoTone";
+import { Box, styled, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { image_url } from "../../../settings";
 import {
@@ -14,7 +10,6 @@ import {
   _getNFTImageLink,
 } from "../../../settings/format";
 import "./base-card.scss";
-import VerifiedTwoToneIcon from "@mui/icons-material/VerifiedTwoTone";
 const CustomClassImage = styled("img")(({ theme }) => ({
   width: "3.4em",
   paddingTop: "0.5em",
@@ -38,23 +33,21 @@ const CustomClassImage = styled("img")(({ theme }) => ({
   },
 }));
 
-const CustomIsMinted = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  zIndex: 99,
-  top: 4,
-  left: "50%",
-  transform: "translate(-50%, 0)",
-}));
-
-export default function BaseCard({
-  data,
-  frameType,
-  onNftNameChange,
-  button,
-  isOwner,
-}) {
+export default function BaseCard({ data, onNftNameChange, isOwner }) {
   const [loaded, setLoaded] = useState(false);
   const history = useHistory();
+  const { setting } = useSelector((state) => state);
+  const { config } = setting;
+  const [paymentInformation, setPaymentInformation] = useState(null);
+
+  useEffect(() => {
+    if (config) {
+      const temp = config?.contracts?.find(
+        (contract) => contract.contractAddress === data.paymentContract
+      );
+      setPaymentInformation(temp);
+    }
+  }, [config, data]);
 
   const onMouseMove = (e, name) => {
     if (onNftNameChange) {
@@ -64,8 +57,6 @@ export default function BaseCard({
       }, 200);
     }
   };
-  const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Box
@@ -140,13 +131,11 @@ export default function BaseCard({
           padding: "13%",
         }}
       >
-        {data.listingPrice > 0 && !isOwner ? (
+        {data.listingPrice > 0 ? (
           <div className="character-price">
             <Typography variant="body1" className="custom-font">
               {formatAmount(data.listingPrice)}{" "}
-              {data.paymentInformation && (
-                <span>{data.paymentInformation.symbol}</span>
-              )}
+              {paymentInformation && <span>{paymentInformation.symbol}</span>}
             </Typography>
           </div>
         ) : (

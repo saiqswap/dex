@@ -31,7 +31,12 @@ export default function SwapPage() {
         <Box>
           <Typography>Opening 16:00 at 18/10/2022 (UTC +9)</Typography>
         </Box>
-        <Button className="custom-btn" sx={{ mt: 5 }} component={Link} to="/">
+        <Button
+          className="custom-btn"
+          sx={{ mt: 5 }}
+          component={Link}
+          to="/marketplace"
+        >
           Back to Marketplace
         </Button>
       </Box>

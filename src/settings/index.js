@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import { develop, production, staging } from "./environment";
+import { develop, local, production, staging } from "./environment";
 import { formatAddress } from "./format";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const DEVICE_KEY = "uU5tEUmAgvBWArsv";
@@ -12,12 +12,10 @@ export const hostname = window.location.hostname.replace("www.", "");
 
 //setup environment
 export let AppConfig = production;
-if (
-  [
-    "localhost",
-    "marketplaceinfinity.feliciastation.com",
-    "localhostxxx",
-  ].includes(hostname)
+if ([""].includes(hostname)) {
+  AppConfig = local;
+} else if (
+  ["localhost", "marketplaceinfinity.feliciastation.com"].includes(hostname)
 ) {
   AppConfig = develop;
 } else if (["marketplace.megdev.co"].includes(hostname)) {

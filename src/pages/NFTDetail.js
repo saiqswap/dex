@@ -1,5 +1,12 @@
 import { ArrowForward } from "@mui/icons-material";
-import { Card, CardContent, Container, Grid } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Link,
+  Typography,
+} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/system";
 import moment from "moment";
@@ -9,7 +16,11 @@ import { useParams } from "react-router";
 import Loader from "../components/common/Loader";
 import ItemDetail from "../components/item-detail/ItemDetail";
 import { API } from "../settings";
-import { formatAddress, formatAmount } from "../settings/format";
+import {
+  formatAddress,
+  formatAmount,
+  _linkToBlockChain,
+} from "../settings/format";
 import { _getMyItems } from "../store/actions/userActions";
 import "../styles/marketplace-angel-detail.scss";
 import { defaultHeaders, post } from "../utils/api";
@@ -114,6 +125,16 @@ export default function NFTDetail() {
                       </div>
                     </div>
                   </CardContent>
+                  <Box textAlign="center">
+                    Tx Hash:{" "}
+                    <Typography
+                      component={Link}
+                      href={_linkToBlockChain(`/tx/${item.txHash}`)}
+                      target="_blank"
+                    >
+                      {formatAddress(item.txHash)}{" "}
+                    </Typography>
+                  </Box>
                 </Card>
               ))}
             </Box>

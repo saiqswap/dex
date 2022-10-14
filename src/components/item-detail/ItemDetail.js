@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   FormControl,
   Grid,
   InputAdornment,
@@ -14,7 +15,7 @@ import {
 import { utils } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -28,16 +29,22 @@ import { EndpointConstant } from "../../settings/endpoint";
 import {
   formatAddress,
   formatAmount,
+  formatNumberWithDecimal,
   formatPrice,
   formatUSD,
+  _getNFTImageLink,
 } from "../../settings/format";
 import { get, post, _delete } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import CopyBox from "../common/CopyBox";
+import CustomSmallModal from "../common/CustomSmallModal";
 import CustomTooltip from "../common/CustomTooltip";
 import Model3d from "../common/Model3d";
 import TierDescription from "../common/TierDescription";
 import ItemSkills from "./ItemSkills";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { CustomLoadingButton } from "../common/CustomButton";
+import { _showAppError } from "../../store/actions/settingActions";
 
 const StatImage = styled("img")({
   width: "auto",
@@ -175,7 +182,11 @@ const ItemDetail = ({ data, _handleReload }) => {
           } else {
             if (data.status === "LISTING") {
               ActionButton = () => (
-                <BuyComponent data={data} _handleReload={_reload} />
+                <BuyComponent
+                  data={data}
+                  _handleReload={_reload}
+                  paymentInfo={paymentInfo}
+                />
               );
             }
           }
@@ -406,6 +417,7 @@ export default ItemDetail;
 const MintComponent = ({ data, _handleReload }) => {
   const [showMintingPopup, setShowMintingPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const _handleMinNFT = () => {
     setLoading(true);
@@ -425,16 +437,16 @@ const MintComponent = ({ data, _handleReload }) => {
                 clearInterval(temp);
               }
             },
-            () => {
-              toast.error("Listing failed");
+            (error) => {
+              dispatch(_showAppError(error));
               setLoading(false);
               clearInterval(temp);
             }
           );
         }, 5000);
       },
-      () => {
-        toast.error("Listing failed");
+      (error) => {
+        dispatch(_showAppError(error));
         setLoading(false);
       }
     );
@@ -490,6 +502,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
   const { setting, user } = useSelector((state) => state);
   const reducerConfig = setting.config;
   const { walletAddress } = user;
+  const dispatch = useDispatch();
 
   const _handleListing = (signature) => {
     post(
@@ -511,14 +524,13 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
         },
       },
       () => {
-        toast.success("success");
+        toast.success("Success");
         _handleReload();
         setLoading(false);
         setPrice("");
       },
-      () => {
-        toast.error("listing failed");
-        setLoading(false);
+      (error) => {
+        dispatch(_showAppError(error));
       }
     );
   };
@@ -633,6 +645,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
 const DelistComponent = ({ data, _handleReload }) => {
   const [showDelistPopup, setShowDelistPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const _handleDelist = () => {
     setLoading(true);
@@ -645,7 +658,9 @@ const DelistComponent = ({ data, _handleReload }) => {
         setLoading(false);
         _handleReload();
       },
-      (error) => console.log(error)
+      (error) => {
+        dispatch(_showAppError(error));
+      }
     );
   };
 
@@ -682,11 +697,30 @@ const DelistComponent = ({ data, _handleReload }) => {
   ) : null;
 };
 
-const BuyComponent = ({ data, _handleReload }) => {
+const CustomBox = styled(Box)(({ theme }) => ({
+  textAlign: "left",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+}));
+
+const BuyComponent = ({ data, _handleReload, paymentInfo }) => {
   const [loading, setLoading] = useState(false);
   const { setting, user } = useSelector((state) => state);
+  const { library } = setting;
   const reducerConfig = setting.config;
   const { information, walletAddress } = user;
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!showConfirm) {
+      setIsApproved(false);
+      setIsConfirmed(false);
+    }
+  }, [showConfirm]);
 
   const _handleErrorCallback = () => {
     setLoading(false);
@@ -699,12 +733,10 @@ const BuyComponent = ({ data, _handleReload }) => {
         (e) => e.contractAddress === nftToken.paymentContract
       );
       setLoading(true);
-
       var nftTokenScPrice = parseUnits(
         nftToken.listingPrice.toString(),
         purchaseToken.decimals
       );
-
       checkBeforeBuy(
         reducerConfig.marketplaceContract,
         nftToken.paymentContract,
@@ -713,6 +745,7 @@ const BuyComponent = ({ data, _handleReload }) => {
         _handleErrorCallback
       ).then((result) => {
         if (result) {
+          setIsApproved(true);
           get(
             `${EndpointConstant.MARKET_ORDER_SC_INPUT}?tokenId=${nftToken.tokenId}`,
             (data) => {
@@ -726,6 +759,7 @@ const BuyComponent = ({ data, _handleReload }) => {
                 getReceipt(e).then((result) => {
                   setLoading(false);
                   if (result) {
+                    setIsConfirmed(true);
                     _handleReload();
                     toast.success("Success...!");
                     post(
@@ -741,9 +775,8 @@ const BuyComponent = ({ data, _handleReload }) => {
               });
             },
             (error) => {
-              console.log(error);
-              toast.error(error.msg);
               setLoading(false);
+              dispatch(_showAppError(error));
             }
           );
         }
@@ -752,15 +785,76 @@ const BuyComponent = ({ data, _handleReload }) => {
       toast.error("Please sign-in for buy NFT.");
     }
   };
+
   return AppConfig.has_buy ? (
     <>
       <Button
         className={"btn-buy custom-font"}
-        onClick={_handlePurchaseBox}
+        onClick={() => setShowConfirm(true)}
         disabled={loading}
       >
         {loading ? <CircularProgress size="29px" /> : "Buy"}
       </Button>
+      <CustomSmallModal
+        open={showConfirm}
+        isShowCloseButton={!loading}
+        _close={() => setShowConfirm(false)}
+      >
+        <Box textAlign={"left"}>
+          <Typography mb={1} variant="h5">
+            {library.CONFIRM_TRANSACTION}
+          </Typography>
+          <Divider />
+          <Box my={2} display="flex" alignItems={"center"}>
+            <img
+              src={_getNFTImageLink(data.type, data.name, data.level)}
+              width={70}
+              alt={data.name}
+            />
+            <Box ml={2}>
+              <Typography className="custom-font">{data.name}</Typography>
+              <Typography variant="body2">
+                Price: {formatNumberWithDecimal(data.listingPrice, 8)}{" "}
+                {paymentInfo.symbol}
+              </Typography>
+            </Box>
+          </Box>
+          <Divider />
+          <CustomBox mt={3}>
+            <CustomBox
+              sx={{
+                justifyContent: "flex-start",
+                opacity: isApproved ? 1 : 0.5,
+              }}
+            >
+              <CheckCircleIcon />
+              <Typography ml={1} variant="body2">
+                {library.APPROVED}
+              </Typography>
+            </CustomBox>
+            <CustomBox
+              sx={{
+                justifyContent: "flex-start",
+                opacity: isConfirmed ? 1 : 0.5,
+              }}
+            >
+              <CheckCircleIcon />
+              <Typography ml={1} variant="body2">
+                {library.CONFIRMED}
+              </Typography>
+            </CustomBox>
+          </CustomBox>
+
+          <CustomLoadingButton
+            loading={loading}
+            onClick={_handlePurchaseBox}
+            fullWidth
+            sx={{ mt: 3 }}
+          >
+            {library.CONFIRM}
+          </CustomLoadingButton>
+        </Box>
+      </CustomSmallModal>
     </>
   ) : null;
 };
