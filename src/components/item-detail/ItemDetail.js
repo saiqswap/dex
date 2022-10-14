@@ -1,14 +1,13 @@
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
   CircularProgress,
   Divider,
-  FormControl,
   Grid,
   InputAdornment,
   Modal,
-  OutlinedInput,
   styled,
   Typography,
 } from "@mui/material";
@@ -34,17 +33,18 @@ import {
   formatUSD,
   _getNFTImageLink,
 } from "../../settings/format";
+import { _showAppError } from "../../store/actions/settingActions";
 import { get, post, _delete } from "../../utils/api";
 import { formatNftName } from "../../utils/util";
 import CopyBox from "../common/CopyBox";
+import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
+import { CustomLoadingButton } from "../common/CustomButton";
+import CustomNumberInput from "../common/CustomNumberInput";
 import CustomSmallModal from "../common/CustomSmallModal";
 import CustomTooltip from "../common/CustomTooltip";
 import Model3d from "../common/Model3d";
 import TierDescription from "../common/TierDescription";
 import ItemSkills from "./ItemSkills";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { CustomLoadingButton } from "../common/CustomButton";
-import { _showAppError } from "../../store/actions/settingActions";
 
 const StatImage = styled("img")({
   width: "auto",
@@ -504,6 +504,12 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
   const { walletAddress } = user;
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (!showListingPopup) {
+      setPrice("");
+    }
+  }, [showListingPopup]);
+
   const _handleListing = (signature) => {
     post(
       EndpointConstant.MARKET_LISTING,
@@ -524,21 +530,22 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
         },
       },
       () => {
+        setLoading(false);
         toast.success("Success");
         _handleReload();
-        setLoading(false);
-        setPrice("");
       },
       (error) => {
+        setLoading(false);
         dispatch(_showAppError(error));
       }
     );
   };
 
-  const _sendSignalForChain = async () => {
+  const _sendSignalForChain = async (e) => {
+    e.preventDefault();
     if (price) {
       if (parseFloat(price) >= data.minListingPrice) {
-        setShowListingPopup(false);
+        setLoading(true);
         const message = {
           tokenId: data.tokenId.toString(),
           tokenContract: data.isOwner.contractAddress.toString(),
@@ -552,13 +559,15 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
         var listingParams = AppConfig.BLOCKCHAIN.config.LISTING_PARAMS(message);
         listingParams.domain.verifyingContract =
           setting.config.marketplaceContract;
-
-        const signature = await prefix.request({
-          method: "eth_signTypedData_v4",
-          params: [walletAddress, JSON.stringify(listingParams)],
-        });
-        _handleListing(signature);
-        setLoading(true);
+        try {
+          const signature = await prefix.request({
+            method: "eth_signTypedData_v4",
+            params: [walletAddress, JSON.stringify(listingParams)],
+          });
+          _handleListing(signature);
+        } catch (error) {
+          setLoading(false);
+        }
       } else {
         toast.error(
           `Please enter listing price greater than ${data.minListingPrice} ${paymentInfo.symbol}`
@@ -587,57 +596,65 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
       >
         {loading ? <CircularProgress size="29px" /> : "Listing"}
       </Button>
-      <Modal
+      <CustomBlueSmallModal
         open={showListingPopup}
         onClose={() => setShowListingPopup(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="custom-modal-vk"
+        isShowCloseButton={!loading}
       >
         {data && (
-          <div className="listing-popup">
+          <Box
+            component={"form"}
+            onSubmit={_sendSignalForChain}
+            className="listing-popup"
+            noValidate
+          >
             <Typography variant="h6" className="custom-font">
               Desired price
             </Typography>
-            <FormControl variant="outlined">
-              <OutlinedInput
-                className="custom-font input"
-                value={price}
-                onChange={_handleChangePrice}
-                endAdornment={
+            <CustomNumberInput
+              InputProps={{
+                endAdornment: (
                   <InputAdornment position="end">
                     <Typography variant="body1" className="custom-font">
                       {paymentInfo.symbol}
                     </Typography>
                   </InputAdornment>
-                }
-                aria-describedby="outlined-weight-helper-text"
-              />
-            </FormControl>
-            <p>
+                ),
+              }}
+              fullWidth
+              onChange={_handleChangePrice}
+              value={price}
+              className="custom-font"
+              aria-describedby="outlined-weight-helper-text"
+              disabled={loading}
+            />
+            <Box textAlign="left" mt={2}>
               <span>Reference price: </span>{" "}
               {`${formatUSD(data.basePrice)} ${paymentInfo.symbol}`}
-            </p>
+            </Box>
             {data && (
-              <p className="m-0">
+              <Box textAlign="left">
                 <span>Limit price: </span>{" "}
                 {`${formatUSD(data.minListingPrice)} ${paymentInfo.symbol} ~ ${
                   data.maxListingPrice
                     ? formatUSD(data.maxListingPrice) + " " + paymentInfo.symbol
                     : "No Limit"
                 }`}
-              </p>
+              </Box>
             )}
-            <LoadingButton
-              className="custom-btn custom-font mt-20"
-              onClick={_sendSignalForChain}
-              loading={loading}
-            >
-              {loading ? "" : "Listing"}
-            </LoadingButton>
-          </div>
+            <Box display="flex">
+              <LoadingButton
+                className="custom-btn custom-font mt-20"
+                loading={loading}
+                fullWidth
+                type="submit"
+              >
+                Listing
+              </LoadingButton>
+            </Box>
+          </Box>
         )}
-      </Modal>
+      </CustomBlueSmallModal>
     </>
   ) : null;
 };
@@ -649,7 +666,6 @@ const DelistComponent = ({ data, _handleReload }) => {
 
   const _handleDelist = () => {
     setLoading(true);
-    setShowDelistPopup(false);
     _delete(
       `${EndpointConstant.MARKET_DELIST}?tokenId=${data.tokenId}`,
       null,
@@ -657,9 +673,11 @@ const DelistComponent = ({ data, _handleReload }) => {
         toast.success(`NFT ${data.tokenId} is delist.`);
         setLoading(false);
         _handleReload();
+        setShowDelistPopup(false);
       },
       (error) => {
         dispatch(_showAppError(error));
+        setLoading(false);
       }
     );
   };
@@ -673,12 +691,10 @@ const DelistComponent = ({ data, _handleReload }) => {
       >
         {loading ? <CircularProgress size="29px" /> : "Delist"}
       </Button>
-      <Modal
+      <CustomBlueSmallModal
         open={showDelistPopup}
         onClose={() => setShowDelistPopup(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="custom-modal-vk"
+        isShowCloseButton={true}
       >
         <div className="listing-popup">
           <Typography variant="h6" className="custom-font">
@@ -688,11 +704,12 @@ const DelistComponent = ({ data, _handleReload }) => {
             className="custom-btn custom-font mt-20"
             onClick={_handleDelist}
             loading={loading}
+            fullWidth
           >
-            {loading ? "" : "Delist"}
+            Delist
           </LoadingButton>
         </div>
-      </Modal>
+      </CustomBlueSmallModal>
     </>
   ) : null;
 };

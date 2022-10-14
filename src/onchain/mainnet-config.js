@@ -37,7 +37,7 @@ export const MAINNET_CONFIG = {
       ],
     },
     primaryType: "Detail",
-    MAINNET_DOMAIN,
+    domain: MAINNET_DOMAIN,
     message: {
       ...message,
     },
