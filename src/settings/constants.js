@@ -3,7 +3,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import { AppConfig } from ".";
-
+import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
 export const DEFAULT_PROJECT_TITLE = `NFT Marketplace - Create and sell digital collectibles secured with blockchain`;
@@ -444,5 +444,11 @@ export const PROFILE_MENUS = [
     url: "/profile/wallet",
     label: "WALLET",
     key: "wallet",
+  },
+  {
+    icon: <PrecisionManufacturingIcon />,
+    url: "/profile/ri-factory",
+    label: "RI_FACTORY",
+    key: "ri-factory",
   },
 ];

@@ -5,6 +5,7 @@ import History from "../components/profile/History";
 import MyAccount from "../components/profile/MyAccount";
 import MyItems from "../components/profile/MyItems";
 import MyWallet from "../components/profile/MyWallet";
+import RIFactory from "../components/profile/RIFactory";
 import UserMenu from "../components/profile/UserMenu";
 import "../styles/profile.scss";
 
@@ -37,6 +38,7 @@ const RenderContent = ({ component }) => {
     "my-items": <MyItems />,
     history: <History />,
     wallet: <MyWallet />,
+    "ri-factory": <RIFactory />,
   };
   return Routes[component] ? Routes[component] : null;
 };

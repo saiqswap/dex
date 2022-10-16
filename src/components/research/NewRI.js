@@ -100,7 +100,7 @@ const NewRI = () => {
   let params = { angel: angel, costume: skin, minion_parts: minion };
   const nowTime = moment().unix() * 1000;
   const { user, riStore } = useSelector((state) => state);
-  const { myItems } = user;
+  const { myItems, information } = user;
   const { endTimeServer } = riStore;
   const dispatch = useDispatch();
 
@@ -166,6 +166,7 @@ const NewRI = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
+
   useEffect(() => {
     return () => {
       setMount(false);
@@ -259,7 +260,7 @@ const NewRI = () => {
     ? (angel.properties.riTime * riTimeBonusPercent) / 100
     : 0;
 
-  // console.log(moment().utc().format(""));
+  information.isRIFactory = true;
 
   return (
     <div className="new-ri">
@@ -282,7 +283,6 @@ const NewRI = () => {
           </Button>
         </div>
       )}
-
       {data ? (
         <>
           <Container maxWidth="md">
@@ -299,73 +299,74 @@ const NewRI = () => {
                 </>
               ) : (
                 <>
-                  {inventory.map((item, index) => (
-                    <Grid
-                      item
-                      xs={item.screen.xs}
-                      sm={item.screen.sm}
-                      md={item.screen.md}
-                      key={index}
-                      className={`area-${item.key}`}
-                    >
-                      {params[item.key] && (
-                        <IconButton
-                          className="btn-close"
-                          onClick={() => handleRemoveNFT(item.key)}
-                        >
-                          <Close />
-                        </IconButton>
-                      )}
-                      <div
-                        className={`inventory-box inventory-box--${
-                          item.boxType
-                        } 
-                ${!data && "disable"} `}
-                        onClick={() => {
-                          data && handleClick(item.key);
-                        }}
+                  {!information.isRIFactory &&
+                    inventory.map((item, index) => (
+                      <Grid
+                        item
+                        xs={item.screen.xs}
+                        sm={item.screen.sm}
+                        md={item.screen.md}
+                        key={index}
+                        className={`area-${item.key}`}
                       >
-                        <div className="content">
-                          {!params[item.key] && (
-                            <>
-                              <div className="box-name">
-                                <Typography
-                                  variant="body1"
-                                  className="custom-font"
-                                >
-                                  {item.label}
-                                </Typography>
-                              </div>
-                              {statusGetData ? <CircularProgress /> : <Add />}
-                            </>
-                          )}
-                          {params[item.key] ? (
-                            <img
-                              className={`custom-img ${
-                                item.key === "angel" && "angel"
-                              }`}
-                              src={`${image_url}/body_${formatNftName(
-                                params[item.key].name
-                              )}.png`}
-                              // src={_getNFTImageLink(
-                              //   params[item.key].type,
-                              //   params[item.key].name,
-                              //   params[item.key].level
-                              // )}
-                              alt="nft"
-                            />
-                          ) : null}
-                        </div>
-                        <div className="line"></div>
+                        {params[item.key] && (
+                          <IconButton
+                            className="btn-close"
+                            onClick={() => handleRemoveNFT(item.key)}
+                          >
+                            <Close />
+                          </IconButton>
+                        )}
                         <div
-                          className={`bg-type-nft ${
-                            params[item.key] &&
-                            params[item.key].level.toLowerCase()
-                          }`}
-                        ></div>
-                      </div>
-                    </Grid>
-                  ))}
+                          className={`inventory-box inventory-box--${
+                            item.boxType
+                          } 
+                ${!data && "disable"} `}
+                          onClick={() => {
+                            data && handleClick(item.key);
+                          }}
+                        >
+                          <div className="content">
+                            {!params[item.key] && (
+                              <>
+                                <div className="box-name">
+                                  <Typography
+                                    variant="body1"
+                                    className="custom-font"
+                                  >
+                                    {item.label}
+                                  </Typography>
+                                </div>
+                                {statusGetData ? <CircularProgress /> : <Add />}
+                              </>
+                            )}
+                            {params[item.key] ? (
+                              <img
+                                className={`custom-img ${
+                                  item.key === "angel" && "angel"
+                                }`}
+                                src={`${image_url}/body_${formatNftName(
+                                  params[item.key].name
+                                )}.png`}
+                                // src={_getNFTImageLink(
+                                //   params[item.key].type,
+                                //   params[item.key].name,
+                                //   params[item.key].level
+                                // )}
+                                alt="nft"
+                              />
+                            ) : null}
+                          </div>
+                          <div className="line"></div>
+                          <div
+                            className={`bg-type-nft ${
+                              params[item.key] &&
+                              params[item.key].level.toLowerCase()
+                            }`}
+                          ></div>
+                        </div>
+                      </Grid>
+                    ))}
                 </>
               )}
             </Grid>
@@ -374,7 +375,11 @@ const NewRI = () => {
                 {!params.angel && (
                   <Hidden mdDown>
                     <div className="slogan" id="mess">
-                      <p>Automated research system ready!</p>
+                      <p>
+                        {information.isRIFactory
+                          ? "Automated research has been setup!"
+                          : "Automated research system ready!"}
+                      </p>
                     </div>
                   </Hidden>
                 )}
