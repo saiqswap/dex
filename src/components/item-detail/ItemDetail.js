@@ -472,7 +472,7 @@ const MintComponent = ({ data, _handleReload }) => {
       )}
       <CustomBlueSmallModal
         open={showMintingPopup}
-        onClose={() => setShowMintingPopup(false)}
+        _close={() => setShowMintingPopup(false)}
         isShowCloseButton={!loading}
       >
         <div className="listing-popup">
@@ -597,7 +597,7 @@ const ListingComponent = ({ data, _handleReload, paymentInfo }) => {
       </Button>
       <CustomBlueSmallModal
         open={showListingPopup}
-        onClose={() => setShowListingPopup(false)}
+        _close={() => setShowListingPopup(false)}
         isShowCloseButton={!loading}
       >
         {data && (
@@ -692,7 +692,7 @@ const DelistComponent = ({ data, _handleReload }) => {
       </Button>
       <CustomBlueSmallModal
         open={showDelistPopup}
-        onClose={() => setShowDelistPopup(false)}
+        _close={() => setShowDelistPopup(false)}
         isShowCloseButton={true}
       >
         <div className="listing-popup">
