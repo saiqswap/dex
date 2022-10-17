@@ -12,11 +12,9 @@ export const hostname = window.location.hostname.replace("www.", "");
 
 //setup environment
 export let AppConfig = production;
-if ([""].includes(hostname)) {
+if (["localhost"].includes(hostname)) {
   AppConfig = local;
-} else if (
-  ["localhost", "marketplaceinfinity.feliciastation.com"].includes(hostname)
-) {
+} else if (["1", "marketplaceinfinity.feliciastation.com"].includes(hostname)) {
   AppConfig = develop;
 } else if (["marketplace.megdev.co"].includes(hostname)) {
   AppConfig = staging;

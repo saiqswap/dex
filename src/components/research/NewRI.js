@@ -260,7 +260,7 @@ const NewRI = () => {
     ? (angel.properties.riTime * riTimeBonusPercent) / 100
     : 0;
 
-  information.isRIFactory = true;
+  // information.isRIFactory = true;
 
   return (
     <div className="new-ri">
