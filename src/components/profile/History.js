@@ -129,7 +129,15 @@ const History = () => {
       columns: [
         { key: "id", label: "", format: (e) => `#${e}` },
         { key: "type", label: "TYPE", format: (e) => e.replace(/_/g, " ") },
-        { key: "refId", label: "NFT_ID", format: (e) => e },
+        {
+          key: "refId",
+          label: "NFT_ID",
+          format: (e) => (
+            <a target="_blank" rel="noreferrer" href={`/details/${e}`}>
+              {e}
+            </a>
+          ),
+        },
         {
           key: "txHash",
           label: "TX_HASH",
