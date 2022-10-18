@@ -303,6 +303,7 @@ const Information = ({
             <img src="/images/coins/INC.png" width="50px" alt="ing-logo" />
           ),
           step: "any",
+          type: "number",
         }}
         fullWidth
         label="INC amount"

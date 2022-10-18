@@ -102,7 +102,7 @@ export default function ClaimForm({ open, _onClose }) {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             aria-describedby="outlined-weight-helper-text"
-            InputProps={{
+            inputProps={{
               endAdornment: (
                 <InputAdornment position="end" style={{ opacity: 0.5 }}>
                   <Typography variant="body1" className="custom-font">
@@ -117,6 +117,8 @@ export default function ClaimForm({ open, _onClose }) {
                   </Typography>
                 </InputAdornment>
               ),
+              step: "any",
+              type: "number",
             }}
             fullWidth
           />
