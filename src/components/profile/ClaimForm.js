@@ -20,6 +20,7 @@ import {
 } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
+import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
 import CustomNumberInput from "../common/CustomNumberInput";
 
 export default function ClaimForm({ open, _onClose }) {
@@ -74,13 +75,7 @@ export default function ClaimForm({ open, _onClose }) {
   const willGet = parseNumber(amount) - f;
 
   return (
-    <Modal
-      open={open}
-      onClose={_onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      className="custom-modal-vk claim-confirm"
-    >
+    <CustomBlueSmallModal open={open} _close={_onClose}>
       {tokenInformation ? (
         <div className="listing-popup">
           <Typography variant="h6" className="custom-font">
@@ -162,6 +157,6 @@ export default function ClaimForm({ open, _onClose }) {
       ) : (
         <div />
       )}
-    </Modal>
+    </CustomBlueSmallModal>
   );
 }
