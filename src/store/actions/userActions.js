@@ -57,6 +57,7 @@ export const _getNewProfile = () => (dispatch) => {
   get(
     ENDPOINT_GET_PROFILE,
     (data) => {
+      data.isRIFactory = true;
       dispatch({
         type: FETCH_USER,
         payload: data,

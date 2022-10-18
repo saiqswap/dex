@@ -43,24 +43,23 @@ const RISpecialRooms = () => {
   const { information } = user;
   const [page, setPage] = useState(1);
 
+  console.log(information);
+
   useEffect(() => {
     if (information) {
       setData(null);
       get(
-        `${EndpointConstant.NFT_RI}?page=${page}&pageSize=6`,
+        `${EndpointConstant.NFT_RI}?page=${page}&pageSize=${information.limitRiSlot}`,
         (data) => {
-          if (mounted) {
-            data.items = data.items.filter((item) => item.angel);
-            data.items.reverse();
-            setData(data);
-            setReload(false);
-          }
+          data.items = data.items.filter((item) => item.angel);
+          data.items.reverse();
+          setData(data);
+          setReload(false);
         },
         () => toast.error("error")
       );
     }
-    return () => setMounted(false);
-  }, [information, mounted, page, reload]);
+  }, [information, page]);
 
   return data ? (
     <div className="research-room">
@@ -172,7 +171,7 @@ const RISpecialRooms = () => {
                       <div></div>
                     </div>
                   </Box>
-                  <BoxItem>{index + 1}</BoxItem>
+                  <BoxItem>{item.id}</BoxItem>
                 </Box>
               </Grid>
             ))}
@@ -183,7 +182,7 @@ const RISpecialRooms = () => {
             variant="outlined"
             shape="rounded"
             onChange={(e, nextPage) => setPage(nextPage)}
-            defaultPage={page}
+            page={page}
           />
         )}
       </Container>

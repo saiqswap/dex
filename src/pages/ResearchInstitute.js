@@ -51,8 +51,6 @@ const RenderContent = ({ component }) => {
   const { user, riStore } = useSelector((state) => state);
   const { myItems, information } = user;
 
-  // information.isRIFactory = true;
-
   const Routes = {
     "R-I": <NewRI />,
     slot: information ? (
