@@ -282,6 +282,11 @@ const HistoryTable = ({ menu }) => {
   const [page, setPage] = useState(1);
   const { setting } = useSelector((state) => state);
   const { library } = setting;
+  const [mounted, setMounted] = useState(true);
+
+  useEffect(() => {
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     setHistory(null);
@@ -295,7 +300,9 @@ const HistoryTable = ({ menu }) => {
           EndpointConstant.FUND_WITHDRAW_GET_GET_LIST,
           params,
           (data) => {
-            setHistory(data);
+            if (mounted) {
+              setHistory(data);
+            }
           },
           (error) => console.error(error)
         );
@@ -311,7 +318,9 @@ const HistoryTable = ({ menu }) => {
           EndpointConstant.FUND_BALANCE_LOGS,
           params,
           (data) => {
-            setHistory(data);
+            if (mounted) {
+              setHistory(data);
+            }
           },
           (error) => console.error(error)
         );
@@ -325,7 +334,9 @@ const HistoryTable = ({ menu }) => {
           EndpointConstant.NFT_TRANSACTION_LIST,
           params,
           (data) => {
-            setHistory(data);
+            if (mounted) {
+              setHistory(data);
+            }
           },
           (error) => console.error(error)
         );
@@ -345,9 +356,7 @@ const HistoryTable = ({ menu }) => {
         (error) => console.error(error)
       );
     }
-  }, [menu, page]);
-
-  console.log(history);
+  }, [menu, mounted, page]);
 
   return (
     <>
