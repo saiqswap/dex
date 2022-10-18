@@ -7,12 +7,11 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/system";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import Loader from "../components/common/Loader";
 import ItemDetail from "../components/item-detail/ItemDetail";
 import { API } from "../settings";
@@ -34,6 +33,7 @@ export default function NFTDetail() {
   const { myItems, information } = user;
   const { config } = setting;
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const _handleReload = () =>
     setTimeout(() => {
@@ -74,13 +74,17 @@ export default function NFTDetail() {
     if (config) {
       if (!myItems) {
         getNftDetail(id, (result) => {
-          setData({
-            ...result,
-            tokenId: id,
-            paymentInformation: config.contracts.find(
-              (e) => e.contractAddress === result.paymentContract
-            ),
-          });
+          if (result.tokenId) {
+            setData({
+              ...result,
+              tokenId: id,
+              paymentInformation: config.contracts.find(
+                (e) => e.contractAddress === result.paymentContract
+              ),
+            });
+          } else {
+            history.push("/marketplace");
+          }
         });
       }
     }
