@@ -146,14 +146,16 @@ export default function SwapPage() {
           amount: fFromAmount,
         },
         (data) => {
-          setTimeout(() => {
-            setLoading(false);
-            setTimeout(() => {
-              setFromAmount("0");
-              setActiveStep(0);
-            }, 500);
-          }, 3000);
-          setVerifySwap(data);
+          toast.success("Success");
+          // setTimeout(() => {
+          setLoading(false);
+          // setTimeout(() => {
+          setFromAmount("0");
+          setActiveStep(0);
+          setChecked(false);
+          // }, 500);
+          // }, 3000);
+          // setVerifySwap(data);
           dispatch(_getBalance());
         },
         (error) => {

@@ -99,7 +99,7 @@ const MyWallet = () => {
                         </div>
                         <img src={item.symbol} alt="symbol" width="60px" />
                       </Box>
-                      {item.key === "INC" &&
+                      {/* {item.key === "INC" &&
                         parseFloat(
                           formatNumberWithDecimal(funds[item.key].amount, 2)
                         ) > 0 &&
@@ -110,7 +110,7 @@ const MyWallet = () => {
                           >
                             Swap
                           </Button>
-                        )}
+                        )} */}
                       {item.key === "ING" &&
                         parseFloat(
                           formatNumberWithDecimal(funds[item.key].amount, 2)
@@ -139,7 +139,7 @@ const MyWallet = () => {
           </div>
         </Container>
       )}
-      <SwapForm showSwap={showSwap} _close={() => setShowSwap(false)} />
+      {/* <SwapForm showSwap={showSwap} _close={() => setShowSwap(false)} /> */}
       <ClaimForm open={showClaim} _onClose={() => setShowClaim(false)} />
     </div>
   );
