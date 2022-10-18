@@ -44,6 +44,10 @@ const History = () => {
           label: "ASSET",
         },
         {
+          key: "status",
+          label: "STATUS",
+        },
+        {
           key: "txHash",
           label: "TX_HASH",
           format: (e) => (
@@ -85,10 +89,10 @@ const History = () => {
           key: "asset",
           label: "ASSET",
         },
-        {
-          key: "text",
-          label: "NOTE",
-        },
+        // {
+        //   key: "text",
+        //   label: "NOTE",
+        // },
         {
           key: "createdTime",
           label: "TIME",

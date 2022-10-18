@@ -198,4 +198,7 @@ export const en = {
   TRANSACTIONS: "Transactions",
   NOTE: "Note",
   NFT: "NFT",
+  //221018
+  STATUS: "Status",
+  PLEASE_LOGIN: "You must login in to continue.",
 };

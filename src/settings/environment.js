@@ -263,8 +263,8 @@ export const production = {
   has_listing: true,
   has_buy: true,
   OPEN_FEATURES: {
-    isSwap: false,
-    isClaim: false,
+    isSwap: true,
+    isClaim: true,
     hasPresale: false,
   },
   MAIN_MENUS: [

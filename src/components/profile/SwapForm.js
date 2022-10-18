@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
-import { formatNumberWithDecimal } from "../../settings/format";
+import { formatNumberWithDecimal, _formatNumber } from "../../settings/format";
 import { _showAppError } from "../../store/actions/settingActions";
 import { _getBalance } from "../../store/actions/userActions";
 import { post } from "../../utils/api";
@@ -78,7 +78,7 @@ export default function SwapForm({ showSwap, _close }) {
   };
 
   const _checkVerifySwap = (_callback) => {
-    const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
+    const fFromAmount = parseFloat(_formatNumber(fromAmount));
     if (!fFromAmount) {
       toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
     } else if (fFromAmount > availableAmount) {
@@ -109,7 +109,7 @@ export default function SwapForm({ showSwap, _close }) {
     if (checked) {
       setLoading(true);
       _handleNext();
-      const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
+      const fFromAmount = parseFloat(_formatNumber(fromAmount));
       post(
         EndpointConstant.FUND_SWAP,
         {
@@ -255,9 +255,7 @@ const Information = ({
       <Box textAlign="right">
         <Typography
           variant="caption"
-          onClick={() =>
-            _handleChangeFromAmount(formatNumberWithDecimal(availableAmount, 2))
-          }
+          onClick={() => _handleChangeFromAmount(availableAmount.toString())}
           sx={{
             cursor: "pointer",
           }}

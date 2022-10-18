@@ -1,9 +1,11 @@
+import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
+  Hidden,
+  Link,
   Step,
   StepLabel,
   Stepper,
@@ -11,24 +13,21 @@ import {
   Typography,
 } from "@mui/material";
 import React, { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { useDispatch, useSelector } from "react-redux";
-import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
 import { toast } from "react-toastify";
-import { post } from "../utils/api";
-import { EndpointConstant } from "../settings/endpoint";
-import { _showAppError } from "../store/actions/settingActions";
-import { _getBalance } from "../store/actions/userActions";
-import CustomLoader from "../components/common/CustomLoader";
+import PolicyCheck from "../components/box-minting/PolicyCheck";
 import {
   CustomButton,
   CustomLoadingButton,
 } from "../components/common/CustomButton";
-import { CoinList } from "../settings/constants";
+import CustomLoader from "../components/common/CustomLoader";
 import CustomNumberInput from "../components/common/CustomNumberInput";
-import PolicyCheck from "../components/box-minting/PolicyCheck";
-import Title from "../components/box-minting/Title";
+import SwapBalances from "../components/swap/SwapBalances";
+import { EndpointConstant } from "../settings/endpoint";
+import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
+import { _showAppError } from "../store/actions/settingActions";
+import { _getBalance } from "../store/actions/userActions";
+import { post } from "../utils/api";
 
 const CustomStepper = styled(Stepper)(({ theme }) => ({
   color: "red",
@@ -51,19 +50,23 @@ const CustomFixedBox = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  top: 0,
+  top: theme.spacing(5),
   left: 0,
   flexDirection: "column",
+  padding: theme.spacing(1),
 }));
 
 const CustomBox = styled(Box)(({ theme }) => ({
   backgroundColor: "rgba(0, 51, 98, 0.1)!important",
   backdropFilter: "blur(20px)",
   border: "1px solid var(--border-color)",
-  borderRadius: "20px",
+  borderRadius: theme.spacing(2),
   width: "100%",
   maxWidth: 500,
   padding: theme.spacing(5),
+  [theme.breakpoints.down("md")]: {
+    padding: theme.spacing(2),
+  },
 }));
 
 export default function SwapPage() {
@@ -74,7 +77,7 @@ export default function SwapPage() {
   const [skipped, setSkipped] = useState(new Set());
   const [checked, setChecked] = useState(false);
   const { user } = useSelector((state) => state);
-  const { balances } = user;
+  const { balances, information } = user;
   const [availableAmount, setAvailableAmount] = useState(0);
   const [verifySwap, setVerifySwap] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -106,30 +109,34 @@ export default function SwapPage() {
   };
 
   const _checkVerifySwap = (_callback) => {
-    const fFromAmount = parseFloat(_formatNumber(fromAmount, 2));
-    if (!fFromAmount) {
-      toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
-    } else if (fFromAmount > availableAmount) {
-      toast.error(library.INSUFFICIENT_BALANCE);
+    if (information) {
+      const fFromAmount = parseFloat(_formatNumber(fromAmount, 2));
+      if (!fFromAmount) {
+        toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
+      } else if (fFromAmount > availableAmount) {
+        toast.error(library.INSUFFICIENT_BALANCE);
+      } else {
+        setLoading(true);
+        post(
+          EndpointConstant.FUND_VERIFY_SWAP,
+          {
+            asset: "INC",
+            quoteAsset: "ING",
+            amount: fFromAmount,
+          },
+          (data) => {
+            setVerifySwap(data);
+            _callback();
+            setLoading(false);
+          },
+          (error) => {
+            dispatch(_showAppError(error));
+            setLoading(false);
+          }
+        );
+      }
     } else {
-      setLoading(true);
-      post(
-        EndpointConstant.FUND_VERIFY_SWAP,
-        {
-          asset: "INC",
-          quoteAsset: "ING",
-          amount: fFromAmount,
-        },
-        (data) => {
-          setVerifySwap(data);
-          _callback();
-          setLoading(false);
-        },
-        (error) => {
-          dispatch(_showAppError(error));
-          setLoading(false);
-        }
-      );
+      toast.error(library.PLEASE_LOGIN);
     }
   };
 
@@ -219,6 +226,7 @@ export default function SwapPage() {
   ];
   return (
     <CustomFixedBox>
+      <SwapBalances />
       <CustomBox>
         <Box
           component="form"
@@ -226,20 +234,22 @@ export default function SwapPage() {
           onSubmit={handleNext}
           noValidate
         >
-          <CustomStepper activeStep={activeStep}>
-            {steps.map((step, index) => {
-              const stepProps = {};
-              const labelProps = {};
-              if (isStepSkipped(index)) {
-                stepProps.completed = false;
-              }
-              return (
-                <Step key={step.label} {...stepProps}>
-                  <StepLabel {...labelProps}>{step.label}</StepLabel>
-                </Step>
-              );
-            })}
-          </CustomStepper>
+          <Hidden smDown>
+            <CustomStepper activeStep={activeStep}>
+              {steps.map((step, index) => {
+                const stepProps = {};
+                const labelProps = {};
+                if (isStepSkipped(index)) {
+                  stepProps.completed = false;
+                }
+                return (
+                  <Step key={step.label} {...stepProps}>
+                    <StepLabel {...labelProps}>{step.label}</StepLabel>
+                  </Step>
+                );
+              })}
+            </CustomStepper>
+          </Hidden>
           <Fragment>
             <Box my={5}>{steps[activeStep].component}</Box>
             <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -279,17 +289,13 @@ const Information = ({
   const { library } = setting;
   return (
     <>
-      <Box textAlign="right">
-        <Typography
-          variant="caption"
+      <Box textAlign="right" mb={0.5}>
+        <Link
           onClick={() => _handleChangeFromAmount(availableAmount.toString())}
-          sx={{
-            cursor: "pointer",
-          }}
+          sx={{ cursor: "pointer" }}
         >
-          {library.BALANCE}: {formatNumberWithDecimal(availableAmount, 2)}{" "}
-          {CoinList.INC}
-        </Typography>
+          {library.MAXIMUM}
+        </Link>
       </Box>
       <CustomNumberInput
         InputProps={{
