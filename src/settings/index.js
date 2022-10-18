@@ -6,7 +6,6 @@ export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const DEVICE_KEY = "uU5tEUmAgvBWArsv";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
 export const S3_URL = "/images/";
-export const explorer_url = "https://bscscan.com/tx";
 export const PROJECT_LOCATION = "GLOBAL";
 export const hostname = window.location.hostname.replace("www.", "");
 
@@ -24,6 +23,7 @@ if ([""].includes(hostname)) {
   AppConfig = production;
 }
 export const { API, image_url } = AppConfig;
+export const explorer_url = `${AppConfig.ETHERSCAN_LINK}/tx`;
 
 export const makeID = (length) => {
   var result = "";

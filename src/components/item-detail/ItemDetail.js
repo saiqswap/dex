@@ -66,6 +66,9 @@ const ItemDetail = ({ data, _handleReload }) => {
   let paymentInfo = {};
   const [loadingActionButton, setLoadingActionButton] = useState(false);
   const { information } = user;
+  const [isMinting, setIsMinting] = useState(false);
+
+  const _handleMinting = (value) => setIsMinting(value);
 
   useEffect(() => {
     setLoadingActionButton(true);
@@ -175,7 +178,12 @@ const ItemDetail = ({ data, _handleReload }) => {
                 );
               } else {
                 ActionButton = () => (
-                  <MintComponent data={data} _handleReload={_reload} />
+                  <MintComponent
+                    data={data}
+                    isMinting={isMinting}
+                    _handleReload={_reload}
+                    _handleMinting={_handleMinting}
+                  />
                 );
               }
             }
@@ -257,12 +265,24 @@ const ItemDetail = ({ data, _handleReload }) => {
           </div>
         </Grid>
         <Grid item xs={12} md={6}>
-          <div className="impact">
-            <div className="nft-price">{renderPrice()}</div>
-            <div className="nft-impacting">
-              <ActionButton />
-            </div>
-          </div>
+          <Box className="impact" display="block!important">
+            <Box display="flex" justifyContent="space-between">
+              <div className="nft-price">{renderPrice()}</div>
+              <div className="nft-impacting">
+                <ActionButton />
+              </div>
+            </Box>
+            {isMinting && (
+              <Typography
+                sx={{ mt: 3 }}
+                variant="body2"
+                color="var(--angel-type-4)"
+              >
+                NOTICE: Mining takes place on the blockchain which can take up
+                to 3 minutes. Please wait.
+              </Typography>
+            )}
+          </Box>
         </Grid>
         <Grid item xs={12} md={6} style={{ position: "relative" }}>
           <Box
@@ -414,14 +434,13 @@ const ItemDetail = ({ data, _handleReload }) => {
 
 export default ItemDetail;
 
-const MintComponent = ({ data, _handleReload }) => {
+const MintComponent = ({ data, isMinting, _handleReload, _handleMinting }) => {
   const [showMintingPopup, setShowMintingPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const _handleMinNFT = () => {
-    setLoading(true);
     setShowMintingPopup(false);
+    _handleMinting(true);
     post(
       `${EndpointConstant.NFT_MINT}?tokenId=${data.tokenId.toString()}`,
       null,
@@ -435,19 +454,20 @@ const MintComponent = ({ data, _handleReload }) => {
               if (res.mintTxHash) {
                 _handleReload();
                 clearInterval(temp);
+                _handleMinting(false);
               }
             },
             (error) => {
               dispatch(_showAppError(error));
-              setLoading(false);
               clearInterval(temp);
+              _handleMinting(false);
             }
           );
         }, 5000);
       },
       (error) => {
         dispatch(_showAppError(error));
-        setLoading(false);
+        _handleMinting(false);
       }
     );
   };
@@ -458,9 +478,9 @@ const MintComponent = ({ data, _handleReload }) => {
         <Button
           className="btn-listing"
           onClick={() => setShowMintingPopup(true)}
-          disabled={loading}
+          disabled={isMinting}
         >
-          {loading ? (
+          {isMinting ? (
             <>
               <Typography mr={1}>Minting</Typography>
               <CircularProgress size="20px" />{" "}
@@ -473,7 +493,7 @@ const MintComponent = ({ data, _handleReload }) => {
       <CustomBlueSmallModal
         open={showMintingPopup}
         _close={() => setShowMintingPopup(false)}
-        isShowCloseButton={!loading}
+        isShowCloseButton={!isMinting}
       >
         <div className="listing-popup">
           <Typography variant="h6" className="custom-font">
@@ -482,10 +502,10 @@ const MintComponent = ({ data, _handleReload }) => {
           <LoadingButton
             className="custom-btn custom-font mt-20"
             onClick={_handleMinNFT}
-            loading={loading}
+            loading={isMinting}
             fullWidth
           >
-            {"Mint NFT"}
+            Mint NFT
           </LoadingButton>
         </div>
       </CustomBlueSmallModal>

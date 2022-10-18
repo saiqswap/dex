@@ -44,6 +44,10 @@ const History = () => {
           label: "ASSET",
         },
         {
+          key: "status",
+          label: "STATUS",
+        },
+        {
           key: "txHash",
           label: "TX_HASH",
           format: (e) => (
@@ -85,10 +89,10 @@ const History = () => {
           key: "asset",
           label: "ASSET",
         },
-        {
-          key: "text",
-          label: "NOTE",
-        },
+        // {
+        //   key: "text",
+        //   label: "NOTE",
+        // },
         {
           key: "createdTime",
           label: "TIME",
@@ -128,8 +132,20 @@ const History = () => {
       type: ["BUY_NFT", "DELIST", "LISTING", "SELL_NFT"],
       columns: [
         { key: "id", label: "", format: (e) => `#${e}` },
-        { key: "type", label: "TYPE", format: (e) => e.replace(/_/g, " ") },
-        { key: "refId", label: "NFT_ID", format: (e) => e },
+        {
+          key: "type",
+          label: "TYPE",
+          format: (e) => (e ? e.replace(/_/g, " ") : ""),
+        },
+        {
+          key: "refId",
+          label: "NFT_ID",
+          format: (e) => (
+            <a target="_blank" rel="noreferrer" href={`/details/${e}`}>
+              {e}
+            </a>
+          ),
+        },
         {
           key: "txHash",
           label: "TX_HASH",
@@ -266,6 +282,11 @@ const HistoryTable = ({ menu }) => {
   const [page, setPage] = useState(1);
   const { setting } = useSelector((state) => state);
   const { library } = setting;
+  const [mounted, setMounted] = useState(true);
+
+  useEffect(() => {
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     setHistory(null);
@@ -279,7 +300,9 @@ const HistoryTable = ({ menu }) => {
           EndpointConstant.FUND_WITHDRAW_GET_GET_LIST,
           params,
           (data) => {
-            setHistory(data);
+            if (mounted) {
+              setHistory(data);
+            }
           },
           (error) => console.error(error)
         );
@@ -295,7 +318,9 @@ const HistoryTable = ({ menu }) => {
           EndpointConstant.FUND_BALANCE_LOGS,
           params,
           (data) => {
-            setHistory(data);
+            if (mounted) {
+              setHistory(data);
+            }
           },
           (error) => console.error(error)
         );
@@ -309,7 +334,9 @@ const HistoryTable = ({ menu }) => {
           EndpointConstant.NFT_TRANSACTION_LIST,
           params,
           (data) => {
-            setHistory(data);
+            if (mounted) {
+              setHistory(data);
+            }
           },
           (error) => console.error(error)
         );
@@ -329,7 +356,7 @@ const HistoryTable = ({ menu }) => {
         (error) => console.error(error)
       );
     }
-  }, [menu, page]);
+  }, [menu, mounted, page]);
 
   return (
     <>

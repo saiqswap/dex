@@ -14,7 +14,6 @@ const CustomInput = styled(TextField)(({ theme }) => ({
 export default function CustomNumberInput(props) {
   return (
     <CustomInput
-      type="number"
       onKeyDown={(e) => {
         if (["-", "+", "e", "E"].includes(e.key)) {
           e.preventDefault();
@@ -23,6 +22,9 @@ export default function CustomNumberInput(props) {
           e.preventDefault();
         }
       }}
+      // InputProps={{
+      //   type: "number",
+      // }}
       {...props}
     />
   );

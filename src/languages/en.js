@@ -198,8 +198,14 @@ export const en = {
   TRANSACTIONS: "Transactions",
   NOTE: "Note",
   NFT: "NFT",
+<<<<<<< HEAD
   //221016
   RI_FACTORY: "R-I Factory",
   ACCOUNTS: "Accounts",
   SWAP_WITHDRAWAL: "Swap/Withdrawal",
+=======
+  //221018
+  STATUS: "Status",
+  PLEASE_LOGIN: "You must login in to continue.",
+>>>>>>> master
 };
