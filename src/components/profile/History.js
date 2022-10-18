@@ -132,7 +132,11 @@ const History = () => {
       type: ["BUY_NFT", "DELIST", "LISTING", "SELL_NFT"],
       columns: [
         { key: "id", label: "", format: (e) => `#${e}` },
-        { key: "type", label: "TYPE", format: (e) => e.replace(/_/g, " ") },
+        {
+          key: "type",
+          label: "TYPE",
+          format: (e) => (e ? e.replace(/_/g, " ") : ""),
+        },
         {
           key: "refId",
           label: "NFT_ID",
@@ -342,6 +346,8 @@ const HistoryTable = ({ menu }) => {
       );
     }
   }, [menu, page]);
+
+  console.log(history);
 
   return (
     <>
