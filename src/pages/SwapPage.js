@@ -14,7 +14,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import { useDispatch, useSelector } from "react-redux";
-import { formatNumberWithDecimal } from "../settings/format";
+import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
 import { toast } from "react-toastify";
 import { post } from "../utils/api";
 import { EndpointConstant } from "../settings/endpoint";
@@ -28,6 +28,7 @@ import {
 import { CoinList } from "../settings/constants";
 import CustomNumberInput from "../components/common/CustomNumberInput";
 import PolicyCheck from "../components/box-minting/PolicyCheck";
+import Title from "../components/box-minting/Title";
 
 const CustomStepper = styled(Stepper)(({ theme }) => ({
   color: "red",
@@ -52,6 +53,7 @@ const CustomFixedBox = styled(Box)(({ theme }) => ({
   alignItems: "center",
   top: 0,
   left: 0,
+  flexDirection: "column",
 }));
 
 const CustomBox = styled(Box)(({ theme }) => ({
@@ -61,10 +63,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
   borderRadius: "20px",
   width: "100%",
   maxWidth: 500,
-  paddingTop: theme.spacing(10),
-  paddingBottom: theme.spacing(10),
-  paddingLeft: theme.spacing(5),
-  paddingRight: theme.spacing(5),
+  padding: theme.spacing(5),
 }));
 
 export default function SwapPage() {
@@ -107,7 +106,7 @@ export default function SwapPage() {
   };
 
   const _checkVerifySwap = (_callback) => {
-    const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
+    const fFromAmount = parseFloat(_formatNumber(fromAmount, 2));
     if (!fFromAmount) {
       toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
     } else if (fFromAmount > availableAmount) {
@@ -119,7 +118,7 @@ export default function SwapPage() {
         {
           asset: "INC",
           quoteAsset: "ING",
-          amount: fromAmount,
+          amount: fFromAmount,
         },
         (data) => {
           setVerifySwap(data);
@@ -138,7 +137,7 @@ export default function SwapPage() {
     if (checked) {
       setLoading(true);
       _handleNext();
-      const fFromAmount = parseFloat(formatNumberWithDecimal(fromAmount, 2));
+      const fFromAmount = parseFloat(_formatNumber(fromAmount, 2));
       post(
         EndpointConstant.FUND_SWAP,
         {
@@ -197,7 +196,6 @@ export default function SwapPage() {
         <ConfirmComponent
           verifySwap={verifySwap}
           fromAmount={fromAmount}
-          // toAmount={verifySwap.amount}
           checked={checked}
           _handleChecked={(e) => setChecked(e.target.checked)}
         />
@@ -282,9 +280,7 @@ const Information = ({
       <Box textAlign="right">
         <Typography
           variant="caption"
-          onClick={() =>
-            _handleChangeFromAmount(formatNumberWithDecimal(availableAmount, 2))
-          }
+          onClick={() => _handleChangeFromAmount(availableAmount.toString())}
           sx={{
             cursor: "pointer",
           }}

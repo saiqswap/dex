@@ -1,10 +1,9 @@
-import { LoadingButton } from "@mui/lab";
 import {
-  Button,
+  Box,
   Divider,
   Grid,
   InputAdornment,
-  Modal,
+  Link,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -13,7 +12,12 @@ import { toast } from "react-toastify";
 import { provider } from "../../onchain/onchain";
 import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
-import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
+import {
+  formatNumberWithDecimal,
+  formatUSD,
+  _formatNumber,
+} from "../../settings/format";
+import { _showAppError } from "../../store/actions/settingActions";
 import {
   _getBalance,
   _getOnchainBalance,
@@ -21,6 +25,7 @@ import {
 import { post } from "../../utils/api";
 import { parseNumber } from "../../utils/util";
 import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
+import { CustomLoadingButton } from "../common/CustomButton";
 import CustomNumberInput from "../common/CustomNumberInput";
 
 export default function ClaimForm({ open, _onClose }) {
@@ -34,6 +39,12 @@ export default function ClaimForm({ open, _onClose }) {
   const [tokenInformation, setTokenInformation] = useState(null);
 
   useEffect(() => {
+    if (!open) {
+      setAmount(0);
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (balances) {
       const tempTokenInformation = balances.find(
         (b) => b.asset === CoinList.ING
@@ -44,28 +55,29 @@ export default function ClaimForm({ open, _onClose }) {
 
   const handleClaim = () => {
     setLoading(true);
-    const fAmount = parseFloat(formatNumberWithDecimal(amount, 2));
-    post(
-      `${EndpointConstant.FUND_WITHDRAW}?asset=${CoinList.INC}&amount=${fAmount}`,
-      null,
-      () => {
-        toast.success("Claim success...!");
-        dispatch(_getOnchainBalance(config.contracts, walletAddress, provider));
-        dispatch(_getBalance());
-        setLoading(false);
-        _onClose();
-      },
-      (error) => {
-        toast.error(library.SOMETHING_WRONG);
-        toast.error(library[error.code]);
-        setLoading(false);
-      }
-    );
-  };
-
-  const handleCancelConfirm = () => {
-    _onClose();
-    setAmount(0);
+    const fAmount = parseFloat(_formatNumber(amount, 2));
+    if (fAmount && fAmount > 0) {
+      post(
+        `${EndpointConstant.FUND_WITHDRAW}?asset=${CoinList.INC}&amount=${fAmount}`,
+        null,
+        () => {
+          toast.success("Claim success...!");
+          dispatch(
+            _getOnchainBalance(config.contracts, walletAddress, provider)
+          );
+          dispatch(_getBalance());
+          setLoading(false);
+          _onClose();
+        },
+        (error) => {
+          dispatch(_showAppError(error));
+          setLoading(false);
+        }
+      );
+    } else {
+      toast.error(library.PLEASE_ENTER_AMOUNT);
+      setLoading(false);
+    }
   };
 
   const Fee = tokenInformation
@@ -75,14 +87,18 @@ export default function ClaimForm({ open, _onClose }) {
   const willGet = parseNumber(amount) - f;
 
   return (
-    <CustomBlueSmallModal open={open} _close={_onClose}>
+    <CustomBlueSmallModal
+      open={open}
+      _close={_onClose}
+      isShowCloseButton={!loading}
+    >
       {tokenInformation ? (
         <div className="listing-popup">
           <Typography variant="h6" className="custom-font">
             {library.CLAIM} {tokenInformation.key} {library.CONFIRMATION}
           </Typography>
           <CustomNumberInput
-            className="custom-font input txt-right"
+            className="custom-font txt-right"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             aria-describedby="outlined-weight-helper-text"
@@ -102,55 +118,62 @@ export default function ClaimForm({ open, _onClose }) {
                 </InputAdornment>
               ),
             }}
+            fullWidth
           />
-          <div className="mt-20 available">
-            <span>{library.AVAILABLE}:</span>
-            <span className="value">
-              {formatUSD(tokenInformation.amount)} {tokenInformation.asset}
-            </span>
-            <span
-              className="link"
-              onClick={() => setAmount(formatUSD(tokenInformation.amount))}
+          <Box
+            display="flex"
+            justifyContent={"space-between"}
+            mt={2}
+            alignItems="center"
+          >
+            <Typography variant="body2">
+              {library.AVAILABLE}:{" "}
+              {formatNumberWithDecimal(tokenInformation.amount, 2)}{" "}
+              {tokenInformation.asset}
+            </Typography>
+            <Link
+              onClick={() => {
+                setAmount(tokenInformation.amount.toString());
+              }}
+              sx={{ cursor: "pointer" }}
             >
               {library.MAXIMUM}
-            </span>
-          </div>
-          <Divider className="mt-20" />
-          <Grid container alignItems={"center"} className="mt-20">
+            </Link>
+          </Box>
+          <Divider sx={{ mt: 2, mb: 2 }} />
+          <Grid container alignItems={"center"}>
             <Grid item xs={12}>
-              <Typography variant="caption" className="mt-20">
-                <span>{library.FEE}:</span>
-                <span className="value">
+              <Box textAlign="left">
+                <Typography variant="body2">
+                  {library.FEE}:{" "}
                   {f
                     ? `${formatUSD(f)} ${Fee.symbol}`
                     : `0 ${tokenInformation.asset}`}
-                </span>
-              </Typography>
+                </Typography>
+              </Box>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="caption">
-                <span>{library.WILL_GET}:</span>
-                <span className="value">{`${
-                  willGet > 0 ? formatUSD(willGet) : 0
-                } ${tokenInformation.asset}`}</span>
-              </Typography>
+              <Box textAlign="left">
+                <Typography variant="body2">
+                  {library.WILL_GET}:{" "}
+                  {`${willGet > 0 ? formatUSD(willGet) : 0} ${
+                    tokenInformation.asset
+                  }`}
+                </Typography>
+              </Box>
             </Grid>
             <Grid item xs={12}>
-              <div className="submit-form">
-                <Button
-                  className="custom-font btn-cancel"
-                  onClick={() => handleCancelConfirm(null)}
-                >
-                  {library.CANCEL}
-                </Button>
-                <LoadingButton
-                  className="custom-font btn-submit"
-                  onClick={() => handleClaim()}
-                  loading={loading}
-                >
-                  {library.CLAIM}
-                </LoadingButton>
-              </div>
+              <Divider sx={{ mt: 2, mb: 2 }} />
+            </Grid>
+            <Grid item xs={12}>
+              <CustomLoadingButton
+                className="custom-font btn-submit"
+                onClick={() => handleClaim()}
+                loading={loading}
+                fullWidth
+              >
+                {library.CLAIM}
+              </CustomLoadingButton>
             </Grid>
           </Grid>
         </div>
