@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { image_url } from "../../settings";
+import { RI_USER_TYPE } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
 import { _getNFTImageLink } from "../../settings/format";
 import { _getMyItems } from "../../store/actions/userActions";
@@ -100,7 +101,7 @@ const NewRI = () => {
   let params = { angel: angel, costume: skin, minion_parts: minion };
   const nowTime = moment().unix() * 1000;
   const { user, riStore } = useSelector((state) => state);
-  const { myItems, information } = user;
+  const { myItems, information, riUserType } = user;
   const { endTimeServer } = riStore;
   const dispatch = useDispatch();
 
@@ -297,7 +298,7 @@ const NewRI = () => {
                 </>
               ) : (
                 <>
-                  {!information.isRIFactory &&
+                  {riUserType === RI_USER_TYPE.NORMAL &&
                     inventory.map((item, index) => (
                       <Grid
                         item
@@ -374,9 +375,9 @@ const NewRI = () => {
                   <Hidden mdDown>
                     <div className="slogan" id="mess">
                       <p>
-                        {information.isRIFactory
-                          ? "Automated research has been setup!"
-                          : "Automated research system ready!"}
+                        {riUserType === RI_USER_TYPE.NORMAL
+                          ? "Automated research system ready!"
+                          : "Automated research has been setup!"}
                       </p>
                     </div>
                   </Hidden>

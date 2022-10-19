@@ -12,15 +12,11 @@ import { toast } from "react-toastify";
 import { provider } from "../../onchain/onchain";
 import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
-<<<<<<< HEAD
-import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
-=======
 import {
   formatNumberWithDecimal,
   formatUSD,
   _formatNumber,
 } from "../../settings/format";
->>>>>>> master
 import { _showAppError } from "../../store/actions/settingActions";
 import {
   _getBalance,
@@ -59,11 +55,7 @@ export default function ClaimForm({ open, _onClose }) {
 
   const handleClaim = () => {
     setLoading(true);
-<<<<<<< HEAD
-    const fAmount = parseFloat(amount).toFixed(2);
-=======
     const fAmount = parseFloat(_formatNumber(amount, 2));
->>>>>>> master
     if (fAmount && fAmount > 0) {
       post(
         `${EndpointConstant.FUND_WITHDRAW}?asset=${CoinList.INC}&amount=${fAmount}`,
@@ -143,12 +135,6 @@ export default function ClaimForm({ open, _onClose }) {
             </Typography>
             <Link
               onClick={() => {
-<<<<<<< HEAD
-                console.log(
-                  formatNumberWithDecimal(tokenInformation.amount, 2)
-                );
-=======
->>>>>>> master
                 setAmount(tokenInformation.amount.toString());
               }}
               sx={{ cursor: "pointer" }}

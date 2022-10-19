@@ -452,3 +452,9 @@ export const PROFILE_MENUS = [
     key: "ri-factory",
   },
 ];
+
+export const RI_USER_TYPE = {
+  MEMBER: "MEMBER",
+  ROOT: "ROOT",
+  NORMAL: "NORMAL",
+};

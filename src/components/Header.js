@@ -22,6 +22,7 @@ import {
   _getMyItems,
   _getNewProfile,
   _getOnchainBalance,
+  _getRIUserType,
   _getWalletLogout,
   _handleLogout,
   _handleProfileLogout,
@@ -177,6 +178,7 @@ function Header() {
           dispatch(_getNewProfile());
           dispatch(_getMyItems());
           dispatch(_getBalance());
+          dispatch(_getRIUserType());
         },
         (error) => {
           setLoading(false);

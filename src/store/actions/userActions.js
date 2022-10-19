@@ -6,6 +6,7 @@ import { SpecialPresale } from "../../onchain/special-presale";
 import {
   ADDRESS_0,
   PRE_SALE_ROUNDS,
+  RI_USER_TYPE,
   StatusList,
 } from "../../settings/constants";
 import {
@@ -29,6 +30,22 @@ import {
   UPDATE_REF,
   UPDATE_WALLET_NAME,
 } from "../constants";
+
+export const _getRIUserType = () => (dispatch) => {
+  get(EndpointConstant.CHECK_RI_FACTORY_USER, (data) => {
+    let payload = RI_USER_TYPE.NORMAL;
+    if (data.isMember) {
+      payload = RI_USER_TYPE.MEMBER;
+    }
+    if (data.isRoot) {
+      payload = RI_USER_TYPE.ROOT;
+    }
+    dispatch({
+      type: ReduxConstant.SET_RI_USER_TYPE,
+      payload,
+    });
+  });
+};
 
 export const _handleLogout = () => (dispatch) => {
   dispatch({
@@ -57,7 +74,6 @@ export const _getNewProfile = () => (dispatch) => {
   get(
     ENDPOINT_GET_PROFILE,
     (data) => {
-      data.isRIFactory = true;
       dispatch({
         type: FETCH_USER,
         payload: data,
@@ -144,11 +160,9 @@ export const _getOnchainBalance =
 export const _getBalance = () => (dispatch) => {
   get(ENDPOINT_GET_BALANCE, (data) => {
     const balances = data;
-    balances.forEach((e) => {
-      dispatch({
-        type: GET_BALANCE,
-        payload: balances,
-      });
+    dispatch({
+      type: GET_BALANCE,
+      payload: balances,
     });
   });
 };

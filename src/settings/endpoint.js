@@ -112,4 +112,9 @@ export const EndpointConstant = {
   FUND_SWAP: "/fund/swap",
   FUND_LOCK_AMOUNT: "/fund/balancedeb",
   USER_UPDATE_ADDRESS: "/user/address",
+  CHECK_RI_FACTORY_USER: "/user/ri-auto/check",
+  RI_FACTORY_MEMBER: "/user/ri-auto/check",
+  NFT_RI_ROOT: `/nft/ri/root`,
+  RI_FACTORY_ROOT_SWAP: "/fund/root/swap",
+  RI_FACTORY_ROOT_WITHDRAW: "/fund/root/withdraw",
 };

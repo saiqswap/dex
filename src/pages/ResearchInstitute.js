@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import History from "../components/research/History";
 import NewRI from "../components/research/NewRI";
 import RISpecialRooms from "../components/research/RISpecialRooms";
 import Rooms from "../components/research/Rooms";
+import { RI_USER_TYPE } from "../settings/constants";
 import { _getRICountdown } from "../store/actions/riActions";
 import "../styles/research-page.scss";
 
@@ -48,16 +48,16 @@ const ResearchInstitute = () => {
 export default ResearchInstitute;
 
 const RenderContent = ({ component }) => {
-  const { user, riStore } = useSelector((state) => state);
-  const { myItems, information } = user;
+  const { user } = useSelector((state) => state);
+  const { information, riUserType } = user;
 
   const Routes = {
     "R-I": <NewRI />,
     slot: information ? (
-      information.isRIFactory ? (
-        <RISpecialRooms />
-      ) : (
+      riUserType === RI_USER_TYPE.NORMAL ? (
         <Rooms />
+      ) : (
+        <RISpecialRooms />
       )
     ) : (
       <div />

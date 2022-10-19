@@ -38,12 +38,8 @@ const BoxItem = styled(Box)({
 const RISpecialRooms = () => {
   const { user } = useSelector((state) => state);
   const [data, setData] = useState(null);
-  const [reload, setReload] = useState(false);
-  const [mounted, setMounted] = useState(true);
   const { information } = user;
   const [page, setPage] = useState(1);
-
-  console.log(information);
 
   useEffect(() => {
     if (information) {
@@ -54,7 +50,6 @@ const RISpecialRooms = () => {
           data.items = data.items.filter((item) => item.angel);
           data.items.reverse();
           setData(data);
-          setReload(false);
         },
         () => toast.error("error")
       );
@@ -144,7 +139,7 @@ const RISpecialRooms = () => {
                     <div className="countdown custom-font">
                       <CountdownResearch
                         time={item.endTime}
-                        onReload={(e) => setReload(e)}
+                        onReload={(e) => false}
                       />
                     </div>
                     <Divider className="mt-20 mb-20" />
@@ -168,15 +163,16 @@ const RISpecialRooms = () => {
                       </div>
                       <PerformanceComponent item={item} />
                       <TimeComponent item={item} />
+                      <Typography variant="caption">{`[${item.angel.tokenId}, ${item.minion.tokenId}, ${item.skin.tokenId}]`}</Typography>
                       <div></div>
                     </div>
                   </Box>
-                  <BoxItem>{item.id}</BoxItem>
+                  <BoxItem>{index + 1 + (page - 1) * 6}</BoxItem>
                 </Box>
               </Grid>
             ))}
         </Grid>
-        {data && (
+        {/* {data && (
           <Pagination
             count={data.pageCount}
             variant="outlined"
@@ -184,7 +180,7 @@ const RISpecialRooms = () => {
             onChange={(e, nextPage) => setPage(nextPage)}
             page={page}
           />
-        )}
+        )} */}
       </Container>
     </div>
   ) : (
