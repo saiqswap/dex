@@ -7,20 +7,12 @@ import { TESTNET_CONFIG, TESTNET_DOMAIN } from "../onchain/testnet-config";
 //develop local
 export const local = {
   ENVIRONMENT: "LOCAL",
+  API: `http://localhost:5001/api/v1`,
   // API: `https://apiinfinity.feliciastation.com/api/v1`,
-  // API: `https://marketplace_api.megdev.co/api/v1`,
-  // API: `https://marketplace.infinityangel.io/api/v1`,
-  API: `http://localhost:5000/api/v1`,
   CAPTCHA_KEY: `6LfFLgIeAAAAAAclTDxmyP3juN4Wj-TeNI_7jl30`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,
+  RI_SLOT_LIMIT: 6,
   ETHERSCAN_LINK: "https://testnet.bscscan.com",
-  // DEFAULT_PROVIDER: new providers.JsonRpcProvider("https://rpc.ankr.com/bsc"),
-  // ESCROW_VESTING_CONTRACT_ADDRESS: "0xd1DDAe37c9Cf35c52742b9a5643D386B8930d3C2",
-  // SPECIAL_ROUND_DEFAULT_PROVIDER: new providers.JsonRpcProvider(
-  //   "https://matic-mumbai.chainstacklabs.com/"
-  // ),
-  // SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
-  //   "0x112314A39D339Cfb48D7e22B6BFc122786D675AA",
   DEFAULT_PROVIDER: new providers.JsonRpcProvider("https://rpc.ankr.com/bsc"),
   ESCROW_VESTING_CONTRACT_ADDRESS: "0xd1DDAe37c9Cf35c52742b9a5643D386B8930d3C2",
   SPECIAL_ROUND_DEFAULT_PROVIDER: new providers.JsonRpcProvider(
@@ -28,8 +20,6 @@ export const local = {
   ),
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
-  // image_url:
-  //   "https://6f7daba956414f5fa57231546ac07221.s3.ap-southeast-1.amazonaws.com",
   image_url: "https://files.infinityangel.io",
   has_minting: true,
   has_listing: true,
@@ -90,18 +80,10 @@ export const local = {
 export const develop = {
   ENVIRONMENT: "DEVELOP",
   API: `https://apiinfinity.feliciastation.com/api/v1`,
-  // API: `https://marketplace_api.megdev.co/api/v1`,
-  // API: `https://marketplace.infinityangel.io/api/v1`,
   CAPTCHA_KEY: `6LfFLgIeAAAAAAclTDxmyP3juN4Wj-TeNI_7jl30`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,
+  RI_SLOT_LIMIT: 6,
   ETHERSCAN_LINK: "https://testnet.bscscan.com",
-  // DEFAULT_PROVIDER: new providers.JsonRpcProvider("https://rpc.ankr.com/bsc"),
-  // ESCROW_VESTING_CONTRACT_ADDRESS: "0xd1DDAe37c9Cf35c52742b9a5643D386B8930d3C2",
-  // SPECIAL_ROUND_DEFAULT_PROVIDER: new providers.JsonRpcProvider(
-  //   "https://matic-mumbai.chainstacklabs.com/"
-  // ),
-  // SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
-  //   "0x112314A39D339Cfb48D7e22B6BFc122786D675AA",
   DEFAULT_PROVIDER: new providers.JsonRpcProvider("https://rpc.ankr.com/bsc"),
   ESCROW_VESTING_CONTRACT_ADDRESS: "0xd1DDAe37c9Cf35c52742b9a5643D386B8930d3C2",
   SPECIAL_ROUND_DEFAULT_PROVIDER: new providers.JsonRpcProvider(
@@ -109,8 +91,6 @@ export const develop = {
   ),
   SPECIAL_ROUND_ESCROW_VESTING_CONTRACT_ADDRESS:
     "0x8F2275acaE724c524966813Eb5f710B8FF2e5063",
-  // image_url:
-  //   "https://6f7daba956414f5fa57231546ac07221.s3.ap-southeast-1.amazonaws.com",
   image_url: "https://files.infinityangel.io",
   has_minting: true,
   has_listing: true,
@@ -173,6 +153,7 @@ export const staging = {
   API: `https://marketplace_api.megdev.co/api/v1`,
   CAPTCHA_KEY: `6LfFLgIeAAAAAAclTDxmyP3juN4Wj-TeNI_7jl30`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,
+  RI_SLOT_LIMIT: 6,
   MAIN_MENUS: [
     {
       title: "HOME",
@@ -250,6 +231,7 @@ export const production = {
   API: `https://marketplace.infinityangel.io/api/v1`,
   CAPTCHA_KEY: `6LdPQqMhAAAAANaFCYo54sl0FTq5_LtbZnX4a9n9`,
   GOOGLE_SIGN_IN_CLIENT_KEY: `655245171305-0pfnhphdi1gp33s1ejpgo2qem4matjc7.apps.googleusercontent.com`,
+  RI_SLOT_LIMIT: 3,
   ETHERSCAN_LINK: "https://bscscan.com",
   DEFAULT_PROVIDER: new providers.JsonRpcProvider("https://rpc.ankr.com/bsc"),
   ESCROW_VESTING_CONTRACT_ADDRESS: "0xd1DDAe37c9Cf35c52742b9a5643D386B8930d3C2",

@@ -28,11 +28,14 @@ const initialState = {
   onChainBalances: null,
   lockBalances: null,
   profileLoading: true,
+  riUserType: null,
 };
 
 export const UserReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case ReduxConstant.SET_RI_USER_TYPE:
+      return { ...state, riUserType: payload };
     case ReduxConstant.SET_USER_PROFILE_LOADING:
       return { ...state, profileLoading: payload };
     case ReduxConstant.GET_USER_LOCK_BALANCE:

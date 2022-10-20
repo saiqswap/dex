@@ -198,7 +198,14 @@ export const en = {
   TRANSACTIONS: "Transactions",
   NOTE: "Note",
   NFT: "NFT",
+  //221016
+  RI_FACTORY: "R-I Factory",
+  ACCOUNTS: "Accounts",
+  SWAP_WITHDRAWAL: "Swap/Withdrawal",
   //221018
   STATUS: "Status",
   PLEASE_LOGIN: "You must login in to continue.",
+  USER_ID: "User ID",
+  ROOT_ID: "Root ID",
+  NUMBER_OF_SLOTS: "Number of slots",
 };

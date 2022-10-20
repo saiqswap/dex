@@ -160,116 +160,113 @@ const Rooms = () => {
     <div className="research-room">
       <Container style={{ marginBottom: 20 }}>
         <Grid container spacing={2}>
-          {items &&
-            items.map((item, index) => (
-              <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
-                <Box className="box-slot">
-                  <Box className="box-body">
-                    <Box className="box-body-main box--item">
+          {items?.map((item, index) => (
+            <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
+              <Box className="box-slot">
+                <Box className="box-body">
+                  <Box className="box-body-main box--item">
+                    <div className="name-and-type">
+                      <Typography variant="body2">
+                        {item.angel?.name}
+                      </Typography>
+                      <Typography variant="caption">
+                        {item.angel?.level.toLowerCase().replace("_", " ")}
+                      </Typography>
+                    </div>
+                    <img
+                      src={`${image_url}/body_${item.angel?.name
+                        .replace("-", "_")
+                        .replace(" ", "_")
+                        .toLowerCase()}.png`}
+                      alt="nft"
+                    />
+                  </Box>
+                  <Box className="box-body-sub">
+                    <div className="box-body-sub--minion box--item">
                       <div className="name-and-type">
-                        <Typography variant="body2">
-                          {item.angel?.name}
-                        </Typography>
-                        <Typography variant="caption">
-                          {item.angel?.level.toLowerCase().replace("_", " ")}
-                        </Typography>
-                      </div>
-                      <img
-                        src={`${image_url}/body_${item.angel?.name
-                          .replace("-", "_")
-                          .replace(" ", "_")
-                          .toLowerCase()}.png`}
-                        alt="nft"
-                      />
-                    </Box>
-                    <Box className="box-body-sub">
-                      <div className="box-body-sub--minion box--item">
-                        <div className="name-and-type">
-                          {item.minion && (
-                            <Typography variant="caption">
-                              {item.minion.level
-                                .toLowerCase()
-                                .replace("_", " ")}
-                            </Typography>
-                          )}
-                        </div>
-                        {item.minion ? (
-                          <img
-                            src={`${image_url}/body_${item.minion.name
-                              .replace("-", "_")
-                              .replace(" ", "_")
-                              .toLowerCase()}.png`}
-                            alt="nft"
-                          />
-                        ) : (
-                          <img
-                            src="/logo.png"
-                            alt="logo"
-                            style={{ opacity: 0.08 }}
-                          />
+                        {item.minion && (
+                          <Typography variant="caption">
+                            {item.minion.level.toLowerCase().replace("_", " ")}
+                          </Typography>
                         )}
                       </div>
-                      <div className="box-body-sub--skin box--item">
-                        <div className="name-and-type">
-                          {item.skin && (
-                            <Typography variant="caption">
-                              {item.skin.level.toLowerCase().replace("_", " ")}
-                            </Typography>
-                          )}
-                        </div>
-                        {item.skin ? (
-                          <img
-                            src={`${image_url}/body_${item.skin.name
-                              .replace("-", "_")
-                              .replace(" ", "_")
-                              .toLowerCase()}.png`}
-                            alt="nft"
-                          />
-                        ) : (
-                          <img
-                            src="/logo.png"
-                            alt="logo"
-                            style={{ opacity: 0.08 }}
-                          />
+                      {item.minion ? (
+                        <img
+                          src={`${image_url}/body_${item.minion.name
+                            .replace("-", "_")
+                            .replace(" ", "_")
+                            .toLowerCase()}.png`}
+                          alt="nft"
+                        />
+                      ) : (
+                        <img
+                          src="/logo.png"
+                          alt="logo"
+                          style={{ opacity: 0.08 }}
+                        />
+                      )}
+                    </div>
+                    <div className="box-body-sub--skin box--item">
+                      <div className="name-and-type">
+                        {item.skin && (
+                          <Typography variant="caption">
+                            {item.skin.level.toLowerCase().replace("_", " ")}
+                          </Typography>
                         )}
                       </div>
-                    </Box>
-                  </Box>
-                  <Box className="box-info">
-                    <div className="countdown custom-font">
-                      <CountdownResearch
-                        time={item.endTime}
-                        onReload={(e) => setReload(e)}
-                      />
-                    </div>
-                    <Divider className="mt-20 mb-20" />
-                    <div className="parameters">
-                      <div className="parameter">
-                        <Typography
-                          variant="body2"
-                          className="label"
-                          fontWeight={300}
-                        >
-                          Reward:
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          className="value"
-                          fontWeight={300}
-                        >
-                          {formatUSD(item.estIncBalance)}
-                          <span className="unit"> INC</span>
-                        </Typography>
-                      </div>
-                      <PerformanceComponent item={item} />
-                      <TimeComponent item={item} />
-                      <div></div>
+                      {item.skin ? (
+                        <img
+                          src={`${image_url}/body_${item.skin.name
+                            .replace("-", "_")
+                            .replace(" ", "_")
+                            .toLowerCase()}.png`}
+                          alt="nft"
+                        />
+                      ) : (
+                        <img
+                          src="/logo.png"
+                          alt="logo"
+                          style={{ opacity: 0.08 }}
+                        />
+                      )}
                     </div>
                   </Box>
-                  <BoxItem>{index + 1}</BoxItem>
                 </Box>
-              </Grid>
-            ))}
+                <Box className="box-info">
+                  <div className="countdown custom-font">
+                    <CountdownResearch
+                      time={item.endTime}
+                      onReload={(e) => setReload(e)}
+                    />
+                  </div>
+                  <Divider className="mt-20 mb-20" />
+                  <div className="parameters">
+                    <div className="parameter">
+                      <Typography
+                        variant="body2"
+                        className="label"
+                        fontWeight={300}
+                      >
+                        Reward:
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        className="value"
+                        fontWeight={300}
+                      >
+                        {formatUSD(item.estIncBalance)}
+                        <span className="unit"> INC</span>
+                      </Typography>
+                    </div>
+                    <PerformanceComponent item={item} />
+                    <TimeComponent item={item} />
+                    <div></div>
+                  </div>
+                </Box>
+                <BoxItem>{index + 1}</BoxItem>
+              </Box>
+            </Grid>
+          ))}
           {items &&
             Array(RI_SLOT_LIMIT - (items && items.length))
               .fill(" ")

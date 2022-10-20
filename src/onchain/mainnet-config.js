@@ -13,12 +13,6 @@ export const MAINNET_CONFIG = {
     nativeCurrency: { name: "Binance", decimals: 18, symbol: "BNB" },
     blockExplorerUrls: ["https://bscscan.com"],
   },
-  GET_ORDER_INPUT: "getOrderInput",
-  LISTING: "listing",
-  BASE_URI: "http://localhost:4000/api/v1",
-  EXCHANGE_ADDRESS: MAINNET_DOMAIN.verifyingContract,
-  PURCHASE_BOX_ADDRESS: "0xf02a2FA3D8fF904Ec5d970132465C6B104F64B71",
-  PURCHASE_TOKEN_ADDRESS: "0xf02a2FA3D8fF904Ec5d970132465C6B104F64B71",
   LISTING_PARAMS: (message) => ({
     types: {
       EIP712Domain: [

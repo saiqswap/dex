@@ -2,8 +2,10 @@ import { Button, Container, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { AppConfig } from "../../settings";
-import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
+import { RI_USER_TYPE } from "../../settings/constants";
+import { formatNumberWithDecimal } from "../../settings/format";
 import { _getLockBalances } from "../../store/actions/userActions";
 import ClaimForm from "./ClaimForm";
 import SwapForm from "./SwapForm";
@@ -35,12 +37,18 @@ const inGame = [
 const MyWallet = () => {
   const { user, setting } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const { config, library } = setting;
-  const { contracts } = config ? config : { contracts: [] };
-  const { balances, walletAddress, information, lockBalances } = user;
+  const { library } = setting;
+  const { balances, information, lockBalances, riUserType } = user;
   const [funds, setFunds] = useState(null);
   const [showClaim, setShowClaim] = useState(false);
   const [showSwap, setShowSwap] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (riUserType !== RI_USER_TYPE.NORMAL) {
+      history.push("/marketplace");
+    }
+  }, [history, riUserType]);
 
   useEffect(() => {
     if (information) {
