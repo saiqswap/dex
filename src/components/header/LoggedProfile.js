@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { PROFILE_MENUS } from "../../settings/constants";
+import { PROFILE_MENUS, RI_USER_TYPE } from "../../settings/constants";
 import {
   _getMyItems,
   _handleLogout,
@@ -15,7 +15,7 @@ import UserAvatar from "../common/UserAvatar";
 
 export default function LoggedProfile({ loading, _handleSignClick }) {
   const { user, setting } = useSelector((state) => state);
-  const { information, walletAddress } = user;
+  const { information, walletAddress, riUserType } = user;
   const { library } = setting;
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
@@ -93,7 +93,9 @@ export default function LoggedProfile({ loading, _handleSignClick }) {
           <Box>
             {PROFILE_MENUS.map(
               (item, index) =>
-                (!item.isLogged || (item.isLogged && information)) && (
+                (item.key !== "ri-factory" ||
+                  (item.key === "ri-factory" &&
+                    riUserType === RI_USER_TYPE.ROOT)) && (
                   <Link to={item.url} key={index}>
                     <Typography
                       variant="body1"

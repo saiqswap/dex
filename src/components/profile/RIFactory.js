@@ -20,7 +20,7 @@ export default function RIFactory() {
   const { riUserType } = user;
 
   useEffect(() => {
-    if (riUserType !== RI_USER_TYPE.ROOT) {
+    if (riUserType && riUserType !== RI_USER_TYPE.ROOT) {
       history.push("/marketplace");
     }
   }, [history, riUserType]);
@@ -58,24 +58,16 @@ const AccountsComponent = () => {
     get(EndpointConstant.NFT_RI_ROOT, (data) => {
       const list = [];
       let tempTotalINC = 0;
-      let tempTotalING = 0;
       data.balances.forEach((element) => {
         if (element.asset === CoinList.INC) {
           tempTotalINC += element.amount;
-        }
-        if (element.asset === CoinList.ING) {
-          tempTotalING += element.amount;
         }
       });
       data.members.forEach((element) => {
         const INCBalance = data.balances.find(
           (b) => b.asset === CoinList.INC && b.userId === element.userId
         );
-        const INGBalance = data.balances.find(
-          (b) => b.asset === CoinList.ING && b.userId === element.userId
-        );
-        element.INCBalance = INCBalance.amount;
-        element.INGBalance = INGBalance.amount;
+        element.INCBalance = INCBalance ? INCBalance.amount : 0;
         list.push(element);
       });
       setTotalINCBalance(tempTotalINC);
@@ -185,6 +177,7 @@ const INCBalanceComponent = ({ totalINCBalance, _reload }) => {
         setLoading(false);
         setConfirming(false);
         _reload();
+        dispatch(_getBalance());
       },
       (error) => {
         dispatch(_showError(error));
