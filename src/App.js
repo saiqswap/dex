@@ -72,7 +72,7 @@ function App() {
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
     dispatch(_getApplicationConfig());
-    console.log("Infinity Angel Marketplace - Ver 0.0.4");
+    console.log("Infinity Angel Marketplace - Ver 0.0.5 - R-I Factory");
   }, [dispatch]);
 
   useEffect(() => {
