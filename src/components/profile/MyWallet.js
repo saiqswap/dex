@@ -1,4 +1,4 @@
-import { Button, Container, Grid } from "@mui/material";
+import { Button, Container, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,20 +35,33 @@ const inGame = [
 ];
 
 const MyWallet = () => {
+  const { user } = useSelector((state) => state);
+  const { riUserType, information } = user;
+
+  if (!information || riUserType === RI_USER_TYPE.NORMAL) {
+    return <Wallets />;
+  } else {
+    return (
+      <div className="my-wallet">
+        <Container maxWidth="xl">
+          <Typography sx={{ mt: 3 }}>
+            This is the account belongs to the mining workshop, so it cannot be
+            swap, withdraw.
+          </Typography>
+        </Container>
+      </div>
+    );
+  }
+};
+
+const Wallets = () => {
   const { user, setting } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { library } = setting;
-  const { balances, information, lockBalances, riUserType } = user;
+  const { balances, information, lockBalances } = user;
   const [funds, setFunds] = useState(null);
   const [showClaim, setShowClaim] = useState(false);
   const [showSwap, setShowSwap] = useState(false);
-  const history = useHistory();
-
-  useEffect(() => {
-    if (riUserType !== RI_USER_TYPE.NORMAL) {
-      history.push("/marketplace");
-    }
-  }, [history, riUserType]);
 
   useEffect(() => {
     if (information) {

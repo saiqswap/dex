@@ -2,6 +2,7 @@ import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import {
   Box,
   Checkbox,
+  Container,
   FormControlLabel,
   FormGroup,
   Hidden,
@@ -23,6 +24,7 @@ import {
 import CustomLoader from "../components/common/CustomLoader";
 import CustomNumberInput from "../components/common/CustomNumberInput";
 import SwapBalances from "../components/swap/SwapBalances";
+import { RI_USER_TYPE } from "../settings/constants";
 import { EndpointConstant } from "../settings/endpoint";
 import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
 import { _showAppError } from "../store/actions/settingActions";
@@ -70,6 +72,24 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function SwapPage() {
+  const { user } = useSelector((state) => state);
+  const { riUserType, information } = user;
+
+  if (!information || riUserType === RI_USER_TYPE.NORMAL) {
+    return <SwapForm />;
+  } else {
+    return (
+      <CustomFixedBox>
+        <Typography variant="h6">
+          This is the account belongs to the mining workshop, so it cannot be
+          swap.
+        </Typography>
+      </CustomFixedBox>
+    );
+  }
+}
+
+function SwapForm() {
   const { setting } = useSelector((state) => state);
   const { library } = setting;
   const [fromAmount, setFromAmount] = useState("0");
@@ -224,6 +244,7 @@ export default function SwapPage() {
       ),
     },
   ];
+
   return (
     <CustomFixedBox>
       <SwapBalances />
