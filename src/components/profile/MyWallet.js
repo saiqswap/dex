@@ -2,7 +2,6 @@ import { Button, Container, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { AppConfig } from "../../settings";
 import { RI_USER_TYPE } from "../../settings/constants";
 import { formatNumberWithDecimal } from "../../settings/format";
