@@ -41,10 +41,13 @@ export default function NFTDetail() {
     }, 3000);
 
   useEffect(() => {
+    getNftTransaction(id, (result) => {
+      setTransaction(result);
+    });
+  }, [id]);
+
+  useEffect(() => {
     if (config && myItems) {
-      getNftTransaction(id, (result) => {
-        setTransaction(result);
-      });
       getNftDetail(id, (result) => {
         let check = false;
         let isRenderBtnByOwner = null;
