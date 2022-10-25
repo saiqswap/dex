@@ -258,10 +258,10 @@ export const production = {
       title: "MARKETPLACE",
       url: ["/marketplace"],
     },
-    {
-      title: "MINTING",
-      url: ["/minting-box"],
-    },
+    // {
+    //   title: "MINTING",
+    //   url: ["/minting-box"],
+    // },
     {
       title: "SUMMON",
       url: ["/summon"],

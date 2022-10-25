@@ -43,14 +43,14 @@ const routes = [
   //   type: "guest",
   //   isActive: true,
   // },
-  {
-    exact: true,
-    path: "/minting-box",
-    component: BoxMinting,
-    type: "guest",
-    isActive: true,
-    title: "Box Minting",
-  },
+  // {
+  //   exact: true,
+  //   path: "/minting-box",
+  //   component: BoxMinting,
+  //   type: "guest",
+  //   isActive: true,
+  //   title: "Box Minting",
+  // },
   {
     exact: true,
     path: "/marketplace",
