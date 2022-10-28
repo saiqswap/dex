@@ -12,6 +12,7 @@ import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
 import SwapPage from "./pages/SwapPage";
+import TokenStaking from "./pages/TokenStaking";
 
 const routes = [
   {
@@ -55,6 +56,13 @@ const routes = [
     exact: true,
     path: "/marketplace",
     component: Marketplace,
+    type: "guest",
+    isActive: true,
+  },
+  {
+    exact: true,
+    path: "/staking",
+    component: TokenStaking,
     type: "guest",
     isActive: true,
   },

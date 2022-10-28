@@ -1,6 +1,7 @@
 import { ContentCopyRounded } from "@mui/icons-material";
 import {
   Box,
+  Chip,
   Container,
   Divider,
   IconButton,
@@ -39,7 +40,7 @@ const needSymbol = ["amount", "price"];
 const MyAccount = () => {
   const { user, setting } = useSelector((state) => state);
   const history = useHistory();
-  const { information } = user;
+  const { information, riUserType } = user;
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
   const { library } = setting;
@@ -77,6 +78,10 @@ const MyAccount = () => {
         {library.ACCOUNT_SETTING}
       </Typography>
       <Divider className="mt-20" />
+      <p className="mt-20 opacity-05">R-I Role</p>
+      <Box display="flex" alignItems="center" className="email">
+        {riUserType}
+      </Box>
       <p className="mt-20 opacity-05">{library.EMAIL}</p>
       <Box display="flex" alignItems="center" className="email">
         {information.email} <UpdateEmail />
@@ -104,7 +109,7 @@ const MyAccount = () => {
         </CopyBox>
       </p>
       <GenerateSignature />
-      <Typography
+      {/* <Typography
         variant="h5"
         className="custom-font"
         style={{ marginTop: "50px" }}
@@ -157,7 +162,7 @@ const MyAccount = () => {
         ) : (
           <Loader />
         )}
-      </div>
+      </div> */}
     </Container>
   );
 };
