@@ -44,7 +44,11 @@ const AccountsComponent = () => {
     type: ["WITHDRAW"],
     columns: [
       { key: "id", label: "", format: (e) => `#${e}` },
-      { key: "userId", label: "USER_ID", format: (e) => `${e}` },
+      {
+        key: "user",
+        label: "WALLET_ADDRESS",
+        format: ({ address }) => `${address}`,
+      },
       { key: "slots", label: "NUMBER_OF_SLOTS", format: (e) => `${e.length}` },
       {
         key: "INCBalance",
