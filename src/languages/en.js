@@ -208,4 +208,5 @@ export const en = {
   USER_ID: "User ID",
   ROOT_ID: "Root ID",
   NUMBER_OF_SLOTS: "Number of slots",
+  STAKING: "Staking",
 };

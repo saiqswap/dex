@@ -12,6 +12,7 @@ import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
 import Summon from "./pages/Summon";
 import SwapPage from "./pages/SwapPage";
+import TokenStaking from "./pages/TokenStaking";
 
 const routes = [
   {
@@ -43,18 +44,25 @@ const routes = [
   //   type: "guest",
   //   isActive: true,
   // },
-  {
-    exact: true,
-    path: "/minting-box",
-    component: BoxMinting,
-    type: "guest",
-    isActive: true,
-    title: "Box Minting",
-  },
+  // {
+  //   exact: true,
+  //   path: "/minting-box",
+  //   component: BoxMinting,
+  //   type: "guest",
+  //   isActive: true,
+  //   title: "Box Minting",
+  // },
   {
     exact: true,
     path: "/marketplace",
     component: Marketplace,
+    type: "guest",
+    isActive: true,
+  },
+  {
+    exact: true,
+    path: "/staking",
+    component: TokenStaking,
     type: "guest",
     isActive: true,
   },
