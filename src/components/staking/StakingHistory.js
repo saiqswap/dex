@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Box, Link, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -12,6 +13,15 @@ import { _getBalance } from "../../store/actions/userActions";
 import { put } from "../../utils/api";
 import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
 import { CustomLoadingButton } from "../common/CustomButton";
+
+const CustomContainer = styled(Box)(({ theme }) => ({
+  height: "100%",
+  width: "100%",
+  backgroundColor: "rgba(0, 51, 98, 0.1)!important",
+  boxShadow: "none",
+  backdropFilter: "blur(20px)",
+  border: "1px solid var(--border-color)",
+}));
 
 const StakingHistory = () => {
   const { stakingStore, user } = useSelector((state) => state);
@@ -105,45 +115,46 @@ const StakingHistory = () => {
     );
   };
 
-  return (
+  return information ? (
     <>
-      <Box mt={"-30px"} width="100%" overflow="auto">
-        <table className="custom-table">
-          <thead>
-            <tr>
-              {menu.map((item, index) => (
-                <th
-                  className="custom-font"
-                  key={index}
-                  style={{ wordBreak: "keep-all" }}
-                >
-                  {item.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {myStakes?.map((row, index) => (
-              <tr key={index}>
+      <CustomContainer>
+        <Box mt={"-30px"} width="100%" overflow="auto">
+          <table className="custom-table">
+            <thead>
+              <tr>
                 {menu.map((item, index) => (
-                  <td key={index}>
-                    {item.format
-                      ? item.format(row[item.key], row)
-                      : row[item.key]}
-                  </td>
+                  <th
+                    className="custom-font"
+                    key={index}
+                    style={{ wordBreak: "keep-all" }}
+                  >
+                    {item.label}
+                  </th>
                 ))}
               </tr>
-            ))}
-            {myStakes?.itemCount === 0 && (
-              <tr>
-                <td className="blank" colSpan={menu.length}>
-                  NO RECORD
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        {/* {history ? (
+            </thead>
+            <tbody>
+              {myStakes?.map((row, index) => (
+                <tr key={index}>
+                  {menu.map((item, index) => (
+                    <td key={index}>
+                      {item.format
+                        ? item.format(row[item.key], row)
+                        : row[item.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {myStakes?.itemCount === 0 && (
+                <tr>
+                  <td className="blank" colSpan={menu.length}>
+                    NO RECORD
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {/* {history ? (
           <Pagination
             count={history.pageCount}
             variant="outlined"
@@ -154,7 +165,8 @@ const StakingHistory = () => {
         ) : (
           <Loader />
         )} */}
-      </Box>
+        </Box>
+      </CustomContainer>
       <CustomBlueSmallModal
         open={Boolean(selectedStake)}
         _close={() => setSelectedStake(null)}
@@ -168,7 +180,7 @@ const StakingHistory = () => {
         </CustomLoadingButton>
       </CustomBlueSmallModal>
     </>
-  );
+  ) : null;
 };
 
 export default StakingHistory;

@@ -131,6 +131,7 @@ function TokenStaking() {
           backgroundAttachment: "fixed",
           backgroundSize: "cover",
           paddingBottom: 100,
+          minHeight: "100vh",
         }}
       >
         <Container maxWidth="lg">
@@ -196,9 +197,7 @@ function TokenStaking() {
               <CustomContainer>Top Staking</CustomContainer>
             </Grid>
             <Grid item xs={12}>
-              <CustomContainer sx={{ p: 0, borderRadius: 0 }}>
-                <StakingHistory />
-              </CustomContainer>
+              <StakingHistory />
             </Grid>
           </Grid>
         </Container>
