@@ -25,6 +25,7 @@ import { EndpointConstant } from "../settings/endpoint";
 import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
 import { _showAppError } from "../store/actions/settingActions";
 import { _getMyStakes, _getPackageList } from "../store/actions/stakingActions";
+import { _getBalance } from "../store/actions/userActions";
 import { post } from "../utils/api";
 
 const CustomContainer = styled(Box)(({ theme }) => ({
@@ -98,6 +99,7 @@ export default function TokenStaking() {
           setLoading(false);
           toast.success("Success");
           dispatch(_getMyStakes(packageList));
+          dispatch(_getBalance());
         },
         (error) => {
           dispatch(_showAppError(error));

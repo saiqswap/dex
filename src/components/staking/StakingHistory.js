@@ -8,6 +8,7 @@ import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
 import { _showAppError } from "../../store/actions/settingActions";
 import { _getMyStakes } from "../../store/actions/stakingActions";
+import { _getBalance } from "../../store/actions/userActions";
 import { put } from "../../utils/api";
 import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
 import { CustomLoadingButton } from "../common/CustomButton";
@@ -95,6 +96,7 @@ const StakingHistory = () => {
         setLoading(false);
         setSelectedStake(null);
         dispatch(_getMyStakes(packageList));
+        dispatch(_getBalance());
       },
       (error) => {
         dispatch(_showAppError(error));
