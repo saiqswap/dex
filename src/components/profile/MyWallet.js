@@ -1,11 +1,11 @@
-import { Button, Container, Grid, Typography } from "@mui/material";
+import { Button, Container, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppConfig } from "../../settings";
-import { RI_USER_TYPE } from "../../settings/constants";
 import { formatNumberWithDecimal } from "../../settings/format";
 import { _getLockBalances } from "../../store/actions/userActions";
+import RIMintingCheck from "../common/RIMintingCheck";
 import ClaimForm from "./ClaimForm";
 import SwapForm from "./SwapForm";
 const inGame = [
@@ -34,23 +34,11 @@ const inGame = [
 ];
 
 const MyWallet = () => {
-  const { user } = useSelector((state) => state);
-  const { riUserType, information } = user;
-
-  if (!information || riUserType === RI_USER_TYPE.NORMAL) {
-    return <Wallets />;
-  } else {
-    return (
-      <div className="my-wallet">
-        <Container maxWidth="xl">
-          <Typography sx={{ mt: 3 }}>
-            This is the account belongs to the mining workshop, so it cannot be
-            swap, withdraw.
-          </Typography>
-        </Container>
-      </div>
-    );
-  }
+  return (
+    <RIMintingCheck isText={true}>
+      <Wallets />
+    </RIMintingCheck>
+  );
 };
 
 const Wallets = () => {

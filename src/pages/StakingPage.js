@@ -10,14 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CustomStack, PriceBox } from "../components/box-minting/MintingStyles";
-import PolicyCheck from "../components/box-minting/PolicyCheck";
 import CustomBlueSmallModal from "../components/common/CustomBlueSmallModal";
 import { CustomLoadingButton } from "../components/common/CustomButton";
 import CustomNumberInput from "../components/common/CustomNumberInput";
+import RIMintingCheck from "../components/common/RIMintingCheck";
 import StakePolicy from "../components/staking/StakePolicy";
 import StakingHistory from "../components/staking/StakingHistory";
 import { CoinList } from "../settings/constants";
@@ -39,7 +38,15 @@ const CustomContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(5),
 }));
 
-export default function TokenStaking() {
+export default function StakingPage() {
+  return (
+    <RIMintingCheck>
+      <TokenStaking />
+    </RIMintingCheck>
+  );
+}
+
+function TokenStaking() {
   const { user, setting, stakingStore } = useSelector((state) => state);
   const { balances, information } = user;
   const { library } = setting;
@@ -82,6 +89,8 @@ export default function TokenStaking() {
       } else {
         setConfirming(true);
       }
+    } else {
+      toast.error(library.PLEASE_LOGIN);
     }
   };
 

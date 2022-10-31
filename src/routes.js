@@ -10,9 +10,9 @@ import PreSaleStatistic from "./pages/PreSaleStatistic";
 import Profile from "./pages/Profile";
 import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
+import StakingPage from "./pages/StakingPage";
 import Summon from "./pages/Summon";
 import SwapPage from "./pages/SwapPage";
-import TokenStaking from "./pages/TokenStaking";
 
 const routes = [
   {
@@ -62,7 +62,7 @@ const routes = [
   {
     exact: true,
     path: "/staking",
-    component: TokenStaking,
+    component: StakingPage,
     type: "guest",
     isActive: true,
   },
