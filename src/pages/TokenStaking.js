@@ -1,12 +1,18 @@
 import { Box, Container, Grid, styled, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { CustomStack, PriceBox } from "../components/box-minting/MintingStyles";
 import { CustomLoadingButton } from "../components/common/CustomButton";
 import CustomNumberInput from "../components/common/CustomNumberInput";
 import StakingHistory from "../components/staking/StakingHistory";
 import { CoinList } from "../settings/constants";
-import { formatNumberWithDecimal } from "../settings/format";
+import { EndpointConstant } from "../settings/endpoint";
+import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
+import { _showAppError } from "../store/actions/settingActions";
+import { _getMyStakes, _getPackageList } from "../store/actions/stakingActions";
+import { post } from "../utils/api";
 
 const CustomContainer = styled(Box)(({ theme }) => ({
   height: "100%",
@@ -20,11 +26,24 @@ const CustomContainer = styled(Box)(({ theme }) => ({
 }));
 
 export default function TokenStaking() {
-  const { user, setting } = useSelector((state) => state);
-  const { balances } = user;
+  const { user, setting, stakingStore } = useSelector((state) => state);
+  const { balances, information } = user;
   const { library } = setting;
   const [INGBalance, setINGBalance] = useState(0);
-  const [selectedPercent, setSelectedPercent] = useState(6);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const dispatch = useDispatch();
+  const { packageList } = stakingStore;
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (packageList && packageList.length > 0) {
+      setSelectedItem(packageList[0]);
+    }
+  }, [packageList]);
+
+  useEffect(() => {
+    dispatch(_getPackageList());
+  }, [dispatch]);
 
   useEffect(() => {
     if (balances) {
@@ -35,7 +54,37 @@ export default function TokenStaking() {
 
   const _handleSubmit = (e) => {
     e.preventDefault();
-    alert("xxx");
+    console.log({
+      selectedItem,
+      amount: parseFloat(_formatNumber(e.target.amount.value, 2)),
+    });
+    const fAmount = _formatNumber(e.target.amount.value, 2);
+    if (information) {
+      const fFromAmount = parseFloat(_formatNumber(fAmount, 2));
+      if (!fFromAmount) {
+        toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
+      } else if (fFromAmount > INGBalance) {
+        toast.error(library.INSUFFICIENT_BALANCE);
+      } else {
+        setLoading(true);
+        post(
+          EndpointConstant.STAKING_STAKE,
+          {
+            packageId: selectedItem.id,
+            amount: fAmount,
+          },
+          () => {
+            setLoading(false);
+            toast.success("Success");
+            dispatch(_getMyStakes(packageList));
+          },
+          (error) => {
+            dispatch(_showAppError(error));
+            setLoading(false);
+          }
+        );
+      }
+    }
   };
 
   return (
@@ -54,25 +103,22 @@ export default function TokenStaking() {
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <CustomContainer>
-              <Box component="form" onSubmit={_handleSubmit}>
+              <Box component="form" onSubmit={_handleSubmit} noValidate>
                 <CustomStack>
                   <Box mr={3}>
                     <Typography>APY </Typography>
                   </Box>
-                  {[6, 9, 12].map((item, index) => (
-                    <PriceBox
-                      sx={{ minWidth: 70 }}
-                      key={index}
-                      onClick={() => setSelectedPercent(item)}
-                      className={selectedPercent === item ? "active" : ""}
-                    >
-                      {/* <Typography variant="caption" color="#fff">
-                    {item.sold} {formatAmount(item.unitPrice)}{" "}
-                    {item.paymentCurrency}
-                  </Typography> */}
-                      {item}%
-                    </PriceBox>
-                  ))}
+                  {selectedItem &&
+                    packageList?.map((item, index) => (
+                      <PriceBox
+                        sx={{ minWidth: 70 }}
+                        key={index}
+                        onClick={() => setSelectedItem(item)}
+                        className={selectedItem.id === item.id ? "active" : ""}
+                      >
+                        {item.annualInterestRate}%
+                      </PriceBox>
+                    ))}
                 </CustomStack>
                 <Box textAlign="right" mb={1}>
                   <Typography variant="caption" color="#fff" textAlign="right">
@@ -84,14 +130,30 @@ export default function TokenStaking() {
                   fullWidth
                   label="Amount"
                   placeholder="Please enter ING amount"
+                  id="amount"
+                  name="amount"
+                  disabled={loading}
+                  InputProps={{
+                    step: "any",
+                    type: "number",
+                    endAdornment: (
+                      <img
+                        src={`/images/coins/${CoinList.ING}.png`}
+                        width="50px"
+                        alt="ing-logo"
+                      />
+                    ),
+                  }}
                 />
                 <Box mt={2}></Box>
-                <CustomLoadingButton type="submit">Submit</CustomLoadingButton>
+                <CustomLoadingButton loading={loading} type="submit">
+                  Submit
+                </CustomLoadingButton>
               </Box>
             </CustomContainer>
           </Grid>
           <Grid item xs={6}>
-            <CustomContainer>xxxx</CustomContainer>
+            <CustomContainer>Top Staking</CustomContainer>
           </Grid>
           <Grid item xs={12}>
             <CustomContainer sx={{ p: 0, borderRadius: 0 }}>

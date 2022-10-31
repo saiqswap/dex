@@ -73,3 +73,8 @@ export const ReduxConstant = {
   SET_ERROR_CODE: "SET_ERROR_CODE",
   SET_RI_USER_TYPE: "SET_RI_USER_TYPE",
 };
+
+export const StoreStakingConstant = {
+  GET_STAKING_PACKAGES: "GET_STAKING_PACKAGES",
+  GET_MY_STAKES: "GET_MY_STAKES",
+};

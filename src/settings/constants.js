@@ -458,3 +458,8 @@ export const RI_USER_TYPE = {
   ROOT: "ROOT",
   NORMAL: "NORMAL",
 };
+
+export const STAKING_STATUS = {
+  STAKING: "STAKING",
+  CLOSED: "CLOSED",
+};

@@ -1,27 +1,57 @@
-import { Box, Link, Pagination } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { CoinList } from "../../settings/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { CoinList, STAKING_STATUS } from "../../settings/constants";
+import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
-import { get } from "../../utils/api";
+import { _showAppError } from "../../store/actions/settingActions";
+import { _getMyStakes } from "../../store/actions/stakingActions";
+import { put } from "../../utils/api";
 import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
-import Loader from "../common/Loader";
+import { CustomLoadingButton } from "../common/CustomButton";
 
 const StakingHistory = () => {
-  const [history, setHistory] = useState(null);
+  const { stakingStore, user } = useSelector((state) => state);
+  const { myStakes, packageList } = stakingStore;
   const [page, setPage] = useState(1);
   const [selectedStake, setSelectedStake] = useState(null);
+  const { information } = user;
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (information && packageList) {
+      dispatch(_getMyStakes(packageList));
+    }
+  }, [dispatch, information, packageList]);
 
   const menu = [
     {
-      key: "receivedInc",
+      key: "amount",
       label: "Total amount",
       format: (e) => formatUSD(e) + " " + CoinList.ING,
     },
     {
-      key: "",
-      label: "Est. APY",
-      format: (e) => "12%",
+      key: "packageId",
+      label: "Package ID",
+      format: (e) => e,
+    },
+    {
+      key: "estUnStakeFee",
+      label: "Fee",
+      format: (e) => e,
+    },
+    // {
+    //   key: "",
+    //   label: "Est. APY",
+    //   format: (e) => "12%",
+    // },
+    {
+      key: "timeToNextPay",
+      label: "Next time to pay",
+      format: (e) => moment(e).format("YYYY-MM-DD"),
     },
     {
       key: "startTime",
@@ -33,32 +63,45 @@ const StakingHistory = () => {
       label: "Interest End Date",
       format: (e) => moment(e).format("YYYY-MM-DD"),
     },
+    // {
+    //   key: "",
+    //   label: "Interest Period",
+    //   format: (e) => "1 Days",
+    // },
     {
-      key: "",
-      label: "Interest Period",
-      format: (e) => "1 Days",
+      key: "status",
+      label: "Status",
+      // format: (e) => "1 Days",
     },
     {
-      key: "",
+      key: "status",
       label: "",
-      format: (e, row) => (
-        <Link size="small" onClick={() => setSelectedStake(row)}>
-          Unstake
-        </Link>
-      ),
+      format: (e, row) =>
+        e === STAKING_STATUS.STAKING && (
+          <Link size="small" onClick={() => setSelectedStake(row)}>
+            Unstake
+          </Link>
+        ),
     },
   ];
 
-  useEffect(() => {
-    setHistory(null);
-    get(
-      `/nft/ri?page=${page}&pageSize=10&status=COMPLETED`,
-      (data) => {
-        setHistory(data);
+  const _unStake = () => {
+    setLoading(true);
+    put(
+      `${EndpointConstant.STAKING_UN_STAKE}?stakingId=${selectedStake.id}`,
+      {},
+      () => {
+        toast.success("Success");
+        setLoading(false);
+        setSelectedStake(null);
+        dispatch(_getMyStakes(packageList));
       },
-      (error) => console.error(error)
+      (error) => {
+        dispatch(_showAppError(error));
+        setLoading(false);
+      }
     );
-  }, [page]);
+  };
 
   return (
     <>
@@ -78,19 +121,18 @@ const StakingHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {history &&
-              history.items.map((row, index) => (
-                <tr key={index}>
-                  {menu.map((item, index) => (
-                    <td key={index}>
-                      {item.format
-                        ? item.format(row[item.key], row)
-                        : row[item.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            {history && history.itemCount === 0 && (
+            {myStakes?.map((row, index) => (
+              <tr key={index}>
+                {menu.map((item, index) => (
+                  <td key={index}>
+                    {item.format
+                      ? item.format(row[item.key], row)
+                      : row[item.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            {myStakes?.itemCount === 0 && (
               <tr>
                 <td className="blank" colSpan={menu.length}>
                   NO RECORD
@@ -99,7 +141,7 @@ const StakingHistory = () => {
             )}
           </tbody>
         </table>
-        {history ? (
+        {/* {history ? (
           <Pagination
             count={history.pageCount}
             variant="outlined"
@@ -109,14 +151,19 @@ const StakingHistory = () => {
           />
         ) : (
           <Loader />
-        )}
+        )} */}
       </Box>
       <CustomBlueSmallModal
         open={Boolean(selectedStake)}
         _close={() => setSelectedStake(null)}
-        isShowCloseButton
+        isShowCloseButton={!loading}
       >
-        {selectedStake?.id}
+        <Typography mb={2} variant="h6" className="custom-font">
+          Are you sure for UNSTAKE #{selectedStake?.id} ?
+        </Typography>
+        <CustomLoadingButton loading={loading} fullWidth onClick={_unStake}>
+          Unstake
+        </CustomLoadingButton>
       </CustomBlueSmallModal>
     </>
   );

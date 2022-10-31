@@ -117,4 +117,8 @@ export const EndpointConstant = {
   NFT_RI_ROOT: `/nft/ri/root`,
   RI_FACTORY_ROOT_SWAP: "/fund/root/swap",
   RI_FACTORY_ROOT_WITHDRAW: "/fund/root/withdraw",
+  STAKING_PACKAGE_LIST: "/staking/package/list",
+  STAKING_MY_LIST: "/staking/my-stakings",
+  STAKING_STAKE: "/staking/stake",
+  STAKING_UN_STAKE: "/staking/un-stake",
 };
