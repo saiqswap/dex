@@ -2,7 +2,6 @@ import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import {
   Box,
   Checkbox,
-  Container,
   FormControlLabel,
   FormGroup,
   Hidden,

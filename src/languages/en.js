@@ -209,4 +209,7 @@ export const en = {
   ROOT_ID: "Root ID",
   NUMBER_OF_SLOTS: "Number of slots",
   STAKING: "Staking",
+  //221031
+  PLEASE_READ_AND_ACCEPT_FOR_STAKING:
+    "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of Stake ING.",
 };
