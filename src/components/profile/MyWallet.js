@@ -228,7 +228,7 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
   const [isApproved, setIsApproved] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const { setting } = useSelector((state) => state);
-  const { library } = setting;
+  const { library, applicationConfig } = setting;
 
   useEffect(() => {
     if (open) {
@@ -243,7 +243,7 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
     const boxScPrice = parseUnits(formatPrice(amount, 2), 18);
     setLoading(true);
     _checkBeforePurchase(
-      "0x54C941DF0ccd5eF762bBC8A002b4bB3a2fCB1021",
+      applicationConfig.ADDRESS_DEPOSIT_ING,
       funds.ING.contractAddress,
       boxScPrice,
       walletAddress,
@@ -251,20 +251,19 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
     ).then((success) => {
       if (success) {
         setIsApproved(true);
-        _depositING(
-          "0x54C941DF0ccd5eF762bBC8A002b4bB3a2fCB1021",
-          boxScPrice
-        ).then((txHash) => {
-          _getReceipt(txHash).then((success) => {
-            if (success) {
-              setIsConfirmed(true);
-              toast.success("Success");
-              setLoading(false);
-              _syncData();
-              _close();
-            }
-          });
-        });
+        _depositING(applicationConfig.ADDRESS_DEPOSIT_ING, boxScPrice).then(
+          (txHash) => {
+            _getReceipt(txHash).then((success) => {
+              if (success) {
+                setIsConfirmed(true);
+                toast.success("Success");
+                setLoading(false);
+                _syncData();
+                _close();
+              }
+            });
+          }
+        );
       }
     });
   };
