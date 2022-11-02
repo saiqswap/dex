@@ -11,6 +11,16 @@ const ESCROW_VESTING = new EscrowVesting(
   AppConfig.ESCROW_VESTING_CONTRACT_ADDRESS
 );
 
+export const _depositING = async (contractAddress, amount) => {
+  const contractInstance = new ethers.Contract(
+    contractAddress,
+    ["function depositING(uint256 amount)"],
+    signer
+  );
+  const tx = await contractInstance.depositING(amount);
+  return tx.hash;
+};
+
 export const _getPreSaleRounds = async (_callback) => {
   try {
     const roundList = [];
@@ -131,7 +141,6 @@ export const _purchase = async (
     const tx = await ESCROW_VESTING.purchase(purchaseInput, signer);
     return tx.hash;
   } catch (error) {
-    console.log(error);
     _showError(error);
     _handleErrorCallback();
   }

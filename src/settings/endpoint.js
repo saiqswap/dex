@@ -94,6 +94,7 @@ export const EndpointConstant = {
   FUND_WITHDRAW: "/fund/withdraw",
   FUND_WITHDRAW_GET_GET_LIST: "/fund/withdraw/get-list",
   FUND_BALANCE_LOGS: "/fund/balance/logs",
+  FUND_SYNC_DEPOSIT: "/fund/sync/deposit",
   MARKET_LISTING: "/market/listing",
   MARKET_DELIST: "/market/delist",
   MARKET_ORDER_SC_INPUT: "/market/order-sc-input",
