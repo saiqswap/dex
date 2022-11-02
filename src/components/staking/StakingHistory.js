@@ -9,7 +9,7 @@ import { EndpointConstant } from "../../settings/endpoint";
 import { formatUSD } from "../../settings/format";
 import { _showAppError } from "../../store/actions/settingActions";
 import { _getMyStakes } from "../../store/actions/stakingActions";
-import { _getBalance } from "../../store/actions/userActions";
+import { _getBalance, _getNewProfile } from "../../store/actions/userActions";
 import { put } from "../../utils/api";
 import CustomBlueSmallModal from "../common/CustomBlueSmallModal";
 import { CustomLoadingButton } from "../common/CustomButton";
@@ -40,49 +40,24 @@ const StakingHistory = () => {
 
   const menu = [
     {
+      key: "startTime",
+      label: "Time",
+      format: (e) => moment(e).format("YYYY-MM-DD hh:mm:ss"),
+    },
+    {
       key: "amount",
-      label: "Total amount",
+      label: "Staking Amount",
       format: (e) => formatUSD(e) + " " + CoinList.ING,
     },
     {
-      key: "packageId",
-      label: "Package ID",
-      format: (e) => e,
-    },
-    {
-      key: "estUnStakeFee",
-      label: "Fee",
-      format: (e) => e,
-    },
-    // {
-    //   key: "",
-    //   label: "Est. APY",
-    //   format: (e) => "12%",
-    // },
-    {
-      key: "timeToNextPay",
-      label: "Next time to pay",
-      format: (e) => moment(e).format("YYYY-MM-DD"),
-    },
-    {
-      key: "startTime",
-      label: "Interest Start Date",
-      format: (e) => moment(e).format("YYYY-MM-DD"),
-    },
-    {
       key: "endTime",
-      label: "Interest End Date",
+      label: "Unstake Date",
       format: (e) => moment(e).format("YYYY-MM-DD"),
     },
-    // {
-    //   key: "",
-    //   label: "Interest Period",
-    //   format: (e) => "1 Days",
-    // },
     {
-      key: "status",
-      label: "Status",
-      // format: (e) => "1 Days",
+      key: "amountPaid",
+      label: "Accumulated interest",
+      format: (e) => formatUSD(e) + " " + CoinList.ING,
     },
     {
       key: "status",
@@ -90,7 +65,7 @@ const StakingHistory = () => {
       format: (e, row) =>
         e === STAKING_STATUS.STAKING && (
           <Link size="small" onClick={() => setSelectedStake(row)}>
-            Unstake
+            Unstake Now
           </Link>
         ),
     },
@@ -107,6 +82,7 @@ const StakingHistory = () => {
         setSelectedStake(null);
         dispatch(_getMyStakes(packageList));
         dispatch(_getBalance());
+        dispatch(_getNewProfile());
       },
       (error) => {
         dispatch(_showAppError(error));
@@ -134,7 +110,7 @@ const StakingHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {myStakes?.map((row, index) => (
+              {myStakes?.listStaking?.map((row, index) => (
                 <tr key={index}>
                   {menu.map((item, index) => (
                     <td key={index}>
@@ -172,12 +148,23 @@ const StakingHistory = () => {
         _close={() => setSelectedStake(null)}
         isShowCloseButton={!loading}
       >
-        <Typography mb={2} variant="h6" className="custom-font">
-          Are you sure for UNSTAKE #{selectedStake?.id} ?
+        <Typography mb={2} variant="h6">
+          Are you sure you want to unstake before the unstake expected date with
+          a fee of 1%?
         </Typography>
-        <CustomLoadingButton loading={loading} fullWidth onClick={_unStake}>
-          Unstake
-        </CustomLoadingButton>
+        <Box display="flex">
+          <CustomLoadingButton
+            loading={loading}
+            fullWidth
+            onClick={() => setSelectedStake(null)}
+          >
+            No
+          </CustomLoadingButton>
+          <Box width={16} />
+          <CustomLoadingButton loading={loading} fullWidth onClick={_unStake}>
+            Yes
+          </CustomLoadingButton>
+        </Box>
       </CustomBlueSmallModal>
     </>
   ) : null;

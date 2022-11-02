@@ -121,4 +121,5 @@ export const EndpointConstant = {
   STAKING_MY_LIST: "/staking/my-stakings",
   STAKING_STAKE: "/staking/stake",
   STAKING_UN_STAKE: "/staking/un-stake",
+  STAKING_VERIFY_STAKE: "/staking/verify-stake",
 };

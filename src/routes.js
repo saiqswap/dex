@@ -60,13 +60,6 @@ const routes = [
     isActive: true,
   },
   {
-    exact: true,
-    path: "/staking",
-    component: StakingPage,
-    type: "guest",
-    isActive: true,
-  },
-  {
     exact: false,
     path: "/details/:id",
     component: NFTDetail,

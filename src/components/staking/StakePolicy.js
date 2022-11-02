@@ -13,23 +13,8 @@ export default function StakePolicy() {
           target="_blank"
           href="https://doc.infinityangel.io/infinity-angel-docs/overview/whitepaper"
         >
-          {library.WHITEPAPER}
+          Infinity Angel Staking Service Agreement{" "}
         </Link>
-        ,{" "}
-        <Link
-          target="_blank"
-          href="https://doc.infinityangel.io/faqs/privacy-policy"
-        >
-          {library.POLICY_AND_CONDITIONS}
-        </Link>{" "}
-        {library.AND}{" "}
-        <Link
-          target="_blank"
-          href="https://doc.infinityangel.io/faqs/disclaimer"
-        >
-          {library.DISCLAIMER}
-        </Link>{" "}
-        of Stake ING.
       </Typography>
     </Box>
   );

@@ -22,9 +22,6 @@ export default function CustomNumberInput(props) {
           e.preventDefault();
         }
       }}
-      // InputProps={{
-      //   type: "number",
-      // }}
       {...props}
     />
   );

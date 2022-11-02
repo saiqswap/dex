@@ -113,10 +113,6 @@ export const develop = {
       title: "MARKETPLACE",
       url: ["/marketplace"],
     },
-    {
-      title: "STAKING",
-      url: ["/staking"],
-    },
     // {
     //   title: "MINTING",
     //   url: ["/minting-box"],
