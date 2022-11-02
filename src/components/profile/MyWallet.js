@@ -268,7 +268,7 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
     });
   };
   return (
-    <CustomModal open={open} _close={_close}>
+    <CustomModal open={open} _close={_close} isShowCloseButton={!loading}>
       <Box component="form" onSubmit={_handleDepositING} p={2}>
         <Typography
           variant="h6"
