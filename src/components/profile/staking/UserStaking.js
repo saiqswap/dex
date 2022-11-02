@@ -73,7 +73,7 @@ const CustomStepper = styled(Stepper)(({ theme }) => ({
 
 export default function StakingPage() {
   return (
-    <RIMintingCheck>
+    <RIMintingCheck isText={true}>
       <UserStaking />
     </RIMintingCheck>
   );
