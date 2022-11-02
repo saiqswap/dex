@@ -41,11 +41,9 @@ const CustomStepper = styled(Stepper)(({ theme }) => ({
 }));
 
 export default function SlotProcess({ selectedPackage }) {
-  const { user, setting, stakingStore } = useSelector((state) => state);
+  const { user, stakingStore } = useSelector((state) => state);
   const { information } = user;
   const { myStakes } = stakingStore;
-
-  console.log(selectedPackage);
 
   return selectedPackage ? (
     <>

@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CoinList } from "../../../settings/constants";
@@ -91,6 +91,7 @@ function UserStaking() {
   const [fAmount, setFAmount] = useState(0);
   const [checked, setChecked] = useState(false);
   const [verifyData, setVerifyData] = useState(null);
+  const refInput = useRef(null);
 
   useEffect(() => {
     if (packageList && packageList.length > 0) {
@@ -162,6 +163,7 @@ function UserStaking() {
         (data) => {
           setVerifyData(data);
           setLoading(false);
+          refInput.current.focus();
         },
         (error) => {
           dispatch(_showAppError(error));
@@ -169,7 +171,7 @@ function UserStaking() {
         }
       );
     };
-    if (fAmount && selectedItem) {
+    if (fAmount && fAmount > 0 && selectedItem) {
       _handleVerifyStake();
     } else {
       setVerifyData(null);
@@ -240,10 +242,13 @@ function UserStaking() {
                   placeholder="Please enter ING amount"
                   id="amount"
                   name="amount"
-                  // disabled={loading}
-                  InputProps={{
+                  disabled={loading}
+                  inputProps={{
+                    autoFocus: true,
                     step: "any",
                     type: "number",
+                    min: "0",
+                    ref: refInput,
                     endAdornment: (
                       <img
                         src={`/images/coins/${CoinList.ING}.png`}
