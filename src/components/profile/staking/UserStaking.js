@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  Hidden,
   Step,
   StepLabel,
   Stepper,
@@ -36,6 +37,7 @@ import { CustomStack, PriceBox } from "../../box-minting/MintingStyles";
 import { CustomLoadingButton } from "../../common/CustomButton";
 import CustomNumberInput from "../../common/CustomNumberInput";
 import RIMintingCheck from "../../common/RIMintingCheck";
+import SlotProcess from "../../staking/SlotProcess";
 import StakePolicy from "../../staking/StakePolicy";
 import StakingHistory from "../../staking/StakingHistory";
 import StakingNotice from "./StakingNotice";
@@ -208,41 +210,7 @@ function UserStaking() {
             </CustomContainer>
           </Grid>
           <Grid item xs={12}>
-            <CustomContainer>
-              <Box display="flex" justifyContent="space-between" mb={3}>
-                <Typography variant="body2">Staking slot process</Typography>
-                <Typography variant="body2" color="primary">
-                  Your staking balance:{" "}
-                  {formatNumberWithDecimal(myStakes?.stakingBalance, 2)} ING
-                </Typography>
-              </Box>
-              <Box display="flex" justifyContent="space-between">
-                {[1, 2, 3, 4, 5, 6].map((item, index) => (
-                  <Box key={index} flex={1} textAlign="center">
-                    <Typography variant="caption" color="#fff">
-                      SLOT {item}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-              <CustomStepper
-                activeStep={information.limitRiSlot}
-                alternativeLabel
-              >
-                {[
-                  "Free",
-                  "Free",
-                  "Free",
-                  "50,000 ING",
-                  "70,000 ING",
-                  "100,000 ING",
-                ].map((label, index) => (
-                  <Step key={label + index}>
-                    <StepLabel>{label}</StepLabel>
-                  </Step>
-                ))}
-              </CustomStepper>
-            </CustomContainer>
+            <SlotProcess selectedPackage={selectedItem} />
           </Grid>
           <Grid item xs={12} md={6}>
             <CustomContainer>
