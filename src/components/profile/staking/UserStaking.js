@@ -249,6 +249,7 @@ function UserStaking() {
                     type: "number",
                     min: "0",
                     ref: refInput,
+                    onWheel: (e) => e.target.blur(),
                     endAdornment: (
                       <img
                         src={`/images/coins/${CoinList.ING}.png`}
