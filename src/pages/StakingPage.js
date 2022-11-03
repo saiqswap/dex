@@ -28,6 +28,7 @@ import SlotProcess from "../components/staking/SlotProcess";
 import StakePolicy from "../components/staking/StakePolicy";
 import StakingHistory from "../components/staking/StakingHistory";
 import StakingNotice from "../components/staking/StakingNotice";
+import SyncIcon from "@mui/icons-material/Sync";
 
 const CustomContainer = styled(Box)(({ theme }) => ({
   height: "100%",
@@ -124,8 +125,10 @@ function UserStaking() {
     }
   };
 
-  useEffect(() => {
-    const _handleVerifyStake = () => {
+  const _handleVerifyStake = () => {
+    if (!fAmount) {
+      setVerifyData(null);
+    } else {
       setLoading(true);
       post(
         EndpointConstant.STAKING_VERIFY_STAKE,
@@ -143,13 +146,8 @@ function UserStaking() {
           setLoading(false);
         }
       );
-    };
-    if (information && fAmount && fAmount > 0 && selectedItem) {
-      _handleVerifyStake();
-    } else {
-      setVerifyData(null);
     }
-  }, [dispatch, fAmount, information, selectedItem]);
+  };
 
   const _onChangeAmount = (e) => {
     const fAmount = parseFloat(_formatNumber(e.target.value, 2));
@@ -324,9 +322,20 @@ function UserStaking() {
                     />
                   </FormGroup>
                 </Box>
-                <CustomLoadingButton loading={loading} type="submit">
-                  Subscribe
-                </CustomLoadingButton>
+                <Box display="flex">
+                  {information && (
+                    <CustomLoadingButton
+                      sx={{ minWidth: "unset!important", mr: 1 }}
+                      loading={loading}
+                      onClick={_handleVerifyStake}
+                    >
+                      <SyncIcon />
+                    </CustomLoadingButton>
+                  )}
+                  <CustomLoadingButton loading={loading} type="submit">
+                    Subscribe
+                  </CustomLoadingButton>
+                </Box>
               </Box>
             </CustomContainer>
           </Grid>
