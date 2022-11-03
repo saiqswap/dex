@@ -246,8 +246,10 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
     ).then((success) => {
       if (success) {
         setIsApproved(true);
-        _depositING(applicationConfig.ADDRESS_DEPOSIT_ING, boxScPrice).then(
-          (txHash) => {
+        _depositING(applicationConfig.ADDRESS_DEPOSIT_ING, boxScPrice, () =>
+          setLoading(false)
+        ).then((txHash) => {
+          if (txHash) {
             _getReceipt(txHash).then((success) => {
               if (success) {
                 setIsConfirmed(true);
@@ -258,10 +260,11 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
               }
             });
           }
-        );
+        });
       }
     });
   };
+
   return (
     <CustomModal open={open} _close={_close} isShowCloseButton={!loading}>
       <Box component="form" onSubmit={_handleDepositING} p={2}>
