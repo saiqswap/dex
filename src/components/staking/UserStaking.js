@@ -6,10 +6,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  Hidden,
-  Step,
-  StepLabel,
-  Stepper,
   styled,
   Typography,
 } from "@mui/material";
@@ -53,24 +49,6 @@ const CustomContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(4),
 }));
 
-const CustomStepper = styled(Stepper)(({ theme }) => ({
-  color: "red",
-  " .MuiStepLabel-label.Mui-active": {
-    color: "var(--text-color)",
-  },
-  " .MuiStepLabel-label.Mui-completed": {
-    color: "var(--text-color)",
-  },
-  " .MuiStepIcon-text": {
-    fill: "#000",
-  },
-  " .MuiSvgIcon-root.Mui-completed": {
-    background: "#fff",
-    borderRadius: "50%",
-    fill: "green",
-  },
-}));
-
 export default function StakingPage() {
   return (
     <RIMintingCheck isText={true}>
@@ -86,7 +64,7 @@ function UserStaking() {
   const [INGBalance, setINGBalance] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
   const dispatch = useDispatch();
-  const { packageList, myStakes } = stakingStore;
+  const { packageList } = stakingStore;
   const [loading, setLoading] = useState(false);
   const [fAmount, setFAmount] = useState(0);
   const [checked, setChecked] = useState(false);

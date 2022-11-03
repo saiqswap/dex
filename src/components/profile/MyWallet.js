@@ -1,3 +1,5 @@
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import SyncIcon from "@mui/icons-material/Sync";
 import {
   Button,
   Container,
@@ -12,26 +14,19 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { _checkBeforePurchase, _depositING, _getReceipt } from "../../onchain";
-import { provider } from "../../onchain/onchain";
 import { AppConfig } from "../../settings";
+import { CoinList } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
 import { formatNumberWithDecimal, formatPrice } from "../../settings/format";
 import { _showAppError } from "../../store/actions/settingActions";
-import {
-  _getBalance,
-  _getLockBalances,
-  _getOnchainBalance,
-} from "../../store/actions/userActions";
-import { get, post } from "../../utils/api";
+import { _getBalance, _getLockBalances } from "../../store/actions/userActions";
+import { post } from "../../utils/api";
+import { CustomLoadingButton } from "../common/CustomButton";
+import CustomModal from "../common/CustomModal";
+import CustomNumberInput from "../common/CustomNumberInput";
 import RIMintingCheck from "../common/RIMintingCheck";
 import ClaimForm from "./ClaimForm";
 import SwapForm from "./SwapForm";
-import SyncIcon from "@mui/icons-material/Sync";
-import CustomModal from "../common/CustomModal";
-import CustomNumberInput from "../common/CustomNumberInput";
-import { CoinList } from "../../settings/constants";
-import { CustomLoadingButton } from "../common/CustomButton";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const inGame = [
   {

@@ -139,6 +139,10 @@ export const develop = {
       title: "SWAP",
       url: ["/swap"],
     },
+    {
+      title: "STAKING",
+      url: ["/staking"],
+    },
   ],
   BLOCKCHAIN: {
     ...TESTNET_ABI,

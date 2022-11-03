@@ -1,31 +1,33 @@
+import UndoIcon from "@mui/icons-material/Undo";
 import {
   Box,
   Checkbox,
   Container,
-  Divider,
   FormControlLabel,
   FormGroup,
   Grid,
   styled,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import moment from "moment";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { CustomStack, PriceBox } from "../components/box-minting/MintingStyles";
-import CustomBlueSmallModal from "../components/common/CustomBlueSmallModal";
-import { CustomLoadingButton } from "../components/common/CustomButton";
-import CustomNumberInput from "../components/common/CustomNumberInput";
-import RIMintingCheck from "../components/common/RIMintingCheck";
-import StakePolicy from "../components/staking/StakePolicy";
-import StakingHistory from "../components/staking/StakingHistory";
 import { CoinList } from "../settings/constants";
-import { EndpointConstant } from "../settings/endpoint";
 import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
 import { _showAppError } from "../store/actions/settingActions";
 import { _getMyStakes, _getPackageList } from "../store/actions/stakingActions";
-import { _getBalance } from "../store/actions/userActions";
+import { _getBalance, _getNewProfile } from "../store/actions/userActions";
 import { post } from "../utils/api";
+import { EndpointConstant } from "../settings/endpoint";
+import { CustomStack, PriceBox } from "../components/box-minting/MintingStyles";
+import RIMintingCheck from "../components/common/RIMintingCheck";
+import CustomNumberInput from "../components/common/CustomNumberInput";
+import { CustomLoadingButton } from "../components/common/CustomButton";
+import SlotProcess from "../components/staking/SlotProcess";
+import StakePolicy from "../components/staking/StakePolicy";
+import StakingHistory from "../components/staking/StakingHistory";
+import StakingNotice from "../components/staking/StakingNotice";
 
 const CustomContainer = styled(Box)(({ theme }) => ({
   height: "100%",
@@ -35,18 +37,18 @@ const CustomContainer = styled(Box)(({ theme }) => ({
   backdropFilter: "blur(20px)",
   border: "1px solid var(--border-color)",
   borderRadius: "20px",
-  padding: theme.spacing(5),
+  padding: theme.spacing(4),
 }));
 
 export default function StakingPage() {
   return (
-    <RIMintingCheck>
-      <TokenStaking />
+    <RIMintingCheck isText={true}>
+      <UserStaking />
     </RIMintingCheck>
   );
 }
 
-function TokenStaking() {
+function UserStaking() {
   const { user, setting, stakingStore } = useSelector((state) => state);
   const { balances, information } = user;
   const { library } = setting;
@@ -55,9 +57,10 @@ function TokenStaking() {
   const dispatch = useDispatch();
   const { packageList } = stakingStore;
   const [loading, setLoading] = useState(false);
-  const [confirming, setConfirming] = useState(false);
   const [fAmount, setFAmount] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [verifyData, setVerifyData] = useState(null);
+  const refInput = useRef(null);
 
   useEffect(() => {
     if (packageList && packageList.length > 0) {
@@ -78,16 +81,13 @@ function TokenStaking() {
 
   const _handleSubmit = (e) => {
     e.preventDefault();
-    const fAmount = _formatNumber(e.target.amount.value, 2);
-    setFAmount(fAmount);
     if (information) {
-      const fFromAmount = parseFloat(_formatNumber(fAmount, 2));
-      if (!fFromAmount) {
+      if (!fAmount) {
         toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
-      } else if (fFromAmount > INGBalance) {
+      } else if (fAmount > INGBalance) {
         toast.error(library.INSUFFICIENT_BALANCE);
       } else {
-        setConfirming(true);
+        _handleStake();
       }
     } else {
       toast.error(library.PLEASE_LOGIN);
@@ -95,160 +95,251 @@ function TokenStaking() {
   };
 
   const _handleStake = () => {
-    if (checked) {
+    if (information) {
+      if (checked) {
+        setLoading(true);
+        post(
+          EndpointConstant.STAKING_STAKE,
+          {
+            packageId: selectedItem.id,
+            amount: fAmount,
+          },
+          () => {
+            setLoading(false);
+            toast.success("Success");
+            dispatch(_getMyStakes(packageList));
+            dispatch(_getBalance());
+            dispatch(_getNewProfile());
+          },
+          (error) => {
+            dispatch(_showAppError(error));
+            setLoading(false);
+          }
+        );
+      } else {
+        toast.error(library.PLEASE_READ_AND_ACCEPT_FOR_STAKING);
+      }
+    } else {
+      toast.error(library.PLEASE_LOGIN);
+    }
+  };
+
+  useEffect(() => {
+    const _handleVerifyStake = () => {
       setLoading(true);
-      setConfirming(false);
       post(
-        EndpointConstant.STAKING_STAKE,
+        EndpointConstant.STAKING_VERIFY_STAKE,
         {
           packageId: selectedItem.id,
           amount: fAmount,
         },
-        () => {
+        (data) => {
+          setVerifyData(data);
           setLoading(false);
-          toast.success("Success");
-          dispatch(_getMyStakes(packageList));
-          dispatch(_getBalance());
+          refInput.current.focus();
         },
         (error) => {
           dispatch(_showAppError(error));
           setLoading(false);
         }
       );
+    };
+    if (information && fAmount && fAmount > 0 && selectedItem) {
+      _handleVerifyStake();
     } else {
-      toast.error(library.PLEASE_READ_AND_ACCEPT_FOR_STAKING);
+      setVerifyData(null);
     }
+  }, [dispatch, fAmount, information, selectedItem]);
+
+  const _onChangeAmount = (e) => {
+    const fAmount = parseFloat(_formatNumber(e.target.value, 2));
+    setFAmount(fAmount);
   };
 
   return (
-    <>
-      <div
-        style={{
-          marginBottom: -40,
-          paddingTop: 40,
-          fontFamily: "Orbitron!important",
-          background: "url(/images/backgrounds/background.png)",
-          backgroundAttachment: "fixed",
-          backgroundSize: "cover",
-          paddingBottom: 100,
-          minHeight: "100vh",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <CustomContainer>
-                <Box component="form" onSubmit={_handleSubmit} noValidate>
-                  <CustomStack>
-                    <Box mr={3}>
-                      <Typography>APY </Typography>
-                    </Box>
-                    {selectedItem &&
-                      packageList?.map((item, index) => (
-                        <PriceBox
-                          sx={{ minWidth: 70 }}
-                          key={index}
-                          onClick={() => setSelectedItem(item)}
-                          className={
-                            selectedItem.id === item.id ? "active" : ""
-                          }
-                        >
-                          {item.annualInterestRate}%
-                        </PriceBox>
-                      ))}
-                  </CustomStack>
-                  <Box textAlign="right" mb={1}>
-                    <Typography
-                      variant="caption"
-                      color="#fff"
-                      textAlign="right"
-                    >
-                      {library.BALANCE}:{" "}
-                      {formatNumberWithDecimal(INGBalance, 2)} {CoinList.ING}
+    <div
+      style={{
+        marginBottom: -40,
+        paddingTop: 40,
+        fontFamily: "Orbitron!important",
+        background: "url(/images/backgrounds/background.png)",
+        backgroundAttachment: "fixed",
+        backgroundSize: "cover",
+        paddingBottom: 100,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <CustomContainer>
+              <Box display="flex" justifyContent="space-between">
+                <Box display="flex" alignItems="center">
+                  <UndoIcon
+                    sx={{ transform: "rotate(270deg)" }}
+                    fontSize="large"
+                  />
+                  <Box>
+                    <Typography>ING</Typography>
+                    <Typography>ING</Typography>
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography>Reference APR</Typography>
+                  <Typography>{selectedItem?.annualInterestRate}%</Typography>
+                </Box>
+                <Box>
+                  <Typography>Tenor</Typography>
+                  <Typography>Flexible</Typography>
+                </Box>
+              </Box>
+            </CustomContainer>
+          </Grid>
+          <Grid item xs={12}>
+            <SlotProcess selectedPackage={selectedItem} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <CustomContainer>
+              <Box component="form" onSubmit={_handleSubmit} noValidate>
+                <CustomStack>
+                  {selectedItem &&
+                    packageList?.map((item, index) => (
+                      <PriceBox
+                        sx={{ minWidth: 70 }}
+                        key={index}
+                        onClick={() => setSelectedItem(item)}
+                        className={selectedItem.id === item.id ? "active" : ""}
+                      >
+                        {item.days} days
+                      </PriceBox>
+                    ))}
+                </CustomStack>
+                <Box textAlign="right" mb={1}>
+                  <Typography variant="caption" color="#fff" textAlign="right">
+                    {library.BALANCE}: {formatNumberWithDecimal(INGBalance, 2)}{" "}
+                    {CoinList.ING}
+                  </Typography>
+                </Box>
+                <CustomNumberInput
+                  fullWidth
+                  label="Amount"
+                  placeholder="Please enter ING amount"
+                  id="amount"
+                  name="amount"
+                  disabled={loading}
+                  inputProps={{
+                    autoFocus: true,
+                    step: "any",
+                    type: "number",
+                    min: "0",
+                    ref: refInput,
+                    onWheel: (e) => e.target.blur(),
+                    endAdornment: (
+                      <img
+                        src={`/images/coins/${CoinList.ING}.png`}
+                        width="50px"
+                        alt="ing-logo"
+                      />
+                    ),
+                  }}
+                  onChange={_onChangeAmount}
+                />
+                <Box mt={2}></Box>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body2">Projected Profit: </Typography>
+                  <Typography variant="body2">
+                    {verifyData
+                      ? `x${formatNumberWithDecimal(
+                          verifyData.projectedProfit
+                        )}`
+                      : "--/--"}
+                  </Typography>
+                </Box>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="body2">Available Slots:</Typography>
+                  <Typography variant="body2">
+                    {verifyData ? (
+                      <>
+                        {`active ${verifyData.slotCanOpen}`}
+                        <sup>th</sup> slot
+                      </>
+                    ) : (
+                      "--/--"
+                    )}
+                  </Typography>
+                </Box>
+                <Box mt={2}></Box>
+                <CustomContainer mt={2} sx={{ px: 2, py: 1 }}>
+                  <Typography>Rule:</Typography>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body2">Subscription Date:</Typography>
+                    <Typography variant="body2">
+                      {verifyData
+                        ? moment(verifyData.subscriptionTime).format(
+                            "YYYY-MM-DD"
+                          )
+                        : "--/--"}
                     </Typography>
                   </Box>
-                  <CustomNumberInput
-                    fullWidth
-                    label="Amount"
-                    placeholder="Please enter ING amount"
-                    id="amount"
-                    name="amount"
-                    disabled={loading}
-                    InputProps={{
-                      step: "any",
-                      type: "number",
-                      endAdornment: (
-                        <img
-                          src={`/images/coins/${CoinList.ING}.png`}
-                          width="50px"
-                          alt="ing-logo"
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body2">Redemption Period:</Typography>
+                    <Typography variant="body2">
+                      {verifyData ? verifyData.redemptionPeriod : "--/--"}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body2">
+                      Profit Distribution Date:
+                    </Typography>
+                    <Typography variant="body2">
+                      {verifyData
+                        ? moment(verifyData.profitDistributionTime).format(
+                            "YYYY-MM-DD"
+                          )
+                        : "--/--"}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body2">
+                      Unstake fee (before unstake date):
+                    </Typography>
+                    <Typography variant="body2">
+                      {verifyData ? "1%" : "--/--"}
+                    </Typography>
+                  </Box>
+                </CustomContainer>
+                <Box mt={2} mb={3}>
+                  <Typography variant="caption">
+                    * APR does not mean the actual or predicted returns in fiat
+                    currency
+                  </Typography>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checked}
+                          onChange={(e) => setChecked(e.target.checked)}
                         />
-                      ),
-                    }}
-                  />
-                  <Box mt={2}></Box>
-                  <CustomLoadingButton loading={loading} type="submit">
-                    Stake {CoinList.ING}
-                  </CustomLoadingButton>
+                      }
+                      label={<StakePolicy />}
+                    />
+                  </FormGroup>
                 </Box>
-              </CustomContainer>
-            </Grid>
-            <Grid item xs={6}>
-              <CustomContainer>Top Staking</CustomContainer>
-            </Grid>
-            <Grid item xs={12}>
-              <StakingHistory />
-            </Grid>
+                <CustomLoadingButton loading={loading} type="submit">
+                  Subscribe
+                </CustomLoadingButton>
+              </Box>
+            </CustomContainer>
           </Grid>
-        </Container>
-      </div>
-      <CustomBlueSmallModal
-        open={confirming}
-        _close={() => setConfirming(false)}
-        isShowCloseButton={!loading}
-      >
-        <Box>
-          <Typography textAlign="left" className="custom-font" variant="h6">
-            Confirming
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-          <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2">Package</Typography>
-            <Typography variant="body2">{selectedItem?.packageType}</Typography>
-          </Box>
-          <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2">Amount</Typography>
-            <Typography variant="body2">
-              {formatNumberWithDecimal(fAmount)} {CoinList.ING}
-            </Typography>
-          </Box>
-          <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2">Interest Rate</Typography>
-            <Typography variant="body2">
-              {selectedItem?.annualInterestRate}%
-            </Typography>
-          </Box>
-        </Box>
-        <FormGroup sx={{ mt: 2 }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked}
-                onChange={(e) => setChecked(e.target.checked)}
-              />
-            }
-            label={<StakePolicy />}
-          />
-        </FormGroup>
-        <CustomLoadingButton
-          loading={loading}
-          fullWidth
-          onClick={_handleStake}
-          sx={{ mt: 3 }}
-        >
-          Submit
-        </CustomLoadingButton>
-      </CustomBlueSmallModal>
-    </>
+          <Grid item xs={12} md={6}>
+            <CustomContainer>
+              <StakingNotice />
+            </CustomContainer>
+          </Grid>
+          <Grid item xs={12}>
+            <StakingHistory />
+          </Grid>
+        </Grid>
+      </Container>
+    </div>
   );
 }

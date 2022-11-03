@@ -1,12 +1,12 @@
-import BoxesPage from "./pages/BoxesPage";
-import BoxMinting from "./pages/BoxMinting";
+// import BoxesPage from "./pages/BoxesPage";
+// import BoxMinting from "./pages/BoxMinting";
 import ErrorPage from "./pages/ErrorPage";
 import Homepage from "./pages/Homepage";
 import Marketplace from "./pages/Marketplace";
 import NFTDetail from "./pages/NFTDetail";
-import PresalePage from "./pages/PresalePage";
-import PreSaleRound from "./pages/PreSaleRound";
-import PreSaleStatistic from "./pages/PreSaleStatistic";
+// import PresalePage from "./pages/PresalePage";
+// import PreSaleRound from "./pages/PreSaleRound";
+// import PreSaleStatistic from "./pages/PreSaleStatistic";
 import Profile from "./pages/Profile";
 import ReferralLink from "./pages/ReferralLink";
 import ResearchInstitute from "./pages/ResearchInstitute";
@@ -56,6 +56,13 @@ const routes = [
     exact: true,
     path: "/marketplace",
     component: Marketplace,
+    type: "guest",
+    isActive: true,
+  },
+  {
+    exact: true,
+    path: "/staking",
+    component: StakingPage,
     type: "guest",
     isActive: true,
   },

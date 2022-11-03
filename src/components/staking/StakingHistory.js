@@ -26,7 +26,6 @@ const CustomContainer = styled(Box)(({ theme }) => ({
 const StakingHistory = () => {
   const { stakingStore, user } = useSelector((state) => state);
   const { myStakes, packageList } = stakingStore;
-  const [page, setPage] = useState(1);
   const [selectedStake, setSelectedStake] = useState(null);
   const { information } = user;
   const dispatch = useDispatch();

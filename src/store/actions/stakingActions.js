@@ -1,4 +1,3 @@
-import { post } from "jquery";
 import { EndpointConstant } from "../../settings/endpoint";
 import { get } from "../../utils/api";
 import { StoreStakingConstant } from "../constants";

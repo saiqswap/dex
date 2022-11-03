@@ -45,6 +45,11 @@ export default function SlotProcess({ selectedPackage }) {
   const { information } = user;
   const { myStakes } = stakingStore;
 
+  let limitRiSlot = 3;
+  if (information) {
+    limitRiSlot = information.limitRiSlot;
+  }
+
   return selectedPackage ? (
     <>
       <Hidden mdDown>
@@ -65,7 +70,7 @@ export default function SlotProcess({ selectedPackage }) {
               </Box>
             ))}
           </Box>
-          <CustomStepper activeStep={information.limitRiSlot} alternativeLabel>
+          <CustomStepper activeStep={limitRiSlot} alternativeLabel>
             {[
               "Free",
               "Free",
@@ -99,10 +104,7 @@ export default function SlotProcess({ selectedPackage }) {
               </Box>
             ))}
           </Box>
-          <CustomStepper
-            activeStep={information.limitRiSlot - 3}
-            alternativeLabel
-          >
+          <CustomStepper activeStep={limitRiSlot - 3} alternativeLabel>
             {[
               formatNumberWithDecimal(selectedPackage.amountToOpenSlot4, 0),
               formatNumberWithDecimal(selectedPackage.amountToOpenSlot5, 0),

@@ -1,10 +1,9 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
-import WidgetsIcon from "@mui/icons-material/Widgets";
-import TokenIcon from "@mui/icons-material/Token";
-import { AppConfig } from ".";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import WidgetsIcon from "@mui/icons-material/Widgets";
+import { AppConfig } from ".";
 export const ACCESS_TOKEN_KEY = "CBt3gpbqeMdWPNG1";
 export const SCOPES_KEY = "AhBcmvr1EkMdPnL5";
 export const DEFAULT_PROJECT_TITLE = `NFT Marketplace - Create and sell digital collectibles secured with blockchain`;
@@ -433,12 +432,6 @@ export const PROFILE_MENUS = [
     url: "/profile/my-items?type=ANGEL",
     label: "MY_ITEMS",
     key: "my-items",
-  },
-  {
-    icon: <TokenIcon />,
-    url: "/profile/staking",
-    label: "STAKING",
-    key: "staking",
   },
   {
     icon: <HistoryEduIcon />,

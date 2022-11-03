@@ -6,10 +6,8 @@ import MyAccount from "../components/profile/MyAccount";
 import MyItems from "../components/profile/MyItems";
 import MyWallet from "../components/profile/MyWallet";
 import RIFactory from "../components/profile/RIFactory";
-import UserStaking from "../components/profile/staking/UserStaking";
 import UserMenu from "../components/profile/UserMenu";
 import "../styles/profile.scss";
-import StakingPage from "./StakingPage";
 
 const Profile = () => {
   const { comp } = useParams();
@@ -41,7 +39,6 @@ const RenderContent = ({ component }) => {
     history: <History />,
     wallet: <MyWallet />,
     "ri-factory": <RIFactory />,
-    staking: <UserStaking />,
   };
   return Routes[component] ? Routes[component] : null;
 };
