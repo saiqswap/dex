@@ -235,34 +235,38 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
 
   const _handleDepositING = (e) => {
     e.preventDefault();
-    const boxScPrice = parseUnits(formatPrice(amount, 2), 18);
-    setLoading(true);
-    _checkBeforePurchase(
-      applicationConfig.ADDRESS_DEPOSIT_ING,
-      funds.ING.contractAddress,
-      boxScPrice,
-      walletAddress,
-      () => setLoading(false)
-    ).then((success) => {
-      if (success) {
-        setIsApproved(true);
-        _depositING(applicationConfig.ADDRESS_DEPOSIT_ING, boxScPrice, () =>
-          setLoading(false)
-        ).then((txHash) => {
-          if (txHash) {
-            _getReceipt(txHash).then((success) => {
-              if (success) {
-                setIsConfirmed(true);
-                toast.success("Success");
-                setLoading(false);
-                _syncData();
-                _close();
-              }
-            });
-          }
-        });
-      }
-    });
+    if (parseFloat(formatPrice(amount, 2)) > 1) {
+      const boxScPrice = parseUnits(formatPrice(amount, 2), 18);
+      setLoading(true);
+      _checkBeforePurchase(
+        applicationConfig.ADDRESS_DEPOSIT_ING,
+        funds.ING.contractAddress,
+        boxScPrice,
+        walletAddress,
+        () => setLoading(false)
+      ).then((success) => {
+        if (success) {
+          setIsApproved(true);
+          _depositING(applicationConfig.ADDRESS_DEPOSIT_ING, boxScPrice, () =>
+            setLoading(false)
+          ).then((txHash) => {
+            if (txHash) {
+              _getReceipt(txHash).then((success) => {
+                if (success) {
+                  setIsConfirmed(true);
+                  toast.success("Success");
+                  setLoading(false);
+                  _syncData();
+                  _close();
+                }
+              });
+            }
+          });
+        }
+      });
+    } else {
+      toast.error(library.THE_AMOUNT_OF_ING_IS_TOO_SMALL);
+    }
   };
 
   return (
@@ -279,7 +283,7 @@ const DepositForm = ({ open, _close, funds, walletAddress, _syncData }) => {
         <CustomNumberInput
           fullWidth
           label="Amount"
-          placeholder="Please enter ING amount"
+          placeholder="Please enter ING amount greater than 1"
           id="amount"
           name="amount"
           disabled={loading}

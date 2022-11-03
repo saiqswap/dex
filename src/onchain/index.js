@@ -25,8 +25,8 @@ export const _depositING = async (
     const tx = await contractInstance.depositING(amount);
     return tx.hash;
   } catch (error) {
-    _showError(error);
     _handleErrorCallback();
+    _showError(error);
   }
 };
 
