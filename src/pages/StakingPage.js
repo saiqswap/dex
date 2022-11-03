@@ -13,22 +13,21 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { CoinList } from "../settings/constants";
-import { formatNumberWithDecimal, _formatNumber } from "../settings/format";
-import { _showAppError } from "../store/actions/settingActions";
-import { _getMyStakes, _getPackageList } from "../store/actions/stakingActions";
-import { _getBalance, _getNewProfile } from "../store/actions/userActions";
-import { post } from "../utils/api";
-import { EndpointConstant } from "../settings/endpoint";
 import { CustomStack, PriceBox } from "../components/box-minting/MintingStyles";
-import RIMintingCheck from "../components/common/RIMintingCheck";
-import CustomNumberInput from "../components/common/CustomNumberInput";
 import { CustomLoadingButton } from "../components/common/CustomButton";
+import CustomNumberInput from "../components/common/CustomNumberInput";
+import RIMintingCheck from "../components/common/RIMintingCheck";
 import SlotProcess from "../components/staking/SlotProcess";
 import StakePolicy from "../components/staking/StakePolicy";
 import StakingHistory from "../components/staking/StakingHistory";
 import StakingNotice from "../components/staking/StakingNotice";
-import SyncIcon from "@mui/icons-material/Sync";
+import { CoinList } from "../settings/constants";
+import { EndpointConstant } from "../settings/endpoint";
+import { formatNumberWithDecimal } from "../settings/format";
+import { _showAppError } from "../store/actions/settingActions";
+import { _getMyStakes, _getPackageList } from "../store/actions/stakingActions";
+import { _getBalance, _getNewProfile } from "../store/actions/userActions";
+import { post } from "../utils/api";
 
 const CustomContainer = styled(Box)(({ theme }) => ({
   height: "100%",
@@ -62,6 +61,7 @@ function UserStaking() {
   const [checked, setChecked] = useState(false);
   const [verifyData, setVerifyData] = useState(null);
   const refInput = useRef(null);
+  const [oldFAmount, setOldFAmount] = useState(0);
 
   useEffect(() => {
     if (packageList && packageList.length > 0) {
@@ -125,32 +125,37 @@ function UserStaking() {
     }
   };
 
-  const _handleVerifyStake = () => {
-    if (!fAmount) {
-      setVerifyData(null);
-    } else {
-      setLoading(true);
-      post(
-        EndpointConstant.STAKING_VERIFY_STAKE,
-        {
-          packageId: selectedItem.id,
-          amount: fAmount,
-        },
-        (data) => {
-          setVerifyData(data);
-          setLoading(false);
-          refInput.current.focus();
-        },
-        (error) => {
-          dispatch(_showAppError(error));
-          setLoading(false);
-        }
-      );
+  useEffect(() => {
+    const _handleVerifyStake = () => {
+      setOldFAmount(fAmount);
+      if (!fAmount) {
+        setVerifyData(null);
+      } else {
+        setLoading(true);
+        post(
+          EndpointConstant.STAKING_VERIFY_STAKE,
+          {
+            packageId: selectedItem.id,
+            amount: fAmount,
+          },
+          (data) => {
+            setVerifyData(data);
+            setLoading(false);
+          },
+          (error) => {
+            dispatch(_showAppError(error));
+            setLoading(false);
+          }
+        );
+      }
+    };
+    if (!loading && oldFAmount !== fAmount) {
+      _handleVerifyStake(fAmount);
     }
-  };
+  }, [dispatch, fAmount, loading, oldFAmount, selectedItem]);
 
   const _onChangeAmount = (e) => {
-    const fAmount = parseFloat(_formatNumber(e.target.value, 2));
+    const fAmount = parseFloat(e.target.value);
     setFAmount(fAmount);
   };
 
@@ -223,7 +228,6 @@ function UserStaking() {
                   placeholder="Please enter ING amount"
                   id="amount"
                   name="amount"
-                  disabled={loading}
                   inputProps={{
                     autoFocus: true,
                     step: "any",
@@ -246,10 +250,11 @@ function UserStaking() {
                   <Typography variant="body2">Projected Profit: </Typography>
                   <Typography variant="body2">
                     {verifyData
-                      ? `x${formatNumberWithDecimal(
-                          verifyData.projectedProfit
-                        )}`
-                      : "--/--"}
+                      ? `${formatNumberWithDecimal(
+                          verifyData.profitPerAnnualInterestRate,
+                          2
+                        )} ${CoinList.ING} / day`
+                      : `--/-- ${CoinList.ING} / day`}
                   </Typography>
                 </Box>
                 <Box display="flex" justifyContent="space-between">
@@ -323,15 +328,6 @@ function UserStaking() {
                   </FormGroup>
                 </Box>
                 <Box display="flex">
-                  {information && (
-                    <CustomLoadingButton
-                      sx={{ minWidth: "unset!important", mr: 1 }}
-                      loading={loading}
-                      onClick={_handleVerifyStake}
-                    >
-                      <SyncIcon />
-                    </CustomLoadingButton>
-                  )}
                   <CustomLoadingButton loading={loading} type="submit">
                     Subscribe
                   </CustomLoadingButton>
