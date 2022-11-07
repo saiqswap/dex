@@ -154,6 +154,36 @@ function UserStaking() {
     }
   }, [dispatch, fAmount, loading, oldFAmount, selectedItem]);
 
+  useEffect(() => {
+    const _handleVerifyStake = () => {
+      setOldFAmount(fAmount);
+      if (!fAmount) {
+        setVerifyData(null);
+      } else {
+        setLoading(true);
+        post(
+          EndpointConstant.STAKING_VERIFY_STAKE,
+          {
+            packageId: selectedItem.id,
+            amount: fAmount,
+          },
+          (data) => {
+            setVerifyData(data);
+            setLoading(false);
+          },
+          (error) => {
+            dispatch(_showAppError(error));
+            setLoading(false);
+          }
+        );
+      }
+    };
+    if (selectedItem) {
+      _handleVerifyStake();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, selectedItem]);
+
   const _onChangeAmount = (e) => {
     const fAmount = parseFloat(e.target.value);
     setFAmount(fAmount);
