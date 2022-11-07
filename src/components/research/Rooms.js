@@ -268,7 +268,8 @@ const Rooms = () => {
             </Grid>
           ))}
           {items &&
-            Array(user?.limitRiSlot - (items && items.length))
+            information &&
+            Array(information?.limitRiSlot - items.length)
               .fill(" ")
               .map((item, index) => {
                 // const riSlotPrice = config?.riSlotPrice?.find(
