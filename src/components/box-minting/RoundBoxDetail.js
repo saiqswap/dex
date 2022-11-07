@@ -145,7 +145,7 @@ export default function RoundBoxDetail({ round }) {
           <CustomButton
             className="custom-btn custom-font"
             onClick={() => setShowPurchaseForm(true)}
-            disabled={status === "SOLD_OUT" || status === "END_TIME"}
+            // disabled={status === "SOLD_OUT" || status === "END_TIME"}
           >
             {library[status]}
           </CustomButton>
