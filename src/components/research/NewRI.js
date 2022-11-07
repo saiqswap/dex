@@ -99,9 +99,9 @@ const NewRI = () => {
   const [success, setSuccess] = useState(false);
   const [mount, setMount] = useState(true);
   let params = { angel: angel, costume: skin, minion_parts: minion };
-  const nowTime = moment().unix() * 1000;
+  const nowTime = moment().utc().unix() * 1000;
   const { user, riStore } = useSelector((state) => state);
-  const { myItems, information, riUserType } = user;
+  const { myItems, riUserType } = user;
   const { endTimeServer } = riStore;
   const dispatch = useDispatch();
 
