@@ -268,41 +268,41 @@ const Rooms = () => {
             </Grid>
           ))}
           {items &&
-            Array(RI_SLOT_LIMIT - (items && items.length))
+            Array(user?.limitRiSlot - (items && items.length))
               .fill(" ")
               .map((item, index) => {
-                const riSlotPrice = config?.riSlotPrice?.find(
-                  (i) => i.slotNumber === index + items.length + 1
-                );
+                // const riSlotPrice = config?.riSlotPrice?.find(
+                //   (i) => i.slotNumber === index + items.length + 1
+                // );
                 return (
                   <Grid item xs={12} md={6} sx={{ margin: "auto" }} key={index}>
                     <Box
                       className={`box-slot ${index >= limitRiSlot ? "" : ""}`}
-                      onClick={() => {
-                        if (index >= over) {
-                          if (riSlotPrice.slotNumber === nextSlotCanBuy) {
-                            setOpen(true);
-                            setSlotSelected(riSlotPrice);
-                            setSlotPrice(
-                              `${formatUSD(riSlotPrice.price)} ${
-                                riSlotPrice.coin
-                              }`
-                            );
-                          } else {
-                            toast.error("You must buy previous slot.");
-                          }
-                        } else {
-                          items && history.push("/research-institute/R-I");
-                        }
-                      }}
+                      // onClick={() => {
+                      //   if (index >= over) {
+                      //     if (riSlotPrice.slotNumber === nextSlotCanBuy) {
+                      //       setOpen(true);
+                      //       setSlotSelected(riSlotPrice);
+                      //       setSlotPrice(
+                      //         `${formatUSD(riSlotPrice.price)} ${
+                      //           riSlotPrice.coin
+                      //         }`
+                      //       );
+                      //     } else {
+                      //       toast.error("You must buy previous slot.");
+                      //     }
+                      //   } else {
+                      //     items && history.push("/research-institute/R-I");
+                      //   }
+                      // }}
                       sx={{ cursor: "pointer" }}
                     >
                       <div>
-                        {index >= over && (
+                        {/* {index >= over && (
                           <p className="ri-fee custom-font">{`${formatUSD(
                             riSlotPrice.price
                           )} ${riSlotPrice.coin}`}</p>
-                        )}
+                        )} */}
                         <Add />
                         <BoxItem>{items.length + index + 1}</BoxItem>
                       </div>
