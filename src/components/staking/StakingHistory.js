@@ -41,7 +41,7 @@ const StakingHistory = () => {
     {
       key: "startTime",
       label: "Time",
-      format: (e) => moment(e).format("YYYY-MM-DD hh:mm:ss"),
+      format: (e) => moment(e).format("YYYY-MM-DD HH:mm:ss"),
     },
     {
       key: "amount",
