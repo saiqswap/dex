@@ -11,13 +11,21 @@ export default function StakingNotice() {
         }}
       >
         <li>
-          Unstaking fee - 1% of the staking principal is deducted and unstaking
-          fee will be burn.
+          Unstaking fee - 1% of the staking principal is and unstaking fee will
+          be burn.
         </li>
-        <li>Daily interest is paid but only CLAIM at the end of staking.</li>
         <li>
-          4 slots open when staking 60,000 ING To open 6 slots, you need to
-          stake 100,000 ING plus 40,000 ING after unstaking 60,000 ING.
+          Interest is paid daily. At the end of the staking period, the system
+          automatically unstakes.
+        </li>
+        <li>
+          4 slots open when staking 40,000 ING. To open 6 slots, you need to
+          stake 120,000 ING.
+        </li>
+        <li>
+          When unstaking, slot number 4 / number 5 / number 6 will be withdrawn
+          when the staking balance does not meet the amount of ING specified in
+          the slots.
         </li>
         <li>
           Staking duration with corresponding benefits is different. After the
