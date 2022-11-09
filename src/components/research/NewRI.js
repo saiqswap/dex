@@ -347,11 +347,6 @@ const NewRI = () => {
                                 src={`${image_url}/body_${formatNftName(
                                   params[item.key].name
                                 )}.png`}
-                                // src={_getNFTImageLink(
-                                //   params[item.key].type,
-                                //   params[item.key].name,
-                                //   params[item.key].level
-                                // )}
                                 alt="nft"
                               />
                             ) : null}

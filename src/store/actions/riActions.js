@@ -1,4 +1,5 @@
 import moment from "moment";
+import { secondsPerDay } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
 import { get } from "../../utils/api";
 import { ReduxConstant } from "../constants";
@@ -6,7 +7,7 @@ import { ReduxConstant } from "../constants";
 export const _getRICountdown = () => (dispatch) => {
   let now = moment().utcOffset(0);
   now.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-  now = (now.unix() + 24 * 60 * 60) * 1000;
+  now = (now.unix() + secondsPerDay) * 1000;
   console.log("R-I reset time:", moment(now).utc().toISOString(), now);
   dispatch({
     type: ReduxConstant.GET_RI_COUNTDOWN,
