@@ -13,6 +13,9 @@ export const BIT_BULL_ADDRESS_0 = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 export const CAPTCHA_KEY = AppConfig.CAPTCHA_KEY;
 export const GOOGLE_SIGN_IN_CLIENT_KEY = AppConfig.GOOGLE_SIGN_IN_CLIENT_KEY;
 export const PRE_SALE_TOKEN = "ING";
+export const secondsPerDay = 24 * 60 * 60;
+export const millisecondsPerDay = secondsPerDay * 1000;
+
 export const INFORMATION_ROUNDS = [
   {
     roundNumber: 0,

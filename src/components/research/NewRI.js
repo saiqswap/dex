@@ -99,7 +99,7 @@ const NewRI = () => {
   const [success, setSuccess] = useState(false);
   const [mount, setMount] = useState(true);
   let params = { angel: angel, costume: skin, minion_parts: minion };
-  const nowTime = moment().utc().unix() * 1000;
+  const nowTime = moment().unix() * 1000;
   const { user, riStore } = useSelector((state) => state);
   const { myItems, riUserType } = user;
   const { endTimeServer } = riStore;
@@ -632,7 +632,7 @@ const NewRI = () => {
                         md={2}
                         key={index}
                         className={`nft-item ${
-                          moment(nowTime).format("L") ===
+                          moment(nowTime).utcOffset(0).format("L") ===
                             moment(item.lastResearch).format("L") &&
                           "disabled-card"
                         } ${
@@ -648,9 +648,6 @@ const NewRI = () => {
                         >
                           <img
                             className="custom-img"
-                            // src={`${image_url}/body_${formatNftName(
-                            //   item.name
-                            // )}.png`}
                             src={_getNFTImageLink(
                               item.type,
                               item.name,
@@ -665,7 +662,7 @@ const NewRI = () => {
                               {item.status === "IN_RESEARCHING" &&
                                 "R - I in progress"}
                               {item.status === "ACTIVE" &&
-                                moment(nowTime).format("L") ===
+                                moment(nowTime).utcOffset(0).format("L") ===
                                   moment(item.lastResearch).format("L") && (
                                   <>
                                     You can R-I after{" "}
