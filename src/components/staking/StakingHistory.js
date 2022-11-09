@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CoinList, STAKING_STATUS } from "../../settings/constants";
 import { EndpointConstant } from "../../settings/endpoint";
-import { formatUSD } from "../../settings/format";
+import { formatNumberWithDecimal, formatUSD } from "../../settings/format";
 import { _showAppError } from "../../store/actions/settingActions";
 import { _getMyStakes } from "../../store/actions/stakingActions";
 import { _getBalance, _getNewProfile } from "../../store/actions/userActions";
@@ -46,7 +46,7 @@ const StakingHistory = () => {
     {
       key: "amount",
       label: "Staking Amount",
-      format: (e) => formatUSD(e) + " " + CoinList.ING,
+      format: (e) => formatNumberWithDecimal(e, 4) + " " + CoinList.ING,
     },
     {
       key: "endTime",
@@ -56,7 +56,7 @@ const StakingHistory = () => {
     {
       key: "amountPaid",
       label: "Accumulated interest",
-      format: (e) => formatUSD(e) + " " + CoinList.ING,
+      format: (e) => formatNumberWithDecimal(e, 4) + " " + CoinList.ING,
     },
     {
       key: "status",

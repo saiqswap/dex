@@ -248,7 +248,7 @@ function UserStaking() {
                 </CustomStack>
                 <Box textAlign="right" mb={1}>
                   <Typography variant="caption" color="#fff" textAlign="right">
-                    {library.BALANCE}: {formatNumberWithDecimal(INGBalance, 2)}{" "}
+                    {library.BALANCE}: {formatNumberWithDecimal(INGBalance, 4)}{" "}
                     {CoinList.ING}
                   </Typography>
                 </Box>
@@ -282,7 +282,7 @@ function UserStaking() {
                     {verifyData
                       ? `${formatNumberWithDecimal(
                           verifyData.profitPerAnnualInterestRate,
-                          2
+                          4
                         )} ${CoinList.ING} / day`
                       : `--/-- ${CoinList.ING} / day`}
                   </Typography>
