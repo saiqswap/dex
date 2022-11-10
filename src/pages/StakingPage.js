@@ -1,4 +1,3 @@
-import UndoIcon from "@mui/icons-material/Undo";
 import {
   Box,
   Checkbox,
@@ -215,7 +214,16 @@ function UserStaking() {
                 alignItems="center"
               >
                 <Hidden smDown>
-                  <img src="/images/coins/ING.png" height={60} />
+                  <Box display="flex" alignItems="center">
+                    <img src="/images/coins/ING.png" height={60} alt="ING" />
+                    <Typography
+                      variant="h6"
+                      fontWeight={900}
+                      className="custom-font"
+                    >
+                      {CoinList.ING}
+                    </Typography>
+                  </Box>
                 </Hidden>
                 <Box>
                   <Typography>Reference APR</Typography>

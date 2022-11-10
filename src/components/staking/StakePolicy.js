@@ -11,7 +11,7 @@ export default function StakePolicy() {
         {library.PRESALE_CHECKBOX_1}{" "}
         <Link
           target="_blank"
-          href="https://doc.infinityangel.io/infinity-angel-docs/overview/whitepaper"
+          href="https://doc.infinityangel.io/faqs/privacy-policy"
         >
           Infinity Angel Staking Service Agreement{" "}
         </Link>
