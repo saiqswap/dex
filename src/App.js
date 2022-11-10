@@ -72,7 +72,7 @@ function App() {
     dispatch(_changeLanguage(localStorage.getItem("lang")));
     dispatch(_getWalletInformation());
     dispatch(_getApplicationConfig());
-    console.log("Infinity Angel Marketplace - Ver 0.0.6 - R-I Time");
+    console.log("Infinity Angel Marketplace - Ver 0.0.7 - ING Staking");
   }, [dispatch]);
 
   useEffect(() => {
