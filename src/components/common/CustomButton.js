@@ -30,6 +30,7 @@ export const CustomLoadingButton = styled(LoadingButton)(({ theme }) => ({
   borderRadius: "7px !important",
   background: "rgba(255, 255, 255, 0.1) !important",
   fontFamily: "Orbitron !important",
+  textTransform: "uppercase!important",
   "&:hover": {
     background: "rgba(255, 255, 255, 0.2) !important",
   },
@@ -37,7 +38,7 @@ export const CustomLoadingButton = styled(LoadingButton)(({ theme }) => ({
     opacity: 0.6,
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.7rem",
+    // fontSize: "0.7rem",
     width: "100%",
   },
 }));
