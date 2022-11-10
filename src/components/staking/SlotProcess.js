@@ -22,7 +22,7 @@ const CustomContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(4),
   overflow: "auto",
   [theme.breakpoints.down("sm")]: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
   },
 }));
 
