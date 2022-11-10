@@ -254,18 +254,10 @@ export const production = {
     hasPresale: false,
   },
   MAIN_MENUS: [
-    // {
-    //   title: "HOME",
-    //   url: ["/"],
-    // },
     {
       title: "MARKETPLACE",
       url: ["/marketplace"],
     },
-    // {
-    //   title: "MINTING",
-    //   url: ["/minting-box"],
-    // },
     {
       title: "SUMMON",
       url: ["/summon"],
@@ -283,6 +275,10 @@ export const production = {
     {
       title: "SWAP",
       url: ["/swap"],
+    },
+    {
+      title: "STAKING",
+      url: ["/staking"],
     },
   ],
   BLOCKCHAIN: {
