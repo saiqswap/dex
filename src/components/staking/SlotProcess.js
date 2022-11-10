@@ -20,10 +20,15 @@ const CustomContainer = styled(Box)(({ theme }) => ({
   border: "1px solid var(--border-color)",
   borderRadius: "20px",
   padding: theme.spacing(4),
+  overflow: "auto",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(2),
+  },
 }));
 
 const CustomStepper = styled(Stepper)(({ theme }) => ({
   color: "red",
+  minWidth: 400,
   " .MuiStepLabel-label.Mui-active": {
     color: "var(--text-color)",
   },
@@ -55,8 +60,8 @@ export default function SlotProcess({ selectedPackage }) {
       <Hidden mdDown>
         <CustomContainer>
           <Box display="flex" justifyContent="space-between" mb={3}>
-            <Typography variant="body2">Staking slot process</Typography>
-            <Typography variant="body2" color="primary">
+            <Typography variant="body">Staking slot process</Typography>
+            <Typography variant="body" color="primary">
               Your staking balance:{" "}
               {formatNumberWithDecimal(myStakes?.stakingBalance, 2)} ING
             </Typography>
@@ -64,13 +69,22 @@ export default function SlotProcess({ selectedPackage }) {
           <Box display="flex" justifyContent="space-between">
             {[1, 2, 3, 4, 5, 6].map((item, index) => (
               <Box key={index} flex={1} textAlign="center">
-                <Typography variant="caption" color="#fff">
+                <Typography
+                  variant="caption"
+                  color="#fff"
+                  className="custom-font"
+                  fontWeight={500}
+                >
                   SLOT {item}
                 </Typography>
               </Box>
             ))}
           </Box>
-          <CustomStepper activeStep={limitRiSlot} alternativeLabel>
+          <CustomStepper
+            activeStep={limitRiSlot}
+            alternativeLabel
+            connector={null}
+          >
             {[
               "Free",
               "Free",
@@ -80,7 +94,9 @@ export default function SlotProcess({ selectedPackage }) {
               formatNumberWithDecimal(selectedPackage.amountToOpenSlot6, 0),
             ].map((label, index) => (
               <Step key={label + index}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel StepIconComponent={StepIconComponent}>
+                  {label}
+                </StepLabel>
               </Step>
             ))}
           </CustomStepper>
@@ -89,29 +105,42 @@ export default function SlotProcess({ selectedPackage }) {
       <Hidden mdUp>
         <CustomContainer>
           <Box display="flex" justifyContent="space-between" mb={3}>
-            <Typography variant="body2">Staking slot process</Typography>
-            <Typography variant="body2" color="primary">
+            <Hidden smDown>
+              <Typography variant="body2">Staking slot process</Typography>
+            </Hidden>
+            <Typography variant="body" color="primary">
               Your staking balance:{" "}
               {formatNumberWithDecimal(myStakes?.stakingBalance, 2)} ING
             </Typography>
           </Box>
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" justifyContent="space-between" minWidth={400}>
             {[4, 5, 6].map((item, index) => (
               <Box key={index} flex={1} textAlign="center">
-                <Typography variant="caption" color="#fff">
+                <Typography
+                  variant="caption"
+                  color="#fff"
+                  className="custom-font"
+                  fontWeight={500}
+                >
                   SLOT {item}
                 </Typography>
               </Box>
             ))}
           </Box>
-          <CustomStepper activeStep={limitRiSlot - 3} alternativeLabel>
+          <CustomStepper
+            activeStep={limitRiSlot - 3}
+            alternativeLabel
+            connector={null}
+          >
             {[
               formatNumberWithDecimal(selectedPackage.amountToOpenSlot4, 0),
               formatNumberWithDecimal(selectedPackage.amountToOpenSlot5, 0),
               formatNumberWithDecimal(selectedPackage.amountToOpenSlot6, 0),
             ].map((label, index) => (
               <Step key={label + index}>
-                <StepLabel>{label}</StepLabel>
+                <StepLabel StepIconComponent={StepIconComponent}>
+                  {label}
+                </StepLabel>
               </Step>
             ))}
           </CustomStepper>
@@ -120,3 +149,24 @@ export default function SlotProcess({ selectedPackage }) {
     </>
   ) : null;
 }
+
+const StepIconComponent = (e) => {
+  console.log(e);
+  return e.completed ? (
+    <img
+      src="/images/staking/active.png"
+      width={100}
+      height={40}
+      style={{ objectFit: "contain", minWidth: "33.33%" }}
+      alt=""
+    />
+  ) : (
+    <img
+      src="/images/staking/inactive.png"
+      width={20}
+      height={40}
+      style={{ objectFit: "contain", minWidth: "33.33%" }}
+      alt=""
+    />
+  );
+};

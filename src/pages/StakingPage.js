@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  Hidden,
   styled,
   Typography,
 } from "@mui/material";
@@ -38,6 +39,9 @@ const CustomContainer = styled(Box)(({ theme }) => ({
   border: "1px solid var(--border-color)",
   borderRadius: "20px",
   padding: theme.spacing(4),
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(2),
+  },
 }));
 
 export default function StakingPage() {
@@ -205,24 +209,33 @@ function UserStaking() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <CustomContainer>
-              <Box display="flex" justifyContent="space-between">
-                <Box display="flex" alignItems="center">
-                  <UndoIcon
-                    sx={{ transform: "rotate(270deg)" }}
-                    fontSize="large"
-                  />
-                  <Box>
-                    <Typography>ING</Typography>
-                    <Typography>ING</Typography>
-                  </Box>
-                </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Hidden smDown>
+                  <img src="/images/coins/ING.png" height={60} />
+                </Hidden>
                 <Box>
                   <Typography>Reference APR</Typography>
-                  <Typography>{selectedItem?.annualInterestRate}%</Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight={900}
+                    className="custom-font"
+                  >
+                    {selectedItem?.annualInterestRate}%
+                  </Typography>
                 </Box>
                 <Box>
                   <Typography>Tenor</Typography>
-                  <Typography>Flexible</Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight={900}
+                    className="custom-font"
+                  >
+                    Flexible
+                  </Typography>
                 </Box>
               </Box>
             </CustomContainer>
