@@ -136,6 +136,7 @@ function Header() {
   useEffect(() => {
     if (executeRecaptcha) {
       if (
+        walletAddress &&
         walletSignature &&
         walletSignature !== StatusList.UNKNOWN &&
         applicationConfig
