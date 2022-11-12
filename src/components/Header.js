@@ -61,13 +61,17 @@ function Header() {
 
   useEffect(() => {
     if (walletName) {
-      _checkLogin(walletName, (address) => {
-        dispatch(_setWalletAddress(address));
-        dispatch(_setWalletName(walletName));
-      });
+      _checkLogin(
+        walletName,
+        (address) => {
+          dispatch(_setWalletAddress(address));
+          dispatch(_setWalletName(walletName));
+        },
+        () => {}
+      );
     } else {
       logout();
-      dispatch(_handleLogout());
+      dispatch(_getWalletLogout());
     }
   }, [dispatch, walletName]);
 

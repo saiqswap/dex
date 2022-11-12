@@ -14,6 +14,7 @@ export const _checkLogin = async (walletName, _updateAddress, _handleError) => {
       _updateAddress(address, walletName);
     } catch (error) {
       console.log(error);
+      _handleError();
     }
   });
 };
