@@ -67,11 +67,12 @@ function Header() {
           dispatch(_setWalletAddress(address));
           dispatch(_setWalletName(walletName));
         },
-        () => {}
+        () => {
+          dispatch(_getWalletLogout());
+        }
       );
     } else {
       logout();
-      dispatch(_getWalletLogout());
     }
   }, [dispatch, walletName]);
 
