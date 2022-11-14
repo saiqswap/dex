@@ -8,7 +8,7 @@ export const TESTNET_DOMAIN = {
 export const TESTNET_CONFIG = {
   CHAIN_INFO: {
     chainId: "0x61",
-    rpcUrls: ["https://data-seed-prebsc-2-s2.binance.org:8545"],
+    rpcUrls: ["https://bsctestapi.terminet.io/rpc"],
     chainName: "Binance Smart Chain Testnet",
     nativeCurrency: { name: "Binance", decimals: 18, symbol: "tBNB" },
     blockExplorerUrls: ["https://testnet.bscscan.com"],
