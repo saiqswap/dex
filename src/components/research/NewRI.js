@@ -661,7 +661,9 @@ const NewRI = () => {
                                   moment(item.lastResearch).format("L") && (
                                   <>
                                     You can R-I after{" "}
-                                    <EndTimeCountdown endTime={endTimeServer} />
+                                    <EndTimeCountdown
+                                      endTime={item.riNextTime}
+                                    />
                                   </>
                                 )}
                             </Typography>

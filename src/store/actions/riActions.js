@@ -13,16 +13,17 @@ export const _getRICountdown = () => (dispatch) => {
     type: ReduxConstant.GET_RI_COUNTDOWN,
     payload: now,
   });
-  // get(EndpointConstant.NFT_RE_COUNTDOWN, (data) => {
-  //   if (data[0]) {
-  //     console.log(
-  //       "Serer end time:",
-  //       moment(data[0].lockTime).format("YYYY-MM-DD hh:mm:ss")
-  //     );
-  //     dispatch({
-  //       type: ReduxConstant.GET_RI_COUNTDOWN,
-  //       payload: data[0].lockTime,
-  //     });
-  //   }
-  // });
+  get(EndpointConstant.NFT_RE_COUNTDOWN, (data) => {
+    console.log(data);
+    if (data[0]) {
+      console.log(
+        "Serer end time:",
+        moment(data[0].lockTime).format("YYYY-MM-DD hh:mm:ss")
+      );
+      dispatch({
+        type: ReduxConstant.GET_RI_COUNTDOWN,
+        payload: data,
+      });
+    }
+  });
 };
