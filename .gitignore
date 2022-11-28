@@ -25,3 +25,5 @@ yarn-error.log*
 _secret.md
 _note.md
 _deploy.md
+
+package-lock.json
