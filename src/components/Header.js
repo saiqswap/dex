@@ -61,13 +61,18 @@ function Header() {
 
   useEffect(() => {
     if (walletName) {
-      _checkLogin(walletName, (address) => {
-        dispatch(_setWalletAddress(address));
-        dispatch(_setWalletName(walletName));
-      });
+      _checkLogin(
+        walletName,
+        (address) => {
+          dispatch(_setWalletAddress(address));
+          dispatch(_setWalletName(walletName));
+        },
+        () => {
+          dispatch(_getWalletLogout());
+        }
+      );
     } else {
       logout();
-      dispatch(_handleLogout());
     }
   }, [dispatch, walletName]);
 
@@ -136,6 +141,7 @@ function Header() {
   useEffect(() => {
     if (executeRecaptcha) {
       if (
+        walletAddress &&
         walletSignature &&
         walletSignature !== StatusList.UNKNOWN &&
         applicationConfig

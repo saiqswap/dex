@@ -213,15 +213,36 @@ export const _getPresaleVesting = (walletAddress) => async (dispatch) => {
   });
 };
 
-export const _getMyItems = (successCallback) => (dispatch) => {
-  get(ENDPOINT_MY_NFT, (data) => {
-    if (successCallback) {
-      successCallback(data);
-    }
-    dispatch({
-      type: ADD_MY_ITEMS,
-      payload: data,
+export const _getMyItems = (successCallback) => async (dispatch) => {
+  const countdownListPromise = new Promise((resolve) => {
+    get(EndpointConstant.NFT_RE_COUNTDOWN, (bcConfigurations) => {
+      resolve(bcConfigurations);
     });
+  });
+  const myItemsPromise = new Promise((resolve) => {
+    get(ENDPOINT_MY_NFT, (data) => {
+      resolve(data);
+    });
+  });
+  let [countdownList, myItems] = await Promise.all([
+    countdownListPromise,
+    myItemsPromise,
+  ]);
+  myItems.forEach((item) => {
+    const find = countdownList.find(
+      (c) =>
+        c?.angel?.tokenId === item.tokenId ||
+        c?.minion?.tokenId === item.tokenId ||
+        c?.skin?.tokenId === item.tokenId
+    );
+    item.riNextTime = find ? find.lockTime : null;
+  });
+  if (successCallback) {
+    successCallback(myItems);
+  }
+  dispatch({
+    type: ADD_MY_ITEMS,
+    payload: myItems,
   });
 };
 
