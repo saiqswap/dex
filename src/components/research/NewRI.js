@@ -79,7 +79,7 @@ const EndTimeCountdown = ({ endTime }) => {
   if (seconds < 10) {
     seconds = "0" + seconds;
   }
-  return hours + ":" + minutes + ":" + seconds;
+  return endTime ? hours + ":" + minutes + ":" + seconds : "Calculating";
 };
 
 const NewRI = () => {

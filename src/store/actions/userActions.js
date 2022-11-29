@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import moment from "moment";
 import { _getVestingBalance } from "../../onchain";
 import { ERC20_ABI } from "../../onchain/abi-bytecode";
 import { prefix } from "../../onchain/onchain";
@@ -7,6 +8,7 @@ import {
   ADDRESS_0,
   PRE_SALE_ROUNDS,
   RI_USER_TYPE,
+  secondsPerDay,
   StatusList,
 } from "../../settings/constants";
 import {
@@ -214,6 +216,9 @@ export const _getPresaleVesting = (walletAddress) => async (dispatch) => {
 };
 
 export const _getMyItems = (successCallback) => async (dispatch) => {
+  let now = moment().utcOffset(0);
+  now.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+  now = (now.unix() + secondsPerDay) * 1000;
   const countdownListPromise = new Promise((resolve) => {
     get(EndpointConstant.NFT_RE_COUNTDOWN, (bcConfigurations) => {
       resolve(bcConfigurations);
@@ -235,7 +240,7 @@ export const _getMyItems = (successCallback) => async (dispatch) => {
         c?.minion?.tokenId === item.tokenId ||
         c?.skin?.tokenId === item.tokenId
     );
-    item.riNextTime = find ? find.lockTime : null;
+    item.riNextTime = find ? find.lockTime : now;
   });
   if (successCallback) {
     successCallback(myItems);
