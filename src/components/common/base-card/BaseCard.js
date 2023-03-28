@@ -75,6 +75,17 @@ export default function BaseCard({ data, onNftNameChange, isOwner }) {
         </div>
       )}
       <Box position="relative">
+        <Typography
+          sx={{
+            position: "absolute",
+            right: 16,
+            top: 8,
+            color: "white",
+            fontSize: 10,
+          }}
+        >
+          #{data.tokenId}
+        </Typography>
         <img
           src={_getNFTImageLink(data.type, data.name, data.level)}
           alt="thumbnail"
