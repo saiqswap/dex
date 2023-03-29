@@ -472,9 +472,11 @@ const MintComponent = ({ data, isMinting, _handleReload, _handleMinting }) => {
     );
   };
 
+console.log(data);
+
   return AppConfig.has_minting ? (
     <>
-      {!data.isLockMinting && !data.inDb && (
+      {!data.isLockMinting && (!data.inDb || data.allowMint) && (
         <Button
           className="btn-listing"
           onClick={() => setShowMintingPopup(true)}
