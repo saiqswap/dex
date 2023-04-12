@@ -68,6 +68,10 @@ export const local = {
       title: "SWAP",
       url: ["/swap"],
     },
+    {
+      title: "SWAP TO ING",
+      url: ["/swap-to-ing"],
+    },
   ],
   BLOCKCHAIN: {
     ...TESTNET_ABI,
@@ -142,6 +146,10 @@ export const develop = {
     {
       title: "STAKING",
       url: ["/staking"],
+    },
+    {
+      title: "SWAP_TO_ING",
+      url: ["/swap-to-ing"],
     },
   ],
   BLOCKCHAIN: {
@@ -279,6 +287,10 @@ export const production = {
     {
       title: "STAKING",
       url: ["/staking"],
+    },
+    {
+      title: "SWAP TO ING",
+      url: ["/swap-to-ing"],
     },
   ],
   BLOCKCHAIN: {

@@ -45,7 +45,7 @@ const CustomContainer = styled(Box)(({ theme }) => ({
 
 export default function StakingPage() {
   return (
-    <RIMintingCheck isText={true}>
+    <RIMintingCheck>
       <UserStaking />
     </RIMintingCheck>
   );

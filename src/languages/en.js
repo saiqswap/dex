@@ -212,4 +212,6 @@ export const en = {
   //221031
   PLEASE_READ_AND_ACCEPT_FOR_STAKING:
     "Please read and accepted all the Whitepaper, Policy and Conditions, Disclaimer of Stake ING.",
+
+    SWAP_TO_ING: "Swap to ING"
 };

@@ -13,6 +13,7 @@ import ResearchInstitute from "./pages/ResearchInstitute";
 import StakingPage from "./pages/StakingPage";
 import Summon from "./pages/Summon";
 import SwapPage from "./pages/SwapPage";
+import SwapToING from "./pages/SwapToING";
 
 const routes = [
   {
@@ -22,6 +23,14 @@ const routes = [
     type: "guest",
     isActive: true,
     title: "Swap INC to ING",
+  },
+  {
+    exact: true,
+    path: "/swap-to-ing",
+    component: SwapToING,
+    type: "guest",
+    isActive: true,
+    title: "Swap NFT items to ING",
   },
   // {
   //   exact: true,

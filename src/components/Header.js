@@ -254,7 +254,7 @@ function Header() {
               <SubMenu />
             </Grid>
           </Grid>
-        </Container>{" "}
+        </Container>
       </div>
       <LoginPopup
         open={accountNotFound}
