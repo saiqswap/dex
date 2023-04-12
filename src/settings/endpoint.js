@@ -123,4 +123,10 @@ export const EndpointConstant = {
   STAKING_STAKE: "/staking/stake",
   STAKING_UN_STAKE: "/staking/un-stake",
   STAKING_VERIFY_STAKE: "/staking/verify-stake",
+
+  //SWAP IA TO ING
+  SWAP_NFT_ITEM: "/swap-nft-to-ing-lock/item",
+  SWAP_NFT_ITEM_PRICE: "/swap-nft-to-ing-lock/item-price",
+  SWAP_OLD_NFT: "/swap-nft-to-ing-lock/swap-old-nft",
+
 };

@@ -17,9 +17,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import { CustomLoadingButton } from "../components/common/CustomButton";
-import { get } from "../utils/api";
+import { get, post } from "../utils/api";
+import { EndpointConstant } from "../settings/endpoint";
 
-const imgSrc = `/images/IG-ING.png`;
+const imgSrc = `/images/ig-ing.png`;
 
 const CustomFixedBox = styled(Box)(({ theme }) => ({
   position: "fixed",
@@ -40,9 +41,10 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 const CustomImage = styled("img")(({ theme }) => ({
-  width: "100%",
+  width: "90%",
+  paddingLeft: '10%',
   height: "100%",
-  objectFit: "fill",
+  objectFit: "contain",
 }));
 
 const SwapForm = styled(Box)(({ theme }) => ({
@@ -57,6 +59,14 @@ export default function SwapToING() {
 
   React.useEffect(() => {
     get(`/nft/swap/my-nfts`, (data) => console.log(data));
+    get(
+      EndpointConstant.SWAP_NFT_ITEM,
+      (data) => {
+        console.log(data)
+      },
+      (error) => {
+      }
+    );
   }, []);
 
   return (
