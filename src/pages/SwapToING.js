@@ -42,7 +42,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
 
 const CustomImage = styled("img")(({ theme }) => ({
   width: "90%",
-  paddingLeft: '10%',
+  paddingLeft: "10%",
   height: "100%",
   objectFit: "contain",
 }));
@@ -58,14 +58,33 @@ export default function SwapToING() {
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
-    get(`/nft/swap/my-nfts`, (data) => console.log(data));
+    // get(`/nft/swap/my-nfts`, (data) => console.log(data));
     get(
-      EndpointConstant.SWAP_NFT_ITEM,
+      `/nft/swap/my-nfts`,
       (data) => {
-        console.log(data)
+        const items = [];
+        for (const [key, value] of Object.entries(data)) {
+          // console.log(`${key}: ${value}`);
+          const arrText = key.split("_");
+          let nftType;
+          if (arrText[0] === "ANGEL") {
+            nftType = 0;
+          } else if (arrText[0] === "MINION") {
+            nftType = 1;
+          } else {
+            nftType = 2;
+          }
+          items.push({
+            key,
+            label: key.toLocaleLowerCase().replaceAll("_", " "),
+            nftType,
+            nftLevel: Number(key.charAt(key.length - 1)) - 1,
+            amount: value,
+          });
+        }
+        console.log(items);
       },
-      (error) => {
-      }
+      (error) => {}
     );
   }, []);
 
