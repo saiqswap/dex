@@ -82,9 +82,9 @@ export default function SwapToING() {
           });
         }
         console.log(items);
-        setData(items)
+        setData(items);
       },
-      (error) => { }
+      (error) => {}
     );
   }, []);
 
@@ -115,28 +115,27 @@ function SwapING({ data = [] }) {
 
   const handleChange = (e) => {
     setLoading(true);
-    if (e.target.value !== undefined)
-      setSelectedNft(data[e.target.value])
+    if (e.target.value !== undefined) setSelectedNft(data[e.target.value]);
     else {
-      setNftConfig([])
-      setNftConfig([])
-      setPriceAmount(0)
-      setTotal(0)
+      setNftConfig([]);
+      setNftConfig([]);
+      setPriceAmount(0);
+      setTotal(0);
     }
   };
 
-  React.useEffect(() => {
-
-  }, []);
+  React.useEffect(() => {}, []);
   React.useEffect(() => {
     if (selectedNft !== []) {
       get(
         `/swap-nft-to-ing-lock/item?NftType=${selectedNft.nftType}&NftLevel=${selectedNft.nftLevel}`,
         (data) => {
           console.log(data);
-          setNftConfig(data)
-          setPriceAmount(data.basePrice * selectedNft.amount)
-          setTotal((data.basePrice * selectedNft.amount) * data.percentage / 100)
+          setNftConfig(data);
+          setPriceAmount(data.basePrice * selectedNft.amount);
+          setTotal(
+            (data.basePrice * selectedNft.amount * data.percentage) / 100
+          );
 
           setLoading(false);
         },
@@ -148,11 +147,11 @@ function SwapING({ data = [] }) {
         `/swap-nft-to-ing-lock/item-price`,
         {
           nftType: selectedNft.nftType,
-          nftLevel: selectedNft.nftLevel
+          nftLevel: selectedNft.nftLevel,
         },
         (data) => {
           console.log(data);
-          setTotal(data)
+          setTotal(data);
         },
         (error) => {
           console.log(error);
@@ -162,13 +161,13 @@ function SwapING({ data = [] }) {
   }, [selectedNft]);
 
   const handleSwap = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
     post(
       `/swap-nft-to-ing-lock/swap-old-nft`,
       {
         nftType: selectedNft.nftType,
-        nftLevel: selectedNft.nftLevel
+        nftLevel: selectedNft.nftLevel,
       },
       (data) => {
         console.log(data);
@@ -184,7 +183,10 @@ function SwapING({ data = [] }) {
   return (
     <SwapForm component="form" onSubmit={handleSwap}>
       <Typography variant="h6">Swap</Typography>
-      <CustomBox mt={2} sx={{ padding: { xs: '2rem 1rem', sm: '3rem 1.5rem' } }}>
+      <CustomBox
+        mt={2}
+        sx={{ padding: { xs: "2rem 1rem", sm: "3rem 1.5rem" } }}
+      >
         <Stack
           direction={"row"}
           alignItems={"center"}
@@ -198,19 +200,27 @@ function SwapING({ data = [] }) {
               value={selectedNft?.key || undefined}
               label="NFT type"
               onChange={handleChange}
-              sx={{ textTransform: 'capitalize' }}
+              sx={{ textTransform: "capitalize" }}
             >
               <MenuItem value={undefined}>None</MenuItem>
               {data?.map((nftType, index) => {
                 return (
-                  <MenuItem value={index} key={index} sx={{ textTransform: 'capitalize' }}>
+                  <MenuItem
+                    value={index}
+                    key={index}
+                    sx={{ textTransform: "capitalize" }}
+                  >
                     {nftType?.label}
                   </MenuItem>
                 );
               })}
             </Select>
           </FormControl>
-          <Typography fontWeight={900} variant="h6" sx={{ padding: '0 0.5rem' }}>
+          <Typography
+            fontWeight={900}
+            variant="h6"
+            sx={{ padding: "0 0.5rem" }}
+          >
             {nftConfig?.basePrice || 0}
           </Typography>
           <CloseIcon />
@@ -224,19 +234,29 @@ function SwapING({ data = [] }) {
           />
         </Stack>
       </CustomBox>
-      <CustomBox mt={5}
-        sx={{ padding: { xs: '2rem 1rem', sm: '3rem 1.5rem' } }}>
+      <CustomBox
+        mt={5}
+        sx={{ padding: { xs: "2rem 1rem", sm: "3rem 1.5rem" } }}
+      >
         <Stack
           direction={"row"}
           alignItems={"center"}
           textAlign={"left"}
           justifyContent={"space-between"}
         >
-          <Typography fontWeight={900} variant="h6" sx={{ padding: '0 0.5rem' }}>
+          <Typography
+            fontWeight={900}
+            variant="h6"
+            sx={{ padding: "0 0.5rem" }}
+          >
             {priceAmount}
           </Typography>
           <CloseIcon />
-          <Typography fontWeight={900} variant="h6" sx={{ padding: '0 0.5rem' }}>
+          <Typography
+            fontWeight={900}
+            variant="h6"
+            sx={{ padding: "0 0.5rem" }}
+          >
             {nftConfig?.percentage || 0}%
           </Typography>
           <Box>
