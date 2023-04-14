@@ -162,6 +162,7 @@ function SwapING({ data = [] }) {
   }, [selectedNft]);
 
   const handleSwap = (e) => {
+    e.preventDefault()
     setLoading(true);
     post(
       `/swap-nft-to-ing-lock/swap-old-nft`,
