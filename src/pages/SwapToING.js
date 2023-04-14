@@ -248,7 +248,7 @@ function SwapING({ data = [] }) {
               sx: { color: "white" },
             }}
             value={total}
-            label="Total"
+            label="Total ING will receive"
           />
         </Stack>
       </CustomBox>
