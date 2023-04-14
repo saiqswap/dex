@@ -20,7 +20,7 @@ import { CustomLoadingButton } from "../components/common/CustomButton";
 import { get, post } from "../utils/api";
 import { EndpointConstant } from "../settings/endpoint";
 
-const imgSrc = `/images/ig-ing.png`;
+const imgSrc = `/images/swap-ing.png`;
 
 const CustomFixedBox = styled(Box)(({ theme }) => ({
   position: "fixed",
