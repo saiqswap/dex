@@ -10,7 +10,7 @@ import { prefix } from "../../onchain/onchain";
 import { _setWalletSignature } from "../../store/actions/userActions";
 import CustomModal from "../common/CustomModal";
 
-const SignButton = styled(Button)(({ theme }) => ({
+export const SignButton = styled(Button)(({ theme }) => ({
   minHeight: "45px",
   width: "48%!important",
   minWidth: "unset!important",
@@ -30,7 +30,7 @@ const SignButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const CancelButton = styled(Button)(({ theme }) => ({
+export const CancelButton = styled(Button)(({ theme }) => ({
   minHeight: "45px",
   width: "48%!important",
   minWidth: "unset!important",
