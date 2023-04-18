@@ -17,7 +17,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { CustomLoadingButton } from "../components/common/CustomButton";
 import CustomModal from "../components/common/CustomModal";
@@ -115,6 +115,7 @@ function SwapING() {
   const [sync, setSync] = React.useState(false);
   const [confirming, setConfirming] = React.useState(false);
   const [agree, setAgree] = React.useState(false);
+  const [totalAllNFT, setTotalAllNFT] = React.useState(0);
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
@@ -127,68 +128,6 @@ function SwapING() {
       setTotal(0);
     }
   };
-
-  React.useEffect(() => {
-    if (selectedNft) {
-      post(
-        `/swap-nft-to-ing-lock/item-price`,
-        {
-          nftType: selectedNft.nftType,
-          nftLevel: selectedNft.nftLevel,
-        },
-        (data) => {
-          setTotal(data);
-          setLoading(false);
-        },
-        (error) => {
-          console.log(error.msg);
-          setLoading(false);
-        }
-      );
-    }
-  }, [selectedNft]);
-
-  React.useEffect(() => {
-    get(
-      `/nft/swap/my-nfts`,
-      (data) => {
-        const items = [];
-        for (const [key, value] of Object.entries(data)) {
-          const arrText = key.split("_");
-          let nftType;
-          if (arrText[0] === "ANGEL") {
-            nftType = 0;
-          } else if (arrText[0] === "MINION") {
-            nftType = 1;
-          } else {
-            nftType = 2;
-          }
-          if (value) {
-            items.push({
-              key,
-              label: key.toLocaleLowerCase().replaceAll("_", " "),
-              nftType,
-              nftLevel: Number(key.charAt(key.length - 1)) - 1,
-              amount: value,
-              nftTypeText: arrText[0],
-              nftLevelText: `TIER_${Number(key.charAt(key.length - 1))}`,
-            });
-          }
-        }
-        setData(items);
-      },
-      (error) => {}
-    );
-    get(
-      `/swap-nft-to-ing-lock/item`,
-      (data) => {
-        setNftConfig(data);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }, [sync]);
 
   const handleConfirm = (e) => {
     e.preventDefault();
@@ -242,7 +181,70 @@ function SwapING() {
   };
 
   React.useEffect(() => {
+    if (selectedNft) {
+      post(
+        `/swap-nft-to-ing-lock/item-price`,
+        {
+          nftType: selectedNft.nftType,
+          nftLevel: selectedNft.nftLevel,
+        },
+        (data) => {
+          setTotal(data);
+          setLoading(false);
+        },
+        (error) => {
+          console.log(error.msg);
+          setLoading(false);
+        }
+      );
+    }
+  }, [selectedNft]);
+
+  React.useEffect(() => {
+    get(
+      `/nft/swap/my-nfts`,
+      (data) => {
+        const items = [];
+        for (const [key, value] of Object.entries(data)) {
+          const arrText = key.split("_");
+          let nftType;
+          if (arrText[0] === "ANGEL") {
+            nftType = 0;
+          } else if (arrText[0] === "MINION") {
+            nftType = 1;
+          } else {
+            nftType = 2;
+          }
+          if (value) {
+            items.push({
+              key,
+              label: key.toLocaleLowerCase().replaceAll("_", " "),
+              nftType,
+              nftLevel: Number(key.charAt(key.length - 1)) - 1,
+              amount: value,
+              nftTypeText: arrText[0],
+              nftLevelText: `TIER_${Number(key.charAt(key.length - 1))}`,
+            });
+          }
+        }
+        setData(items);
+      },
+      () => {}
+    );
+    get(
+      `/swap-nft-to-ing-lock/item`,
+      (data) => {
+        setNftConfig(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }, [sync]);
+
+  React.useEffect(() => {
     if (data && nftConfig) {
+      let tempTotalAllING = 0;
       data.forEach((nft) => {
         const findConfig = nftConfig.find(
           (config) =>
@@ -250,13 +252,16 @@ function SwapING() {
             nft.nftLevelText === config.nftLevel
         );
         if (findConfig) {
+          const total =
+            nft.amount * ((findConfig.basePrice * findConfig.percentage) / 100);
+          tempTotalAllING += total;
           nft.basePrice = findConfig.basePrice;
           nft.percentage = findConfig.percentage;
-          nft.total =
-            nft.amount * ((findConfig.basePrice * findConfig.percentage) / 100);
+          nft.total = total;
         }
       });
       setAllNFT(data);
+      setTotalAllNFT(tempTotalAllING);
     }
   }, [data, nftConfig]);
 
@@ -440,10 +445,17 @@ function SwapING() {
           </Typography>
           <Box my={5}>
             {value ? (
-              <Typography>Type: {selectedNft?.label}</Typography>
+              <Typography style={{ textTransform: "capitalize" }}>
+                Type: {selectedNft.label}
+              </Typography>
             ) : (
-              <Typography>Type: ALL</Typography>
+              <Typography>Type: All of NTFs</Typography>
             )}
+            <Typography>
+              You will receive:{" "}
+              {formatNumberWithDecimal(!value ? totalAllNFT : total, 2)} ING
+              Lock
+            </Typography>
           </Box>
           <Box
             sx={(theme) => ({
