@@ -25,6 +25,10 @@ import CustomModal from "../components/common/CustomModal";
 import { CancelButton, SignButton } from "../components/header/SignPopup";
 import { formatNumberWithDecimal } from "../settings/format";
 import { get, post } from "../utils/api";
+import { useSelector } from "react-redux";
+import { ethers } from "ethers";
+import { AppConfig } from "../settings";
+import { formatEther } from "ethers/lib/utils";
 
 const imgSrc = `/images/swap-ing.png`;
 
@@ -70,6 +74,38 @@ function a11yProps(index) {
 
 export default function SwapToING() {
   const [config, setConfig] = React.useState(null);
+  const [INGLBalance, setINGLBalance] = React.useState("");
+  const { setting, user } = useSelector((state) => state);
+  const { applicationConfig } = setting;
+  const { walletAddress } = user;
+
+  React.useEffect(() => {
+    if (applicationConfig) {
+      syncBalance();
+    }
+  }, [applicationConfig]);
+
+  const syncBalance = async () => {
+    (async () => {
+      try {
+        const config =
+          applicationConfig.CHAIN_CONFIG[applicationConfig.CHAIN_TYPE];
+        const provider = new ethers.providers.StaticJsonRpcProvider(
+          config.rpcUrls[0]
+        );
+        const contractInstance = new ethers.Contract(
+          applicationConfig.ADDRESS_INGL,
+          AppConfig.BLOCKCHAIN.ERC20_ABI,
+          provider
+        );
+
+        var balance = await contractInstance.balanceOf(walletAddress);
+        setINGLBalance(formatNumberWithDecimal(formatEther(balance), 4));
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  };
 
   React.useEffect(() => {
     get(
@@ -95,9 +131,16 @@ export default function SwapToING() {
           <Grid container spacing={5} alignItems={"center"}>
             <Grid item md={6} xs={12}>
               <CustomImage src={imgSrc} />
+              <Typography mt={5} textAlign={"center"}>
+                Owned:{" "}
+                <span style={{ fontSize: "1.2rem", fontWeight: 900 }}>
+                  {INGLBalance}{" "}
+                </span>{" "}
+                INGL (ING Lock)
+              </Typography>
             </Grid>
             <Grid item md={6} xs={12}>
-              <SwapING />
+              <SwapING syncBalance={syncBalance} />
             </Grid>
             <Grid item xs={12}>
               <PriceList data={config} />
@@ -109,7 +152,7 @@ export default function SwapToING() {
   );
 }
 
-function SwapING() {
+function SwapING({ syncBalance }) {
   const [loading, setLoading] = React.useState(false);
   const [selectedNft, setSelectedNft] = React.useState(null);
   const [total, setTotal] = React.useState(0);
@@ -161,6 +204,7 @@ function SwapING() {
           setSync(!sync);
           setTotal(0);
           setSelectedNft(null);
+          syncBalance();
         },
         (error) => {
           toast.error(error.msg);
@@ -178,6 +222,7 @@ function SwapING() {
           toast.success("Success");
           setLoading(false);
           setSync(!sync);
+          syncBalance();
         },
         (error) => {
           toast.error(error.msg);
