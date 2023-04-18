@@ -29,6 +29,7 @@ import { CancelButton, SignButton } from "../components/header/SignPopup";
 import { AppConfig } from "../settings";
 import { formatNumberWithDecimal } from "../settings/format";
 import { get, post } from "../utils/api";
+import useResponsive from "../hooks/useResponsive";
 
 const imgSrc = `/images/swap-ingl.png`;
 
@@ -51,7 +52,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 const CustomImage = styled("img")(({ theme }) => ({
-  width: "60%",
+  width: "70%",
   // paddingLeft: "10%",
   // height: "100%",
   objectFit: "contain",
@@ -60,7 +61,10 @@ const CustomImage = styled("img")(({ theme }) => ({
 
 const SwapForm = styled(Box)(({ theme }) => ({
   padding: theme.spacing(5),
+  borderLeft: "1px solid var(--border-color)",
   [theme.breakpoints.down("md")]: {
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
     padding: theme.spacing(2),
   },
 }));
@@ -128,7 +132,7 @@ export default function SwapToING() {
     <CustomFixedBox>
       <Container>
         <CustomBox>
-          <Grid container spacing={5} alignItems={"center"}>
+          <Grid container alignItems={"center"}>
             <Grid item md={6} xs={12}>
               <CustomImage src={imgSrc} />
               {walletAddress ? (
@@ -178,6 +182,7 @@ function SwapING({ syncBalance }) {
   const [totalAllNFT, setTotalAllNFT] = React.useState(0);
   const { user } = useSelector((state) => state);
   const { information } = user;
+  var isDesktop = useResponsive("up", "sm");
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
@@ -374,10 +379,16 @@ function SwapING({ syncBalance }) {
           />
         </Tabs>
       </Box>
-
       {!information ? (
-        <Box height={350} display={"flex"} alignItems={"center"} justifyContent={"center"}>
-          <Typography variant="body1" fontWeight={700}>Please login to get your NFT(s).</Typography>
+        <Box
+          height={350}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <Typography variant="body1" fontWeight={700}>
+            Please login to get your NFT(s).
+          </Typography>
         </Box>
       ) : !value ? (
         <SwapAllDetails data={allNFT} />
@@ -478,13 +489,13 @@ function SwapING({ syncBalance }) {
       )}
       <Box mt={5}>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="caption">
+          <Typography variant="caption" my={2}>
             Note: ING received after swap is locked for 120 days, but you can
             purchase NODE NFTs using locked ING even during the lock period.
           </Typography>
           <Stack
-            direction="row"
-            alignItems={"center"}
+            direction={isDesktop ? "row" : "column"}
+            alignItems={isDesktop ? "center" : ""}
             justifyContent={"space-between"}
           >
             <FormControlLabel
@@ -508,10 +519,11 @@ function SwapING({ syncBalance }) {
                   .
                 </Typography>
               }
+              sx={{ my: 2 }}
             />
             <CustomLoadingButton
               variant="contained"
-              sx={{ width: 100 }}
+              sx={{ width: "100px!important" }}
               loading={loading}
               type="submit"
               disabled={!information}
