@@ -18,17 +18,17 @@ import {
   Typography,
   styled,
 } from "@mui/material";
+import { ethers } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 import React from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CustomLoadingButton } from "../components/common/CustomButton";
 import CustomModal from "../components/common/CustomModal";
 import { CancelButton, SignButton } from "../components/header/SignPopup";
+import { AppConfig } from "../settings";
 import { formatNumberWithDecimal } from "../settings/format";
 import { get, post } from "../utils/api";
-import { useSelector } from "react-redux";
-import { ethers } from "ethers";
-import { AppConfig } from "../settings";
-import { formatEther } from "ethers/lib/utils";
 
 const imgSrc = `/images/swap-ing.png`;
 
@@ -132,13 +132,23 @@ export default function SwapToING() {
             <Grid item md={6} xs={12}>
               <CustomImage src={imgSrc} />
               {walletAddress ? (
-                <Typography mt={5} textAlign={"center"}>
-                  Owned:{" "}
-                  <span style={{ fontSize: "1.2rem", fontWeight: 900 }}>
-                    {INGLBalance}{" "}
-                  </span>{" "}
-                  INGL (ING Lock)
-                </Typography>
+                <Box textAlign={"center"}>
+                  <Typography
+                    mt={5}
+                    textAlign={"center"}
+                    onClick={syncBalance}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    Owned:{" "}
+                    <span style={{ fontSize: "1.2rem", fontWeight: 900 }}>
+                      {INGLBalance}{" "}
+                    </span>{" "}
+                    INGL (ING Lock)
+                  </Typography>
+                  <Typography variant="caption">
+                    (Click balance to sync data onchain)
+                  </Typography>
+                </Box>
               ) : null}
             </Grid>
             <Grid item md={6} xs={12}>
@@ -166,6 +176,8 @@ function SwapING({ syncBalance }) {
   const [confirming, setConfirming] = React.useState(false);
   const [agree, setAgree] = React.useState(false);
   const [totalAllNFT, setTotalAllNFT] = React.useState(0);
+  const { user } = useSelector((state) => state);
+  const { information } = user;
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
@@ -281,7 +293,7 @@ function SwapING({ syncBalance }) {
             });
           }
         }
-        setData(items);
+        setData([...items]);
       },
       () => {}
     );
@@ -291,7 +303,7 @@ function SwapING({ syncBalance }) {
         data.sort(function (a, b) {
           return a.nftType - b.nftType || a.nftLevel - b.nftLevel;
         });
-        setNftConfig(data);
+        setNftConfig([...data]);
       },
       (error) => {
         console.log(error);
@@ -320,7 +332,7 @@ function SwapING({ syncBalance }) {
       setAllNFT(data);
       setTotalAllNFT(tempTotalAllING);
     }
-  }, [data, nftConfig]);
+  }, [data, nftConfig, sync]);
 
   return (
     <SwapForm component="form" onSubmit={handleConfirm}>
@@ -362,7 +374,12 @@ function SwapING({ syncBalance }) {
           />
         </Tabs>
       </Box>
-      {!value ? (
+
+      {!information ? (
+        <Box height={350} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+          <Typography variant="body1" fontWeight={700}>Please login to get your NFT(s).</Typography>
+        </Box>
+      ) : !value ? (
         <SwapAllDetails data={allNFT} />
       ) : (
         <>
@@ -476,6 +493,7 @@ function SwapING({ syncBalance }) {
                   checked={agree}
                   onChange={(e) => setAgree(e.target.checked)}
                   name="antoine"
+                  disabled={!information}
                 />
               }
               label={
@@ -496,6 +514,7 @@ function SwapING({ syncBalance }) {
               sx={{ width: 100 }}
               loading={loading}
               type="submit"
+              disabled={!information}
             >
               Swap
             </CustomLoadingButton>
