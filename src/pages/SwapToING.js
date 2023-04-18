@@ -75,7 +75,11 @@ export default function SwapToING() {
     get(
       `/swap-nft-to-ing-lock/item`,
       (data) => {
-        data.sort((a, b) => b.nftType - a.nftType);
+        data.sort(
+          (a, b) =>
+            a.nftType.toLowerCase().localeCompare(b.nftType.toLowerCase()) ||
+            a.nftLevel.toLowerCase().localeCompare(b.nftLevel.toLowerCase())
+        );
         setConfig(data);
       },
       (error) => {
@@ -230,7 +234,6 @@ function SwapING() {
             });
           }
         }
-        console.log(items);
         setData(items);
       },
       () => {}
@@ -238,6 +241,9 @@ function SwapING() {
     get(
       `/swap-nft-to-ing-lock/item`,
       (data) => {
+        data.sort(function (a, b) {
+          return a.nftType - b.nftType || a.nftLevel - b.nftLevel;
+        });
         setNftConfig(data);
       },
       (error) => {
@@ -252,7 +258,7 @@ function SwapING() {
       data.forEach((nft) => {
         const findConfig = nftConfig.find(
           (config) =>
-            nft.nftTypeText === config.nftType &&
+            nft.nftTypeText === config.nftType.split("_")[0] &&
             nft.nftLevelText === config.nftLevel
         );
         if (findConfig) {
@@ -530,8 +536,12 @@ const PriceList = ({ data }) => {
         <tbody>
           {data?.map((row, index) => (
             <tr key={index}>
-              <td>{row?.nftType}</td>
-              <td>{row?.nftLevel}</td>
+              <td style={{ textTransform: "capitalize" }}>
+                {row?.nftType.replaceAll("_", " ").toLocaleLowerCase()}
+              </td>
+              <td style={{ textTransform: "capitalize" }}>
+                {row?.nftLevel.replaceAll("_", " ").toLocaleLowerCase()}
+              </td>
               <td>{row?.basePrice} ING</td>
               <td>{row?.percentage}%</td>
               <td>{(row?.basePrice * row?.percentage) / 100} ING</td>
