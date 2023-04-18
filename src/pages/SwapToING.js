@@ -30,7 +30,7 @@ import { AppConfig } from "../settings";
 import { formatNumberWithDecimal } from "../settings/format";
 import { get, post } from "../utils/api";
 
-const imgSrc = `/images/swap-ing.png`;
+const imgSrc = `/images/swap-ingl.png`;
 
 const CustomFixedBox = styled(Box)(({ theme }) => ({
   position: "fixed",
@@ -51,7 +51,7 @@ const CustomBox = styled(Box)(({ theme }) => ({
 }));
 
 const CustomImage = styled("img")(({ theme }) => ({
-  width: "80%",
+  width: "60%",
   // paddingLeft: "10%",
   // height: "100%",
   objectFit: "contain",
