@@ -134,7 +134,7 @@ function SwapING() {
     if (value && !selectedNft) {
       toast.error("Please select type of NFT for swap !!!");
     } else if (!agree) {
-      toast.error("Please read and agree Infinity Games Term of Service");
+      toast.error("Please read and agree Infinity Angel Term of Service");
     } else {
       setConfirming(true);
     }
