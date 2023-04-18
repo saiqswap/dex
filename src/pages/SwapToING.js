@@ -83,7 +83,7 @@ export default function SwapToING() {
     if (applicationConfig) {
       syncBalance();
     }
-  }, [applicationConfig]);
+  }, [applicationConfig, walletAddress]);
 
   const syncBalance = async () => {
     (async () => {
@@ -131,13 +131,15 @@ export default function SwapToING() {
           <Grid container spacing={5} alignItems={"center"}>
             <Grid item md={6} xs={12}>
               <CustomImage src={imgSrc} />
-              <Typography mt={5} textAlign={"center"}>
-                Owned:{" "}
-                <span style={{ fontSize: "1.2rem", fontWeight: 900 }}>
-                  {INGLBalance}{" "}
-                </span>{" "}
-                INGL (ING Lock)
-              </Typography>
+              {walletAddress ? (
+                <Typography mt={5} textAlign={"center"}>
+                  Owned:{" "}
+                  <span style={{ fontSize: "1.2rem", fontWeight: 900 }}>
+                    {INGLBalance}{" "}
+                  </span>{" "}
+                  INGL (ING Lock)
+                </Typography>
+              ) : null}
             </Grid>
             <Grid item md={6} xs={12}>
               <SwapING syncBalance={syncBalance} />
