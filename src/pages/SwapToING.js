@@ -426,7 +426,7 @@ function SwapING() {
               }
               label={
                 <Typography variant="caption">
-                  I agree to the Infinity Games Term of Service.
+                  I agree to the Infinity Angel Term of Service.
                 </Typography>
               }
             />
