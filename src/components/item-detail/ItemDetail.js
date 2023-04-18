@@ -177,14 +177,14 @@ const ItemDetail = ({ data, _handleReload }) => {
                   />
                 );
               } else {
-                ActionButton = () => (
-                  <MintComponent
-                    data={data}
-                    isMinting={isMinting}
-                    _handleReload={_reload}
-                    _handleMinting={_handleMinting}
-                  />
-                );
+                // ActionButton = () => (
+                //   <MintComponent
+                //     data={data}
+                //     isMinting={isMinting}
+                //     _handleReload={_reload}
+                //     _handleMinting={_handleMinting}
+                //   />
+                // );
               }
             }
           } else {
@@ -471,8 +471,6 @@ const MintComponent = ({ data, isMinting, _handleReload, _handleMinting }) => {
       }
     );
   };
-
-console.log(data);
 
   return AppConfig.has_minting ? (
     <>
