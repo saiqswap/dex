@@ -102,11 +102,11 @@ export default function SwapToING() {
           AppConfig.BLOCKCHAIN.ERC20_ABI,
           provider
         );
-
         var balance = await contractInstance.balanceOf(walletAddress);
         setINGLBalance(formatNumberWithDecimal(formatEther(balance), 4));
       } catch (error) {
         console.log(error);
+        setINGLBalance(0);
       }
     })();
   };
