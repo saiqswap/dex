@@ -84,7 +84,7 @@ export default function SwapToING() {
   const { walletAddress } = user;
 
   React.useEffect(() => {
-    if (applicationConfig) {
+    if (applicationConfig && walletAddress) {
       syncBalance();
     }
   }, [applicationConfig, walletAddress]);
@@ -103,6 +103,7 @@ export default function SwapToING() {
           provider
         );
         var balance = await contractInstance.balanceOf(walletAddress);
+        console.log(balance);
         setINGLBalance(formatNumberWithDecimal(formatEther(balance), 4));
       } catch (error) {
         console.log(error);
