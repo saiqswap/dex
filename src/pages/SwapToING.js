@@ -17,7 +17,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { toast } from "react-toastify";
 import { CustomLoadingButton } from "../components/common/CustomButton";
 import CustomModal from "../components/common/CustomModal";
@@ -154,6 +154,8 @@ function SwapING() {
           toast.success("Success");
           setLoading(false);
           setSync(!sync);
+          setTotal(0);
+          setSelectedNft(null);
         },
         (error) => {
           toast.error(error.msg);
@@ -227,6 +229,7 @@ function SwapING() {
             });
           }
         }
+        console.log(items);
         setData(items);
       },
       () => {}
@@ -446,7 +449,7 @@ function SwapING() {
           <Box my={5}>
             {value ? (
               <Typography style={{ textTransform: "capitalize" }}>
-                Type: {selectedNft.label}
+                Type: {selectedNft?.label}
               </Typography>
             ) : (
               <Typography>Type: All of NTFs</Typography>
