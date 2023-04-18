@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Grid,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Stack,
@@ -426,7 +427,14 @@ function SwapING() {
               }
               label={
                 <Typography variant="caption">
-                  I agree to the Infinity Angel Term of Service.
+                  I agree to the{" "}
+                  <Link
+                    href="https://docs.google.com/document/d/1g08gnUzfheQRkowTbv0ME4UudXbe86ZOE2P1_4TGPxo/edit"
+                    target="_blank"
+                  >
+                    Infinity Angel Term of Service
+                  </Link>
+                  .
                 </Typography>
               }
             />
