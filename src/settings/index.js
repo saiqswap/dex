@@ -14,7 +14,7 @@ export let AppConfig = production;
 if ([""].includes(hostname)) {
   AppConfig = local;
 } else if (
-  ["localhost", "marketplaceinfinity.feliciastation.com"].includes(hostname)
+  ["", "marketplaceinfinity.feliciastation.com"].includes(hostname)
 ) {
   AppConfig = develop;
 } else if (["marketplace.megdev.co"].includes(hostname)) {

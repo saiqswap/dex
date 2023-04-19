@@ -289,7 +289,7 @@ export const production = {
       url: ["/staking"],
     },
     {
-      title: "SWAP TO ING",
+      title: "SWAP_TO_ING",
       url: ["/swap-to-ing"],
     },
   ],
